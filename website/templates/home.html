@@ -1,0 +1,121 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy na akcje Kapszlakowe{% endblock %} 
+
+{% block content %}
+
+<div class="card">
+    <div class="card-body">
+	    <form method="POST">
+	    <h3 class="card-title" align="center">Zapisz się na kapszlakową akcję!</h3>
+		  <p align="center">Wypełnij poniższy formularz</p>
+		  <div class="form-group">
+    		<label for="selectEvent">Wybierz akcję:</label>
+    		<select 
+    			class="form-control" 
+    			id="selectEvent"
+    			name="selectEvent">
+	      			<option>1</option>
+	      			<option>2</option>
+	      			<option>3</option>
+	      			<option>4</option>
+	      			<option>5</option>
+    		</select>
+  		</div>
+		  <div class="form-group">
+		    <label for="firstName">Imię i nazwisko:</label>
+		    <input
+		      type="text"
+		      class="form-control"
+		      id="firstName"
+		      name="firstName"
+		    />
+		  </div>
+		  <div class="form-group">
+		    <label for="email">Adres email:</label>
+		    <input
+		      type="email"
+		      class="form-control"
+		      id="email"
+		      name="email"
+		      placeholder="twoj@przykladowymail.com"
+		    />
+	  		</div>
+	  	  <div class="form-group">
+		    <label for="adress">Adres zamieszkania:</label>
+		    <input
+		      type="text"
+		      class="form-control"
+		      id="adress"
+		      name="adress"
+		    />
+		  </div>
+		  <div class="form-group">
+		    <label for="year">Rok urodzenia:</label>
+		    <input
+		      type="number"
+		      class="form-control"
+		      id="year"
+		      name="year"
+		    />
+		  </div>
+		  <div class="form-group">
+		    <label for="telNum">Numer telefonu:</label>
+		    <input
+		      type="number"
+		      class="form-control"
+		      id="telNum"
+		      name="telNum"
+		    />
+		  </div>
+		  <div class="form-group">
+		    <label for="howMany">Który raz wybierasz się na naszą akcję?</label>
+		    <input
+		      type="number"
+		      class="form-control"
+		      id="howMany"
+		      name="howMany"
+		    />
+		  </div>
+		  <div class="form-group">
+		    <label for="whereKnew">Skąd dowiedziałeś się o akcji?</label>
+		    <input
+		      type="text"
+		      class="form-control"
+		      id="whereKnew"
+		      name="whereKnew"
+		    />
+		  </div>
+		  <div class="form-group">
+		    <label for="intro">Kilka słów o sobie:</label>
+		    <input
+		      type="text"
+		      class="form-control"
+		      id="intro"
+		      name="intro"
+		    />
+		  </div>
+		  <div class="form-group">
+    		<label for="selectSize">Wybierz rozmiar koszulki:</label>
+    		<select 
+    			class="form-control" 
+    			id="selectSize"
+    			name="selectSize">
+	      			<option>XS</option>
+	      			<option>S</option>
+	      			<option>M</option>
+	      			<option>L</option>
+	      			<option>XL</option>
+	      			<option>XXL</option>
+    		</select>
+  		</div>
+		  
+		  <br />
+		  <div class="col-md-12 text-center">
+		  	<button type="submit" class="btn btn-secondary btn-lg">Prześlij*</button>
+		  	<p align="center">Klikając "Prześlij" akceptujesz <a href="./static/files/regulamin.doc">regulamin dostępny po kliknięciu w ten link.</a></p>
+		</div>
+		</form>
+    </div>
+
+</div>
+{% endblock %}
