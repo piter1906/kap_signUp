@@ -15,7 +15,7 @@
       crossorigin="anonymous"
     />
 
-    <link rel="stylesheet" href="./static/css/style.css"/>
+    <link rel="stylesheet" href="../static/css/style.css"/>
 
     <link href="/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
@@ -44,7 +44,7 @@
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="https://kapszlak.kapucyni.pl">
-            <img src="./static/logo.png" width="60" height="60" alt="">
+            <img src="../static/img/logo.png" width="60" height="60" alt="">
             </a>
 
         <div class="navbar-nav ml-auto">
@@ -55,18 +55,12 @@
         </div>
     </nav>
   </header>
-  <content>
-      <div class="card">
-        <img class="card-img-top" src="./static/baner2.jpg" alt="Obrazek w karcie">
-      <div class="card-body">
+  
         {% block content %}
-        
+          <content>  </content>
           {% endblock %}
-      </div>
-
-    </div>
     
-  </content>
+
 
     <div class="b-example-divider"></div>
 
