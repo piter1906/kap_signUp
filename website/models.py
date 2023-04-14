@@ -26,8 +26,8 @@ class SignUpData(db.Model):
     intro = db.Column(db.String(500))
     selectSize = db.Column(db.String(10))
 
-    def __repr__(self):
-        return f'Element numer: {self.id}, nazwisko: {self.name}, email: {self.email}'
+    #def __repr__(self):
+     #   return f'Element numer: {self.id}, nazwisko: {self.name}, email: {self.email}'
 
 
 class User(db.Model, UserMixin):

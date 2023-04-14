@@ -50,6 +50,15 @@ def after_sign_up():
 
 
 #--------> For admin
+@views.route('/test', methods=['GET', 'POST'])
+def test():
+    if request.method == 'POST':
+        eventName = request.form.get('eventName')
+        new_event = Events(name=eventName)
+        db.session.add(new_event)
+        db.session.commit()
+    return render_template('test.html', signup=SignUpData.query.all(), events=Events.query.all())
+
 @views.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')

@@ -1,0 +1,59 @@
+{% extends "base.html" %} 
+{% block title %}test{% endblock %} 
+
+{% block content %}
+<div class="card">
+      <div class="card-body">
+      	<h3 aligne="center">Lista akcji</h3>
+      	<div class="card">
+		    <div class="card-body">
+		    	{% if events %}
+		    		{% for item in events%}
+		    			<p>{{ item.name }}</p>
+		    		{% endfor %}
+		    	{% endif %}
+		    </div>
+		</div>
+		<div class="card">
+		    <div class="card-body">
+			   <h3 class="card-title" align="center">Edycja akcji kapszlakowych</h3>
+			   <br>
+			</div>
+			<div class="card-body">
+		<form method="POST">
+			<p align="center">dodaj akcję</p>
+			<div class="form-group">
+				<label for="name">Nazwa akcji:</label>
+				 	<input
+				      type="text"
+				      class="form-control"
+				      id="eventName"
+				      name="eventName"
+				    />
+				</div>
+			<div class="col-md-12 text-center">
+				 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+
+		</form>
+	</div>
+		</div>
+	</div>
+</div>
+<div class="card">
+      <div class="card-body">
+      	<h3 aligne="center">Lista zapisanych</h3>
+      	<div class="card">
+		    <div class="card-body">
+		    	{% if signup %}
+		    		{% for item in signup %}
+		    			{{ item.id|string + " " + item.selectEvent + " " + item.name + " " + item.email + " " + item.adress + " " + item.year|string + " " + item.telNum|string + " " + item.howMany|string + " " + item.whereKnew + " " + item.intro + " " + item.selectSize }}
+		    			<br>
+		    		{% endfor %}
+		    	{% endif %}
+		    </div>
+		</div>
+		
+	</div>
+</div>
+
+{% endblock %}

@@ -3,10 +3,6 @@
 
 {% block content %}
 
-{% for elem in test %}
-	<p>{{ elem }}</p>
-{% endfor %}
-
  <div class="card">
      <img class="card-img-top" src="./static/img/baner2.jpg" alt="Obrazek w karcie">
      {% with massages = get_flashed_messages(with_categories=true) %}
@@ -41,11 +37,6 @@
 		    						<option>{{ item.name }}</option>
 		    					{% endfor %}
 		    				{% endif %}
-			      			
-		    				
-		    			
-		    			
-
 		    		</select>
 		  		</div>
 				  <div class="form-group">
