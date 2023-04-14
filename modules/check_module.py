@@ -6,4 +6,3 @@ def email_is_valid(email):
 		return True
 	else:
 		return False
-

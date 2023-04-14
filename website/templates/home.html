@@ -3,6 +3,10 @@
 
 {% block content %}
 
+{% for elem in test %}
+	<p>{{ elem }}</p>
+{% endfor %}
+
  <div class="card">
      <img class="card-img-top" src="./static/img/baner2.jpg" alt="Obrazek w karcie">
      {% with massages = get_flashed_messages(with_categories=true) %}
@@ -32,11 +36,16 @@
 		    			class="form-control" 
 		    			id="selectEvent"
 		    			name="selectEvent">
-			      			<option>1</option>
-			      			<option>2</option>
-			      			<option>3</option>
-			      			<option>4</option>
-			      			<option>5</option>
+		    				{% if events%}
+		    					{% for item in events %}
+		    						<option>{{ item.name }}</option>
+		    					{% endfor %}
+		    				{% endif %}
+			      			
+		    				
+		    			
+		    			
+
 		    		</select>
 		  		</div>
 				  <div class="form-group">

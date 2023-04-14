@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, flash, request
-from .modules import email_is_valid
+from modules.check_module import email_is_valid
+from .models import SignUpData, Events
+from . import db
 
 views = Blueprint('views', __name__)
 
@@ -29,12 +31,18 @@ def home():
         elif not telNum.isdigit() or len(telNum) != 9:
             flash('Podaj 9cio cyfrowy numer telefonu.', category='error')
         else:
+            new_singup = SignUpData(selectEvent=selectEvent, 
+                name=name, email=email, adress=adress, year=year, 
+                telNum=telNum, howMany=howMany, whereKnew=whereKnew,
+                intro=intro, selectSize=selectSize)
+            db.session.add(new_singup)
+            db.session.commit()
             flash('Udało się zapisać!', category='success')
 
 
 
 
-    return render_template('home.html')
+    return render_template('home.html', test=SignUpData.query.all(), events=Events.query.all())
 
 @views.route('/aftersignup')
 def after_sign_up():
@@ -50,9 +58,15 @@ def dashboard():
 def admin_sign_up():
     return render_template('adminsignup.html')
 
-@views.route('/dashboard/events')
+@views.route('/dashboard/events', methods=['GET', 'POST'])
 def admin_events():
-    return render_template('adminevents.html') 
+    if request.method == 'POST':
+        eventName = request.form.get('eventName')
+
+        new_event = Events(name=eventName)
+        db.session.add(new_event)
+        db.session.commit()
+    return render_template('adminevents.html',test=Events.query.all()) 
 
 @views.route('/dashboard/blacklist')
 def admin_blacklist():
