@@ -5,6 +5,21 @@
 
  <div class="card">
      <img class="card-img-top" src="./static/img/baner2.jpg" alt="Obrazek w karcie">
+     {% with massages = get_flashed_messages(with_categories=true) %}
+			  {% if massages %}
+			    {% for category, massage in massages %}
+			      {% if category == 'error' %}
+			      <div class="alert alert-danger alert-dismissable fade show" role="alert">
+			        {{ massage }}
+			      </div>
+			      {% else %}
+			      <div class="alert alert-success alert-dismissable fade show" role="alert">
+			        {{ massage }}
+			      </div>
+			      {% endif %}
+			    {% endfor %}
+			  {% endif %}  
+			  {% endwith %}
       <div class="card-body">
 		<div class="card">
 		    <div class="card-body">
@@ -25,12 +40,12 @@
 		    		</select>
 		  		</div>
 				  <div class="form-group">
-				    <label for="firstName">Imię i nazwisko:</label>
+				    <label for="name">Imię i nazwisko:</label>
 				    <input
 				      type="text"
 				      class="form-control"
-				      id="firstName"
-				      name="firstName"
+				      id="name"
+				      name="name"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -114,7 +129,7 @@
 				  
 				  <br />
 				  <div class="col-md-12 text-center">
-				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij*</button></a>
+				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
 				  	<p align="center">Klikając "Prześlij" akceptujesz <a href="./static/files/regulamin.doc">regulamin dostępny po kliknięciu w ten link.</a></p>
 				</div>
 				</form>
