@@ -16,23 +16,18 @@ temp1 = ['selectEvent', 'name', 'email',
 @views.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        event = request.form.get('selectEvent')
-        evns = EventsNew.query.all()
-        id_template = 0
-        for item in evns:
-            if item.name == event:
-                id_template = item.template
-                break
+        event = EventsNew.query.filter_by(name=request.form.get('selectEvent')).first()
 
-        if id_template == 1:
+        if event.template == 1:
             dic = get_form_val(temp1)
 
-            if check_vals(dic, id_template):
-                db_add_new_sigup(dic, id_template)
+            if check_vals(dic, event.template):
+                db_add_new_sigup(dic, event.template)
         else:
-            flash('ziomek to nie ten event', category='error')
+            flash(f'ziomek to nie ten event, wybrales {event.template}', category='error')
 
     return render_template('home.html', test=SignUpData.query.all(), events=EventsNew.query.all())
+
 
 @views.route('/aftersignup')
 def after_sign_up():
@@ -49,6 +44,7 @@ def test():
         db.session.add(new_event)
         db.session.commit()
     return render_template('test.html', signup=SignUpData.query.all(), events=EventsNew.query.all())
+  
 
 @views.route('/dashboard')
 def dashboard():
