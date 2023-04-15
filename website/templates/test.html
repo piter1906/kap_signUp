@@ -9,7 +9,7 @@
 		    <div class="card-body">
 		    	{% if events %}
 		    		{% for item in events%}
-		    			<p>{{ item.name }}</p>
+		    			<p>{{ item.name }} {{ item.template }}</p>
 		    		{% endfor %}
 		    	{% endif %}
 		    </div>
@@ -29,6 +29,15 @@
 				      class="form-control"
 				      id="eventName"
 				      name="eventName"
+				    />
+				</div>
+				<div class="form-group">
+				<label for="template">Szablon akcji:</label>
+				 	<input
+				      type="number"
+				      class="form-control"
+				      id="template"
+				      name="template"
 				    />
 				</div>
 			<div class="col-md-12 text-center">

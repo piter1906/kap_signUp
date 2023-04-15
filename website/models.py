@@ -13,6 +13,12 @@ class Events(db.Model):
     name = db.Column(db.String(300))
 
 
+class EventsNew(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300))
+    template = db.Column(db.Integer)
+
+
 class SignUpData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     selectEvent = db.Column(db.String(300))
