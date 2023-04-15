@@ -55,10 +55,24 @@
         </div>
     </nav>
   </header>
-
+      {% with massages = get_flashed_messages(with_categories=true) %}
+        {% if massages %}
+          {% for category, massage in massages %}
+            {% if category == 'error' %}
+            <div class="alert alert-danger alert-dismissable fade show" role="alert">
+              {{ massage }}
+            </div>
+            {% else %}
+            <div class="alert alert-success alert-dismissable fade show" role="alert">
+              {{ massage }}
+            </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}  
+        {% endwith %}
   
         {% block content %}
-          <content>  </content>
+          
           {% endblock %}
     
 
@@ -80,5 +94,7 @@
         </ul>
       </footer>
     </div>
+<script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+
   </body>
 </html>

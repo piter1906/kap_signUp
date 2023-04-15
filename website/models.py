@@ -4,19 +4,32 @@ from flask_login import UserMixin
 
 class Blacklist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), unique=True)
-    number = db.Column(db.Integer, unique=True)
+    email = db.Column(db.String(100))
+    number = db.Column(db.Integer)
 
 
-class Events(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(300))
+#class Events(db.Model):
+ #   id = db.Column(db.Integer, primary_key=True)
+  #  name = db.Column(db.String(300))
 
 
 class EventsNew(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
     template = db.Column(db.Integer)
+
+
+class Events(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300))
+    template = db.Column(db.Integer)
+    year_id = db.Column(db.Integer, db.ForeignKey('year.id'), nullable=False)
+
+
+class Year(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300))
+    events = db.relationship('Events', backref='year')
 
 
 class SignUpData(db.Model):

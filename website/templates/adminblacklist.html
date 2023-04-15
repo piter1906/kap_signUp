@@ -2,15 +2,49 @@
 {% block title %}Zapisy Kapszlak - Czarna lista{% endblock %} 
 
 {% block content %}
-<div class="card">
-      <div class="card-body">
+<div class="card"> 
+	<div class="card-body">
 		<div class="card">
-		    <div class="card-body">
-			   <h3 class="card-title" align="center">Edycja czarnej listy</h3>
-			   <br>
-			</div>
-
+			<h3 class="card-title" align="center">Edycja czarnej listy</h3>
+			<div class="form-group">
+		    		<div class="card-body">
+		    		<p>Czarna lista:</p>
+		    		<ul class="list-group list-group-flush" id="blacklistID">
+		    			{% for item in blacklist %}
+		    			<li class="list-group-item">
+		    				{{ item.id }}. <i>email:</i> <b>{{ item.email }}</b> <---> <i>numer telefonu:</i> <b>{{ item.number }}</b>
+		    				<button type="button" class="close" onClick="delete_event({{ item.id }})">usuń</button>
+		    			</li>
+		    			{% endfor %}
+		    		</ul>
+				</div>
+		  	</div>
+		  	<div class="card-body">
+			    <form method="POST">
+		  		<p>Dodaj do czarnej listy: </p>
+				<div class="form-group">
+					<label for="email">Email: </label>
+					 	<input
+					      type="email"
+					      class="form-control"
+					      id="email"
+					      name="email"
+					    />
+					</div>
+					<div class="form-group">
+					<label for="number">Numer telefonu: </label>
+					 	<input
+					      type="number"
+					      class="form-control"
+					      id="number"
+					      name="number"
+					    />
+					</div>
+				<div class="col-md-12 text-center">
+					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+			</form>
 		</div>
+	</div>
 	</div>
 </div>
 {% endblock %}

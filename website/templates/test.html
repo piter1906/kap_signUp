@@ -14,7 +14,27 @@
 		    	{% endif %}
 		    </div>
 		</div>
+		<div class="card">
+		    <div class="card-body">
+			    <form method="POST">
+			    <h3 class="card-title" align="center">Usuń cos</h3>
+				  <p align="center">Wypełnij poniższy formularz</p>
+				  <div class="form-group">
+		    		<label for="selectEvent">Wybierz akcję:</label>
+		    		<ul class="list-group list-group-flush" id="eventID">
+		    			{% for item in events %}
+		    			<li class="list-group-item">
+		    				{{ item.name }}
+		    				<button type="button" class="close" onClick="delete_event({{ item.id }})">usuń</button>
+		    			</li>
+		    			{% endfor %}
+		    		</ul>
 
+		  		</div>
+
+			</form>
+		</div>
+	</div>
 		<div class="card">
 		    <div class="card-body">
 			   <h3 class="card-title" align="center">Edycja akcji kapszlakowych</h3>

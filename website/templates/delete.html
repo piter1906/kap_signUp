@@ -1,0 +1,34 @@
+{% extends "base.html" %} 
+{% block title %}usuwanie{% endblock %} 
+
+{% block content %}
+<div class="card"> 
+	<div class="card-body">
+		<div class="card">
+		    <div class="card-body">
+			    <form method="POST">
+			    <h3 class="card-title" align="center">Usuń cos</h3>
+				  <p align="center">Wypełnij poniższy formularz</p>
+				  <div class="form-group">
+		    		<label for="selectEvent">Wybierz akcję:</label>
+		    		<select 
+		    			class="form-control" 
+		    			id="selectEvent"
+		    			name="selectEvent">
+		    				{% if events%}
+		    					{% for item in events %}
+		    						<option>{{ item.name }}</option>
+		    					{% endfor %}
+		    				{% endif %}
+		    		</select>
+		  		</div>
+		  		<div class="col-md-12 text-center">
+				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+				  </div>
+			</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+{% endblock %}

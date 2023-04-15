@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 
 db = SQLAlchemy()
-DB_NAME = "kapdatabase.db"
+DB_NAME = "datab.db"
 
 
 def create_app():
@@ -18,7 +18,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
-    from .models import Blacklist, User, Events, SignUpData 
+    from .models import Blacklist, User, EventsNew, SignUpData, Events, Year 
 
     with app.app_context():
         db.create_all()
