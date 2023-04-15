@@ -8,6 +8,7 @@ class Blacklist(db.Model):
     number = db.Column(db.Integer)
 
 
+
 #class Events(db.Model):
  #   id = db.Column(db.Integer, primary_key=True)
   #  name = db.Column(db.String(300))

@@ -1,6 +1,6 @@
 from flask import flash, request
 from website import db
-from website.models import SignUpData, EventsNew
+from website.models import SignUpData, EventsNew, Blacklist
 
 def get_form_val(lst):
 	dic = {}
@@ -21,7 +21,11 @@ def db_add_new_sigup(dic, id_template):
 	else:
 		flash('To nie to id', category='error')
 
-
+def db_add_new_blacklist(email, number):
+    new_item = Blacklist(email=email, number=number)
+    db.session.add(new_item)
+    db.session.commit()
+    flash('Dodano do czarnej listy', category='success')
 
 
 

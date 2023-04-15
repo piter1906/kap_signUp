@@ -12,7 +12,7 @@ function delete_bl(itemID) {
     method: "POST",
     body: JSON.stringify({ itemID: itemID }),
   }).then((_res) => {
-    window.location.href = "/test";
+    window.location.href = "/dashboard/blacklist";
   });
 }
 

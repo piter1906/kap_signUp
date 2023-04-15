@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, request, jsonify
-from modules.check_module import email_is_valid, check_vals
-from modules.servis_html import get_form_val, db_add_new_sigup
+from modules.check_module import *
+from modules.servis_html import *
 from .models import SignUpData, EventsNew, Events, Blacklist
 from . import db
 import json
@@ -71,6 +71,7 @@ def delete_bl():
     if item:
         db.session.delete(item)
         db.session.commit()
+        flash(f'Element {item.email} {item.number} usunięty z czarnej listy')
     return jsonify({})
 
 @views.route('/delete-year', methods=['POST'])
@@ -109,18 +110,8 @@ def admin_blacklist():
     if request.method == 'POST':
         email = request.form.get('email')
         number = request.form.get('number')
-        items = Blacklist.query.all()
-        if email and number:
-            for item in items:
-                if item.email == email:
-                    flash(f'Podanej email już jest w bazie pod numerem {item.id}.', category='error')
-                if item.number == number:
-                    flash(f'Podanej numer telefonu już jest w bazie pod numerem {item.id}.', category='error') 
-            new_item = Blacklist(email=email, number=number)
-            db.session.add(new_item)
-            db.session.commit()
-            flash('Dodano do czarnej listy', category='success')
-        else:
-            flash('Najpierw wprowadź dane', category='error')
+        if check_bl(email, number):
+            db_add_new_blacklist(email, number)
+
     return render_template('adminblacklist.html', blacklist=Blacklist.query.all())
 
