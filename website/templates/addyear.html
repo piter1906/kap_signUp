@@ -1,0 +1,63 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy Kapszlak - Dodaj akcje na nowy rok{% endblock %} 
+
+{% block content %}
+<div class="card"> 
+	<div class="card-body">
+		<div class="card">
+			<h3 class="card-title" align="center">Dodaj akcje na nowy rok</h3>
+		  	<div class="card-body">
+		  		{% if not is_added %}
+			    <form method="POST">
+		  		<p>Wpisz dane</p>
+				<div class="form-group">
+					<label for="name">Nazwa zaplanowanego roku: </label>
+					 	<input
+					      type="text"
+					      class="form-control"
+					      id="name"
+					      name="name"
+					      placeholder="np.: Akcje w roku 2024 - proszę unikaj pisania 2023/2024"
+					    />
+					</div>
+					<div class="form-group">
+					<label for="event_number">Ilość zaplanowanych akcji: </label>
+					 	<input
+					      type="number"
+					      class="form-control"
+					      id="event_number"
+					      name="event_number"
+					    />
+					</div>
+				<div class="col-md-12 text-center">
+					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+			</form>
+			{% else %}
+				{% if years %}
+					{% for item in years %}
+						{{ item.id }} {{ item.name }} {{ item.is_active }}
+
+					{% endfor %}
+				{% endif %}
+				
+				<br>
+
+				{{ new_year.id }} {{ new_year.name }} {{ new_year.is_active }}
+				<br>
+				{% for i in range(event_number | int) %}
+				<label for="test{{ i + 1 }}">akcja {{ i + 1 }}: </label>
+					 	<input
+					      type="text"
+					      class="form-control"
+					      id="test{{ i + 1 }}"
+					      name="test{{ i + 1 }}"
+					    />
+				{% endfor %}
+
+
+			{% endif %}
+		</div>
+	</div>
+	</div>
+</div>
+{% endblock %}

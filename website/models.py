@@ -8,7 +8,6 @@ class Blacklist(db.Model):
     number = db.Column(db.Integer)
 
 
-
 #class Events(db.Model):
  #   id = db.Column(db.Integer, primary_key=True)
   #  name = db.Column(db.String(300))
@@ -23,13 +22,22 @@ class EventsNew(db.Model):
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
-    template = db.Column(db.Integer)
+    template1 = db.relationship('Template1', backref='events', uselist=False)
     year_id = db.Column(db.Integer, db.ForeignKey('year.id'), nullable=False)
+
+
+class Template1(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    temp_name = db.Column(db.String(300))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    name = db.Column(db.String(300))
+    email = db.Column(db.String(300))
 
 
 class Year(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
     events = db.relationship('Events', backref='year')
 
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, request, jsonify
 from modules.check_module import *
 from modules.servis_html import *
-from .models import SignUpData, EventsNew, Events, Blacklist
+from .models import SignUpData, EventsNew, Events, Blacklist, Year
 from . import db
 import json
 
@@ -97,13 +97,35 @@ def admin_sign_up():
 
 @views.route('/dashboard/events', methods=['GET', 'POST'])
 def admin_events():
-    if request.method == 'POST':
-        eventName = request.form.get('eventName')
+    return render_template('adminevents.html') 
 
-        new_event = Events(name=eventName)
-        db.session.add(new_event)
-        db.session.commit()
-    return render_template('adminevents.html',test=Events.query.all()) 
+@views.route('/dashboard/addyear', methods=['GET', 'POST'])
+def add_year():
+    if request.method == 'POST':
+        is_added = True
+        name = request.form.get('name')
+        years = Year.query.all()
+        if not years:
+            new_year = Year(name=name)
+            db.session.add(new_year)
+            db.session.commit()
+        else:
+            for item in years:
+                item.is_active = False
+            db.session.commit()
+            new_year = Year(name=name)
+            db.session.add(new_year)
+            db.session.commit()
+        event_number = request.form.get('event_number')
+        return render_template('addyear.html', is_added=is_added,
+            name=name, event_number=event_number, years=years, new_year=new_year)
+    
+    is_added = False 
+    return render_template('addyear.html', is_added=is_added)
+
+@views.route('/dashboard/edityear', methods=['GET', 'POST'])
+def edit_year():
+    return render_template('edityear.html') 
 
 @views.route('/dashboard/blacklist', methods=['GET', 'POST'])
 def admin_blacklist():
