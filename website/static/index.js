@@ -1,26 +1,11 @@
-function delete_event(itemID) {
-  fetch("/delete-event", {
+function delete_item(itemID, path_route, path_refresh) {
+  fetch(path_route, {
     method: "POST",
     body: JSON.stringify({ itemID: itemID }),
   }).then((_res) => {
-    window.location.href = "/test";
+    window.location.href = path_refresh;
   });
 }
 
-function delete_bl(itemID) {
-  fetch("/delete-bl", {
-    method: "POST",
-    body: JSON.stringify({ itemID: itemID }),
-  }).then((_res) => {
-    window.location.href = "/dashboard/blacklist";
-  });
-}
 
-function delete_year(itemID) {
-  fetch("/delete-year", {
-    method: "POST",
-    body: JSON.stringify({ itemID: itemID }),
-  }).then((_res) => {
-    window.location.href = "/test";
-  });
-}
+

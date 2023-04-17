@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 
 db = SQLAlchemy()
-DB_NAME = "dbex.db"
+DB_NAME = "ddabexcccaaads.db"
 
 
 def create_app():

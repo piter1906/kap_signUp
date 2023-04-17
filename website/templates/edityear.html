@@ -1,5 +1,29 @@
 {% extends "base.html" %} 
 {% block title %}Zapisy Kapszlak - Edycja bierzących akcji{% endblock %} 
-
 {% block content %}
+			{% if years %}
+					<div class="card-body">
+		    		<p>Lista lat:</p>
+		    		<ul class="list-group list-group-flush" id="blacklistID">
+		    			{% for item in years %}
+		    			<li class="list-group-item">
+		    				{{ item.id }}. <i>Nazwa:</i> <b>{{ item.name }}</b> <---> <i>Czy aktywny:</i> <b>{{ item.is_active }}</b> {{ item.event_num }}
+		    				<button type="button" class="close" onClick="delete_item({{ item.id }}, '/delete-year', '/dashboard/edityear')">usuń</button>
+		    			</li>
+		    			{% endfor %}
+		    		</ul>
+				</div>
+				<div class="card-body">
+				<p>Lista evantów dla {{ year.name }}:</p>
+					{{ year.events }}
+				<p>Lista templatów:</p>
+				{% for event in year.events %}
+					{{ event.template1.event_id }} {{ event.template2.event_id }} {{ event.template3.event_id }}
+				{% endfor %}
+				<p></p>
+				</div>
+			{% endif %}
+
+				dfsdffssfdf
+
 {% endblock %}

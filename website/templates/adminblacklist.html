@@ -13,7 +13,7 @@
 		    			{% for item in blacklist %}
 		    			<li class="list-group-item">
 		    				{{ item.id }}. <i>email:</i> <b>{{ item.email }}</b> <---> <i>numer telefonu:</i> <b>{{ item.number }}</b>
-		    				<button type="button" class="close" onClick="delete_bl({{ item.id }})">usuń</button>
+		    				<button type="button" class="close" onClick="delete_item({{ item.id }}, '/delete-bl', '/dashboard/blacklist')">usuń</button>
 		    			</li>
 		    			{% endfor %}
 		    		</ul>

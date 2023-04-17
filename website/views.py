@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, flash, request, jsonify
+from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for
 from modules.check_module import *
 from modules.servis_html import *
-from .models import SignUpData, EventsNew, Events, Blacklist, Year
+from .models import SignUpData, EventsNew, Events, Blacklist, Year, Template1, Template2, Template3
 from . import db
 import json
 
@@ -11,7 +11,7 @@ views = Blueprint('views', __name__)
 temp1 = ['selectEvent', 'name', 'email', 
             'adress', 'year', 'telNum', 'howMany', 'whereKnew', 'intro', 'selectSize']
 
-
+nextt = True
 
 #--------> For client
 @views.route('/', methods=['GET', 'POST'])
@@ -78,10 +78,11 @@ def delete_bl():
 def delete_year():
     item = json.loads(request.data)
     itemID = item['itemID']
-    item = YearEvents.query.get(itemID)
+    item = Year.query.get(itemID)
     if item:
         db.session.delete(item)
         db.session.commit()
+        flash(f'Element {item.name} {item.is_active} usunięty lat')
     return jsonify({})   
 
 #----------> end delete items
@@ -97,35 +98,45 @@ def admin_sign_up():
 
 @views.route('/dashboard/events', methods=['GET', 'POST'])
 def admin_events():
-    return render_template('adminevents.html') 
+    return render_template('adminevents.html')
+      
 
 @views.route('/dashboard/addyear', methods=['GET', 'POST'])
 def add_year():
     if request.method == 'POST':
-        is_added = True
         name = request.form.get('name')
+        event_num = request.form.get('event_number')
         years = Year.query.all()
-        if not years:
-            new_year = Year(name=name)
-            db.session.add(new_year)
-            db.session.commit()
-        else:
-            for item in years:
-                item.is_active = False
-            db.session.commit()
-            new_year = Year(name=name)
-            db.session.add(new_year)
-            db.session.commit()
-        event_number = request.form.get('event_number')
-        return render_template('addyear.html', is_added=is_added,
-            name=name, event_number=event_number, years=years, new_year=new_year)
-    
-    is_added = False 
-    return render_template('addyear.html', is_added=is_added)
+        db_add_year(name, event_num, years)
+        return redirect(url_for('views.add_events'))
+
+    return render_template('addyear.html')
 
 @views.route('/dashboard/edityear', methods=['GET', 'POST'])
 def edit_year():
+    years = Year.query.all()
+    if years:
+        for item in years:
+            if item.is_active:
+                year = item
+            else:
+                year = 0
+        return render_template('edityear.html', years=Year.query.all(), year=year)
     return render_template('edityear.html') 
+
+@views.route('/dashboard/addevents', methods=['GET', 'POST'])
+def add_events():
+    years = Year.query.all()
+    if years:
+        for item in years:
+            if item.is_active:
+                year = item
+        if request.method == 'POST':
+            db_add_event(year)
+            return redirect(url_for('views.dashboard'))
+        return render_template('addevents.html', year=year)
+    flash('Nie masz bezpośredniego dostępu do tej strony', category='error')
+    return redirect(url_for('views.dashboard'))   
 
 @views.route('/dashboard/blacklist', methods=['GET', 'POST'])
 def admin_blacklist():

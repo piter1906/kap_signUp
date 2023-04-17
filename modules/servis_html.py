@@ -1,6 +1,6 @@
 from flask import flash, request
 from website import db
-from website.models import SignUpData, EventsNew, Blacklist
+from website.models import SignUpData, Year, Blacklist, Events, Template1, Template2, Template3
 
 def get_form_val(lst):
 	dic = {}
@@ -27,6 +27,42 @@ def db_add_new_blacklist(email, number):
     db.session.commit()
     flash('Dodano do czarnej listy', category='success')
 
+def db_add_year(name, event_num, years):
+	if not years:
+		new_year = Year(name=name, event_num=event_num)
+		db.session.add(new_year)
+		db.session.commit()
+	else:
+		for item in years:
+			item.is_active = False
+		db.session.commit()
+		new_year = Year(name=name, event_num=event_num)
+		db.session.add(new_year)
+		db.session.commit()
+
+def db_add_event(year):
+	for i in range(year.event_num):
+		name = request.form.get(f'name{i+1}')
+		new_event = Events(name=name, year_id=year.id)
+		db.session.add(new_event)
+		db.session.commit() 
+		template = request.form.get(f'template{i+1}')
+		if template == 'Szablon 1':
+			temp_name = f'Szablon dla akcji o id {new_event.id}'
+			new_temp = Template1(temp_name=temp_name, event_id=new_event.id)
+			db.session.add(new_temp)
+			db.session.commit()
+		elif template == 'Szablon 2':
+			temp_name = f'Szablon dla akcji o id {new_event.id}'
+			new_temp = Template2(temp_name=temp_name, event_id=new_event.id)
+			db.session.add(new_temp)
+			db.session.commit() 
+		elif template == 'Szablon 3':
+			temp_name = f'Szablon dla akcji o id {new_event.id}'
+			new_temp = Template3(temp_name=temp_name, event_id=new_event.id)
+			db.session.add(new_temp)
+			db.session.commit()
+	flash('Dodano akcje do wybranego roku', category='success')
 
 
 

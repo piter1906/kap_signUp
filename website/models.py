@@ -23,7 +23,9 @@ class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
     template1 = db.relationship('Template1', backref='events', uselist=False)
-    year_id = db.Column(db.Integer, db.ForeignKey('year.id'), nullable=False)
+    template2 = db.relationship('Template2', backref='events', uselist=False)
+    template3 = db.relationship('Template3', backref='events', uselist=False)
+    year_id = db.Column(db.Integer, db.ForeignKey('year.id'))
 
 
 class Template1(db.Model):
@@ -33,10 +35,26 @@ class Template1(db.Model):
     name = db.Column(db.String(300))
     email = db.Column(db.String(300))
 
+class Template2(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    temp_name = db.Column(db.String(300))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    name = db.Column(db.String(300))
+    email = db.Column(db.String(300))
+    adress = db.Column(db.String(300))
+
+class Template3(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    temp_name = db.Column(db.String(300))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    name = db.Column(db.String(300))
+    number = db.Column(db.Integer)
+
 
 class Year(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
+    event_num = db.Column(db.Integer)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     events = db.relationship('Events', backref='year')
 
