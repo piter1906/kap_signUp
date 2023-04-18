@@ -22,9 +22,10 @@ class EventsNew(db.Model):
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(300))
-    template1 = db.relationship('Template1', backref='events', uselist=False)
-    template2 = db.relationship('Template2', backref='events', uselist=False)
-    template3 = db.relationship('Template3', backref='events', uselist=False)
+    temp_id = db.Column(db.Integer)
+    template1 = db.relationship('Template1', backref='events')
+    template2 = db.relationship('Template2', backref='events')
+    template3 = db.relationship('Template3', backref='events')
     year_id = db.Column(db.Integer, db.ForeignKey('year.id'))
 
 

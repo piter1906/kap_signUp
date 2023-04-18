@@ -8,7 +8,7 @@
 		    			{% for item in years %}
 		    			<li class="list-group-item">
 		    				{{ item.id }}. <i>Nazwa:</i> <b>{{ item.name }}</b> <---> <i>Czy aktywny:</i> <b>{{ item.is_active }}</b> {{ item.event_num }}
-		    				<button type="button" class="close" onClick="delete_item({{ item.id }}, '/delete-year', '/dashboard/edityear')">usuń</button>
+		    				<a href="/delete-year/{{ item.id }}"><button type="button" class="close" >usuń</button></a>
 		    			</li>
 		    			{% endfor %}
 		    		</ul>
@@ -18,7 +18,8 @@
 					{{ year.events }}
 				<p>Lista templatów:</p>
 				{% for event in year.events %}
-					{{ event.template1.event_id }} {{ event.template2.event_id }} {{ event.template3.event_id }}
+					{{ event.name }} {{ event.temp_id }} 
+					
 				{% endfor %}
 				<p></p>
 				</div>

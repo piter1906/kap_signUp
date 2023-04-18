@@ -8,15 +8,33 @@ import json
 views = Blueprint('views', __name__)
 
 #--------> Templates paterns
-temp1 = ['selectEvent', 'name', 'email', 
-            'adress', 'year', 'telNum', 'howMany', 'whereKnew', 'intro', 'selectSize']
+temp1_schem = ['name', 'email']
 
 nextt = True
 
 #--------> For client
 @views.route('/', methods=['GET', 'POST'])
 def home():
-    if request.method == 'POST':
+    years = Year.query.all()
+    if years:
+        for yr in years:
+            if yr.is_active:
+                year = yr
+        if request.method == 'POST':
+            event_name = request.form.get('selectEvent')
+            for item in year.events:
+                if item.name == event_name:
+                    event = item
+            if event.temp_id == 1:
+                return redirect(url_for('views.temp1', event_id=event.id))
+            elif event.temp_id == 2:
+                return f'jestem w template{event.temp_id}'
+            elif event.temp_id == 3:
+                return f'jestem w template{event.temp_id}'
+        return render_template('home.html', year=year)
+
+    return render_template('home.html')
+"""if request.method == 'POST':
         event = EventsNew.query.filter_by(name=request.form.get('selectEvent')).first()
         if event:
             if event.template == 1:
@@ -31,9 +49,26 @@ def home():
             flash(f'ziomek tu nie ma eventow, wybrales', category='error')
             return render_template('home.html')
     else:
-        return render_template('home.html', test=SignUpData.query.all(), events=EventsNew.query.all())
+        return render_template('home.html', test=SignUpData.query.all(), events=EventsNew.query.all())"""
 
+@views.route('/temp1', methods=['GET','POST'])
+def temp1():
+    event_id = request.args.get('event_id', None)
+    event = Events.query.get(event_id)
+    if request.method == 'POST':
+        dic = get_form_val(temp1_schem)
+        if check_vals(dic, event.temp_id):
+            db_add_new_sigup(dic, event)
+        return redirect(url_for('views.home'))
 
+    return render_template('temp1.html', event=event)
+    
+@views.route('/user', methods=['GET','POST'])
+def user_page():
+    event_id = request.args.get('event_id', None)
+    numer_id = 'number' + event_id
+    number = request.form.get(numer_id)
+    return f'{event_id} {number}'
 
 @views.route('/aftersignup')
 def after_sign_up():
@@ -63,29 +98,44 @@ def delete_event():
         db.session.commit()
     return jsonify({})
 
-@views.route('/delete-bl', methods=['POST'])
-def delete_bl():
-    item = json.loads(request.data)
-    itemID = item['itemID']
+@views.route('/delete-bl/<int:itemID>', methods=['GET','POST'])
+def delete_bl(itemID):
     item = Blacklist.query.get(itemID)
     if item:
         db.session.delete(item)
         db.session.commit()
         flash(f'Element {item.email} {item.number} usunięty z czarnej listy')
-    return jsonify({})
+    return redirect(url_for('views.admin_blacklist'))
 
-@views.route('/delete-year', methods=['POST'])
-def delete_year():
-    item = json.loads(request.data)
-    itemID = item['itemID']
+@views.route('/delete-year/<int:itemID>', methods=['GET','POST'])
+def delete_year(itemID):
     item = Year.query.get(itemID)
     if item:
         db.session.delete(item)
         db.session.commit()
         flash(f'Element {item.name} {item.is_active} usunięty lat')
-    return jsonify({})   
+    return redirect(url_for('views.edit_year'))  
 
 #----------> end delete items
+
+#----------> get event
+
+@views.route('/get-event', methods=['POST'])
+def get_event():
+    event = json.loads(request.data)
+    eventID = event['itemID']
+    event = EventsNew.query.get(eventID)
+    if event:
+        db.session.delete(event)
+        db.session.commit()
+    return jsonify({})
+
+#----------> end get event
+
+@views.route('/form', methods=['GET','POST'])
+def form():
+    years = Year.query.all()
+    return render_template('form.html', years=years)
 
 
 @views.route('/dashboard')

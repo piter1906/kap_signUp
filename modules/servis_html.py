@@ -9,13 +9,10 @@ def get_form_val(lst):
 			dic[val] = request.form.get(val)
 	return dic
 
-def db_add_new_sigup(dic, id_template):
-	if id_template == 1:
-		new_it = SignUpData(selectEvent=dic['selectEvent'], 
-	                name=dic['name'], email=dic['email'], adress=dic['adress'], year=dic['year'], 
-	                telNum=dic['telNum'], howMany=dic['howMany'], whereKnew=dic['whereKnew'],
-	                intro=dic['intro'], selectSize=dic['selectSize'])
-		db.session.add(new_it)
+def db_add_new_sigup(dic, event):
+	if event.temp_id == 1:
+		template = Template1(temp_name="testowe", event_id=event.id, name=dic['name'], email=dic['email'])
+		db.session.add(template)
 		db.session.commit()
 		flash('Udało się zapisać!', category='success')
 	else:
@@ -43,24 +40,21 @@ def db_add_year(name, event_num, years):
 def db_add_event(year):
 	for i in range(year.event_num):
 		name = request.form.get(f'name{i+1}')
-		new_event = Events(name=name, year_id=year.id)
-		db.session.add(new_event)
-		db.session.commit() 
 		template = request.form.get(f'template{i+1}')
 		if template == 'Szablon 1':
-			temp_name = f'Szablon dla akcji o id {new_event.id}'
-			new_temp = Template1(temp_name=temp_name, event_id=new_event.id)
-			db.session.add(new_temp)
+			temp_id = 1
+			new_event = Events(name=name, year_id=year.id, temp_id=temp_id)
+			db.session.add(new_event)
 			db.session.commit()
 		elif template == 'Szablon 2':
-			temp_name = f'Szablon dla akcji o id {new_event.id}'
-			new_temp = Template2(temp_name=temp_name, event_id=new_event.id)
-			db.session.add(new_temp)
-			db.session.commit() 
+			temp_id = 2
+			new_event = Events(name=name, year_id=year.id, temp_id=temp_id)
+			db.session.add(new_event)
+			db.session.commit()
 		elif template == 'Szablon 3':
-			temp_name = f'Szablon dla akcji o id {new_event.id}'
-			new_temp = Template3(temp_name=temp_name, event_id=new_event.id)
-			db.session.add(new_temp)
+			temp_id = 3
+			new_event = Events(name=name, year_id=year.id, temp_id=temp_id)
+			db.session.add(new_event)
 			db.session.commit()
 	flash('Dodano akcje do wybranego roku', category='success')
 

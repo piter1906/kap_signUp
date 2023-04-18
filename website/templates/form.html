@@ -1,0 +1,21 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy Kapszlak - Edycja bierzących akcji{% endblock %} 
+{% block content %}
+
+{% if years %}
+	{% for year in years %}
+		{% if year.is_active %}
+			{% for event in year.events %}
+				{% if event.temp_id == 1 %}
+					{{ event.name }} <br>
+					{% for signup in event.template1 %}
+						{{ signup.name }} {{ signup.email }}
+						<br>
+					{% endfor %}
+					{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
+{% endif %}
+
+{% endblock %}

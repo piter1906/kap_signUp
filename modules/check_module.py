@@ -18,15 +18,6 @@ def check_vals(dic, id_template):
 	    elif len(dic['name']) < 5:
 	        flash('Imię i nazwisko: wprowadzone dane są za krótkie.', category='error')
 	        return False
-	    elif len(dic['adress']) < 10:
-	        flash('Adres: wprowadzone dane są za krótkie.', category='error')
-	        return False
-	    elif not dic['year'].isdigit() or len(dic['year']) > 4 or not int(dic['year']) > 1970 and int(dic['year']) < 2016:
-	        flash('Podaj poprawny rok urodzenia.', category='error')
-	        return False
-	    elif not dic['telNum'].isdigit() or len(dic['telNum']) != 9:
-	        flash('Podaj 9cio cyfrowy numer telefonu.', category='error')
-	        return False
 	    else:
 	        return True
 	else:
