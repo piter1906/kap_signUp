@@ -39,9 +39,15 @@
 
         <div class="navbar-nav ml-auto">
           
+        
+          {% if user.get_id() == '2' %}
+          <a class="nav-item nav-link" id="signUp" href="/">Zapisy</a>
+          <a class="nav-item nav-link" id="dashboard" href="/dashboard">Panel administracyjny</a>
+          <a class="nav-item nav-link" id="logout" href="/logout">Wyloguj</a>
+          {% endif %}
           <a class="nav-item nav-link " href="https://kapszlak.kapucyni.pl">Kapszlak</a>
-          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
-          <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+          
+
         </div>
     </nav>
   </header>

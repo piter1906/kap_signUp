@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for
+from flask_login import login_required, current_user
 from modules.check_module import *
 from modules.servis_html import *
 from .models import SignUpData, EventsNew, Events, Blacklist, Year, Template1, Template2, Template3
@@ -31,9 +32,9 @@ def home():
                 return f'jestem w template{event.temp_id}'
             elif event.temp_id == 3:
                 return f'jestem w template{event.temp_id}'
-        return render_template('home.html', year=year)
+        return render_template('home.html', year=year, user=current_user)
 
-    return render_template('home.html')
+    return render_template('home.html', user=current_user)
 """if request.method == 'POST':
         event = EventsNew.query.filter_by(name=request.form.get('selectEvent')).first()
         if event:
@@ -61,7 +62,7 @@ def temp1():
             db_add_new_sigup(dic, event)
         return redirect(url_for('views.home'))
 
-    return render_template('temp1.html', event=event)
+    return render_template('temp1.html', event=event, user=current_user)
     
 @views.route('/user', methods=['GET','POST'])
 def user_page():
@@ -72,7 +73,7 @@ def user_page():
 
 @views.route('/aftersignup')
 def after_sign_up():
-    return render_template('aftersignup.html')
+    return render_template('aftersignup.html', user=current_user)
 
 
 #--------> For admin
@@ -84,11 +85,12 @@ def test():
         new_event = EventsNew(name=eventName, template=template)
         db.session.add(new_event)
         db.session.commit()
-    return render_template('test.html', signup=SignUpData.query.all(), events=EventsNew.query.all())
+    return render_template('test.html', signup=SignUpData.query.all(), events=EventsNew.query.all(), user=current_user)
 
 #----------> delete items
 
 @views.route('/delete-event', methods=['POST'])
+@login_required
 def delete_event():
     event = json.loads(request.data)
     eventID = event['itemID']
@@ -99,6 +101,7 @@ def delete_event():
     return jsonify({})
 
 @views.route('/delete-bl/<int:itemID>', methods=['GET','POST'])
+@login_required
 def delete_bl(itemID):
     item = Blacklist.query.get(itemID)
     if item:
@@ -108,6 +111,7 @@ def delete_bl(itemID):
     return redirect(url_for('views.admin_blacklist'))
 
 @views.route('/delete-year/<int:itemID>', methods=['GET','POST'])
+@login_required
 def delete_year(itemID):
     item = Year.query.get(itemID)
     if item:
@@ -135,23 +139,27 @@ def get_event():
 @views.route('/form', methods=['GET','POST'])
 def form():
     years = Year.query.all()
-    return render_template('form.html', years=years)
+    return render_template('form.html', years=years, user=current_user)
 
 
 @views.route('/dashboard')
+@login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', user=current_user)
 
 @views.route('/dashboard/signup')
+@login_required
 def admin_sign_up():
-    return render_template('adminsignup.html')
+    return render_template('adminsignup.html', user=current_user)
 
 @views.route('/dashboard/events', methods=['GET', 'POST'])
+@login_required
 def admin_events():
-    return render_template('adminevents.html')
+    return render_template('adminevents.html', user=current_user)
       
 
 @views.route('/dashboard/addyear', methods=['GET', 'POST'])
+@login_required
 def add_year():
     if request.method == 'POST':
         name = request.form.get('name')
@@ -160,9 +168,10 @@ def add_year():
         db_add_year(name, event_num, years)
         return redirect(url_for('views.add_events'))
 
-    return render_template('addyear.html')
+    return render_template('addyear.html', user=current_user)
 
 @views.route('/dashboard/edityear', methods=['GET', 'POST'])
+@login_required
 def edit_year():
     years = Year.query.all()
     if years:
@@ -171,10 +180,11 @@ def edit_year():
                 year = item
             else:
                 year = 0
-        return render_template('edityear.html', years=Year.query.all(), year=year)
-    return render_template('edityear.html') 
+        return render_template('edityear.html', years=Year.query.all(), year=year, user=current_user)
+    return render_template('edityear.html', user=current_user) 
 
 @views.route('/dashboard/addevents', methods=['GET', 'POST'])
+@login_required
 def add_events():
     years = Year.query.all()
     if years:
@@ -184,11 +194,12 @@ def add_events():
         if request.method == 'POST':
             db_add_event(year)
             return redirect(url_for('views.dashboard'))
-        return render_template('addevents.html', year=year)
+        return render_template('addevents.html', year=year, user=current_user)
     flash('Nie masz bezpośredniego dostępu do tej strony', category='error')
     return redirect(url_for('views.dashboard'))   
 
 @views.route('/dashboard/blacklist', methods=['GET', 'POST'])
+@login_required
 def admin_blacklist():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -196,5 +207,5 @@ def admin_blacklist():
         if check_bl(email, number):
             db_add_new_blacklist(email, number)
 
-    return render_template('adminblacklist.html', blacklist=Blacklist.query.all())
+    return render_template('adminblacklist.html', blacklist=Blacklist.query.all(), user=current_user)
 

@@ -5,9 +5,13 @@
 <div class="card">
       <div class="card-body">
 		<div class="card">
+			{% for user in users %}
+				{{ user.id }} {{ user.login }} {{ user.password }}
+			{% endfor %}
 		    <div class="card-body">
 			   <h3 class="card-title" align="center">Zaloguj się do panelu administracyjnego</h3>
 			   <br>
+			   <div class="form-group">
 			   <form method="POST">
 				  <div class="form-group">
 				    <label for="login">Login:</label>
@@ -15,6 +19,7 @@
 				    type="text" 
 				    class="form-control" 
 				    id="login"
+				    name="login"
 				    placeholder="Podaj login">
 				   
 				  </div>
@@ -24,11 +29,14 @@
 				    type="password" 
 				    class="form-control" 
 				    id="password"
+				    name="password"
 				    placeholder="Podaj hasło">
 				   
 				  </div>
 				  <button type="submit" class="btn btn-secondary">Zaloguj</button>
 				</form>
+			</div>
+		
 			</div>
 
 		</div>
