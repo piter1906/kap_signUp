@@ -4,6 +4,7 @@ from modules.check_module import *
 from modules.servis_html import *
 from .models import SignUpData, EventsNew, Events, Blacklist, Year, Template1, Template2, Template3
 from . import db
+from . import mail
 import json
 
 views = Blueprint('views', __name__)
@@ -60,6 +61,8 @@ def temp1():
         dic = get_form_val(temp1_schem)
         if check_vals(dic, event.temp_id):
             db_add_new_sigup(dic, event)
+        else:
+            return redirect(url_for('views.temp1', event_id=event.id))
         return redirect(url_for('views.home'))
 
     return render_template('temp1.html', event=event, user=current_user)
@@ -100,27 +103,6 @@ def delete_event():
         db.session.commit()
     return jsonify({})
 
-@views.route('/delete-bl/<int:itemID>', methods=['GET','POST'])
-@login_required
-def delete_bl(itemID):
-    item = Blacklist.query.get(itemID)
-    if item:
-        db.session.delete(item)
-        db.session.commit()
-        flash(f'Element {item.email} {item.number} usunięty z czarnej listy')
-    return redirect(url_for('views.admin_blacklist'))
-
-@views.route('/delete-year/<int:itemID>', methods=['GET','POST'])
-@login_required
-def delete_year(itemID):
-    item = Year.query.get(itemID)
-    if item:
-        db.session.delete(item)
-        db.session.commit()
-        flash(f'Element {item.name} {item.is_active} usunięty lat')
-    return redirect(url_for('views.edit_year'))  
-
-#----------> end delete items
 
 #----------> get event
 

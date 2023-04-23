@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+      {
+          "src": "*.py",
+          "use": "@piter1906/kap-zapisy"
+      }
+  ],
+  "routes": [
+      {
+          "src": "(.*)",
+          "dest": "main.py"
+      }
+  ]
+}
