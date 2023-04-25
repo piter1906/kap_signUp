@@ -18,18 +18,102 @@
 					      class="form-control"
 					      id="name{{ i + 1 }}"
 					      name="name{{ i + 1 }}"
+					      {% if dic[i+1] %}
+					      value = {{ dic[i+1].name }}
+					      {% endif %}
+					    />
+					</div>
+				<div class="form-group">
+					<label for="date{{ i + 1 }}">Data akcji:</label>
+					 	<input
+					      type="date"
+					      class="form-control"
+					      id="date{{ i + 1 }}"
+					      name="date{{ i + 1 }}"
+					      {% if dic[i+1] %}
+					      value = {{ dic[i+1].date | string }}
+					      {% endif %}
 					    />
 					</div>
 					<div class="form-group">
-					<label for="template{{ i + 1 }}">Szablon akcji nr {{ i + 1 }}: </label>
+					<label for="template{{ i + 1 }}">Szablon zapisów (1. Podstawowy, 2. Ferie, 3. Turniej, 4. Dla starszych, 5. Dni skupienia, 6. Kajaki): </label>
 					 	<select 
 		    			class="form-control" 
 		    			id="template{{ i + 1 }}"
-		    			name="template{{ i + 1 }}">
-		    						<option>Szablon 1</option>
-		    						<option>Szablon 2</option>
+		    			name="template{{ i + 1 }}"
+		    			>
+
+		    			
+		    				{% if dic[i+1].temp_id == 1 %}
+					 			<option>Szablon 1</option>
+					 			<option>Szablon 2</option>
 		    						<option>Szablon 3</option>
+		    						<option>Szablon 4</option>
+		    						<option>Szablon 5</option>
+		    						<option>Szablon 6</option>
+		    						
+		    						{% elif dic[i+1].temp_id == 2 %}
+		    						<option>Szablon 2</option>
+		    						<option>Szablon 1</option>
+		    						<option>Szablon 3</option>
+		    						<option>Szablon 4</option>
+		    						<option>Szablon 5</option>
+		    						<option>Szablon 6</option>
+		    						{% elif dic[i+1].temp_id == 3 %}
+		    						<option>Szablon 3</option>
+		    						<option>Szablon 1</option>
+					 				<option>Szablon 2</option>
+					 				<option>Szablon 4</option>
+		    						<option>Szablon 5</option>
+		    						<option>Szablon 6</option>
+		    						{% elif dic[i+1].temp_id == 4 %}
+		    						<option>Szablon 4</option>
+		    						<option>Szablon 1</option>
+					 				<option>Szablon 2</option>
+		    						<option>Szablon 3</option>
+		    						<option>Szablon 5</option>
+		    						<option>Szablon 6</option>
+		    						{% elif dic[i+1].temp_id == 5 %}
+		    						<option>Szablon 5</option>
+		    						<option>Szablon 1</option>
+					 				<option>Szablon 2</option>
+		    						<option>Szablon 3</option>
+		    						<option>Szablon 4</option>
+		    						<option>Szablon 6</option>
+		    						{% elif dic[i+1].temp_id == 6 %}
+		    						<option>Szablon 6</option>
+		    						<option>Szablon 1</option>
+					 				<option>Szablon 2</option>
+		    						<option>Szablon 3</option>
+		    						<option>Szablon 4</option>
+		    						<option>Szablon 5</option>
+
+		    						
+
+		    				{% else %}
+		    				<option>Wybierz opcję</option>
+		    				<option>Szablon 1</option>
+					 			<option>Szablon 2</option>
+		    						<option>Szablon 3</option>
+		    						<option>Szablon 4</option>
+		    						<option>Szablon 5</option>
+		    						<option>Szablon 6</option>
+
+					      {% endif %}
+
+					  
 		    		</select>
+					</div>
+					<div class="form-group">
+					<label for="mail_temp{{ i + 1 }}">Szablon wiadomości email:</label>
+					 	<textarea
+					      class="form-control"
+					      id="mail_temp{{ i + 1 }}"
+					      name="mail_temp{{ i + 1 }}"
+					      rows="6" 
+					      cols="40"
+					      placeholder="Tutaj wpisz treść maila"
+					    >{% if dic[i+1] %}{{ dic[i+1].mail_temp }}{% endif %}</textarea>
 					</div>
 				</div>
 					{% endfor %}

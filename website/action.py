@@ -2,18 +2,24 @@ from flask import Blueprint, render_template, flash, request, jsonify, redirect,
 from flask_login import login_required, current_user
 from modules.check_module import *
 from modules.servis_html import *
-from .models import SignUpData, EventsNew, Events, Blacklist, Year, Template1, Template2, Template3
+from .models import Blacklist, User, Events, Year, Signup, Basic, Older, Winter, Person, Turnament 
 from . import db
 import json
 from . import mail
-import pdfkit
 import os
 from flask_mail import Mail, Message
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, From, To, Subject, PlainTextContent, HtmlContent, SendGridException
-
+from xhtml2pdf import pisa
+import io
+import datetime 
 
 action = Blueprint('action', __name__)
+
+@action.route('/datetest', methods=['GET', 'POST'])
+def date():
+    date_stop = datetime.date.today() - datetime.timedelta(days=1)
+    return render_template('body.html', date=date)
 
 #---------------> delete
 options = {
@@ -61,13 +67,20 @@ def pdf():
 
     body = render_template('pdf.html', event=event, year=year)
 
-    path_wkhtmltopdf = 'website/static/bin/wkhtmltopdf.exe'
-    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-    pdfkit.from_string(body, 'website/reports/event.pdf', configuration=config, options=options)
+    pdf_file = io.BytesIO()
+    pisa.CreatePDF(io.StringIO(body), pdf_file, encoding='UTF-8')
+    
+    # Set the stream position to the beginning
+    pdf_file.seek(0)
+    
+    # Create a Flask response object with the PDF file
+    response = make_response(pdf_file.getvalue())
+    
+    # Set the content type and headers for the response
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=output.pdf'
 
-    f_name = 'event.pdf'
-    f_path = os.path.join('reports', f_name)
-    return send_file(f_path, as_attachment=True)
+    return response
 
 @action.route('/testo')
 def testto():

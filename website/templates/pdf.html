@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Uczestnicy {{ event.name }}</title>
 </head>
@@ -12,11 +12,18 @@
 			    <div>
 		    		<label for="selectEvent">Uczestnicy {{ event.name }}</label>
 		 {% if event.temp_id == 1 %}
+	<table>
 	{% for signup in event.template1 %}
+	
+		<tr>
+			<td>{{ signup.id }}</td>
+			<td>{{ signup.name }}</td>
+			<td>{{ signup.email }}</td>
+		</tr>
 
-	<p>{{ signup.id }} {{ signup.name }} {{ signup.email }}</p>
-
+	
 	{% endfor %}
+	</table>
 	{% endif %}
 </div>
 

@@ -18,8 +18,10 @@
 		    			id="selectEvent"
 		    			name="selectEvent">
 		    				{% if year%}
-		    					{% for event in year.events %}
-		    						<option>{{ event.name }}</option>
+		    					{% for event in lst_events %}
+		    						{% if event.is_active %}
+		    						<option>{{ event.date }} {{ event.name }}</option>
+		    						{% endif %}
 		    					{% endfor %}
 		    				{% endif %}
 		    		</select>

@@ -8,48 +8,77 @@ class Blacklist(db.Model):
     number = db.Column(db.Integer)
 
 
-#class Events(db.Model):
- #   id = db.Column(db.Integer, primary_key=True)
-  #  name = db.Column(db.String(300))
-
-
-class EventsNew(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(300))
-    template = db.Column(db.Integer)
-
-
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(300))
-    temp_id = db.Column(db.Integer)
-    template1 = db.relationship('Template1', backref='events')
-    template2 = db.relationship('Template2', backref='events')
-    template3 = db.relationship('Template3', backref='events')
     year_id = db.Column(db.Integer, db.ForeignKey('year.id'))
-
-
-class Template1(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    temp_name = db.Column(db.String(300))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    signup = db.relationship('Signup', backref='events')
     name = db.Column(db.String(300))
-    email = db.Column(db.String(300))
+    date  = db.Column(db.Date)
+    temp_id = db.Column(db.Integer)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    mail_temp = db.Column(db.String(1000))
+    
 
-class Template2(db.Model):
+class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    temp_name = db.Column(db.String(300))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
     name = db.Column(db.String(300))
     email = db.Column(db.String(300))
     adress = db.Column(db.String(300))
+    year = db.Column(db.Integer)
+    telNum = db.Column(db.Integer)
+    selectSize = db.Column(db.String(10))
+    weight = db.Column(db.Integer)
+    height = db.Column(db.Integer)
+   
 
-class Template3(db.Model):
+class Signup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    temp_name = db.Column(db.String(300))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    name = db.Column(db.String(300))
-    number = db.Column(db.Integer)
+    person = db.relationship('Person', backref='signup')
+    basic = db.relationship('Basic', backref='signup')
+    winter = db.relationship('Winter', backref='signup')
+    turnament = db.relationship('Turnament', backref='signup')
+    older = db.relationship('Older', backref='signup')
+
+
+class Basic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
+    howMany = db.Column(db.Integer)
+    whereKnew = db.Column(db.String(300))
+    intro = db.Column(db.String(500))
+
+
+class Winter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
+    skiEver = db.Column(db.Boolean)
+    skiSkill = db.Column(db.String(500))
+    skiInst = db.Column(db.Boolean)
+    passBuy = db.Column(db.String(500))
+    isLent = db.Column(db.Boolean)
+    skiLent = db.Column(db.String(500))
+
+
+class Turnament(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
+    ageCat = db.Column(db.String(300))
+    teamName = db.Column(db.String(300))
+    teamFrom = db.Column(db.String(300))
+    teamNum = db.Column(db.Integer)
+    peopleNum = db.Column(db.Integer)
+    say = db.Column(db.String(300))
+
+
+class Older(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
+    isBike = db.Column(db.Boolean)
+    attrac = db.Column(db.String(300))
+    pray = db.Column(db.String(300))
+    freeTime = db.Column(db.String(300))
 
 
 class Year(db.Model):
@@ -58,23 +87,6 @@ class Year(db.Model):
     event_num = db.Column(db.Integer)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     events = db.relationship('Events', backref='year')
-
-
-class SignUpData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    selectEvent = db.Column(db.String(300))
-    name = db.Column(db.String(300))
-    email = db.Column(db.String(300))
-    adress = db.Column(db.String(300))
-    year = db.Column(db.Integer)
-    telNum = db.Column(db.Integer)
-    howMany = db.Column(db.Integer)
-    whereKnew = db.Column(db.String(300))
-    intro = db.Column(db.String(500))
-    selectSize = db.Column(db.String(10))
-
-    #def __repr__(self):
-     #   return f'Element numer: {self.id}, nazwisko: {self.name}, email: {self.email}'
 
 
 class User(db.Model, UserMixin):

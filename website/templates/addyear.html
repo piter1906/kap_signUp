@@ -2,43 +2,49 @@
 {% block title %}Zapisy Kapszlak - Dodaj akcje na nowy rok{% endblock %} 
 
 {% block content %}
-<div class="card"> 
-	<div class="card-body">
+<div class="card">
+      <div class="card-body">
 		<div class="card">
-			<h3 class="card-title" align="center">Dodaj nowy rok</h3>
-		  	<div class="card-body">
-			    <form method="POST">
-		  		<p>Wpisz dane</p>
-				<div class="form-group">
-					<label for="name">Nazwa zaplanowanego roku: </label>
-					 	<input
-					      type="text"
-					      class="form-control"
-					      id="name"
-					      name="name"
-					      placeholder="np.: Akcje na rok 2023/2024"
-					    />
-					</div>
-					<div class="form-group">
-					<label for="event_number">Ilość zaplanowanych akcji: </label>
-					 	<input
-					      type="number"
-					      class="form-control"
-					      id="event_number"
-					      name="event_number"
-					    />
-					</div>
-				<div class="col-md-12 text-center">
-					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
-			</form>
-		</div>
+		    <div class="card-body">
+			   <h3 class="card-title" align="center"><a href ='/dashboard'>Panel administracyjny</a> -> <a href='/dashboard/events'>Akcje</a> -> Utwórz akcje na nowy rok</h3>
+			   <br>
+
+
+						  	<div class="card-body">
+							    <form method="POST">
+						  		<h4>Wpisz dane:</h4>
+						  		<br>
+								<div class="form-group">
+									<label for="name">Nazwa zaplanowanego roku: </label>
+									 	<input
+									      type="text"
+									      class="form-control"
+									      id="name"
+									      name="name"
+									      placeholder="np.: Akcje na rok 2023/2024"
+									    />
+									</div>
+									<div class="form-group">
+									<label for="event_number">Ilość zaplanowanych akcji: </label>
+									 	<input
+									      type="number"
+									      class="form-control"
+									      id="event_number"
+									      name="event_number"
+									    />
+									</div>
+								<div class="col-md-12 text-center">
+									 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+							</form>
+						</div>
 			
 				
 
 
 
-		
+		</div>
 	</div>
 	</div>
 </div>
+
 {% endblock %}

@@ -18,7 +18,7 @@
 					{{ year.events }}
 				<p>Lista templatów:</p>
 				{% for event in year.events %}
-					{{ event.name }} {{ event.temp_id }} 
+					{{ event.name }} {{ event.temp_id }} {{ event.date }} {{ event.mail_temp }} {{ event.is_active }}  
 					
 				{% endfor %}
 				<p></p>

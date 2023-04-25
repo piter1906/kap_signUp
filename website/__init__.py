@@ -3,11 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from flask_mail import Mail, Message
-import pdfkit
 
 
 db = SQLAlchemy()
-DB_NAME = "dbneewew.db"
+DB_NAME = "dbaaaddddse.db"
 mail = Mail()
 
 
@@ -25,7 +24,7 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(action, url_prefix='/')
 
-    from .models import Blacklist, User, EventsNew, SignUpData, Events, Year, Template1, Template2, Template3 
+    from .models import Blacklist, User, Events, Year, Signup, Basic, Older, Winter, Person, Turnament 
 
     with app.app_context():
         db.create_all()
@@ -46,7 +45,6 @@ def create_app():
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
     mail.init_app(app)
-    #config = pdfkit.configuration(wkhtmltopdf="C:/Users/wojto/Documents/Piotrek/kap_zapisy/website/static/bin")
     
     return app
 

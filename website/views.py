@@ -1,11 +1,12 @@
-from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for, make_response, send_file
 from flask_login import login_required, current_user
 from modules.check_module import *
 from modules.servis_html import *
-from .models import SignUpData, EventsNew, Events, Blacklist, Year, Template1, Template2, Template3
+from .models import Blacklist, User, Events, Year, Signup, Basic, Older, Winter, Person, Turnament 
 from . import db
-from . import mail
 import json
+from . import mail
+
 
 views = Blueprint('views', __name__)
 
@@ -22,18 +23,23 @@ def home():
         for yr in years:
             if yr.is_active:
                 year = yr
+        lst_events = year.events
+        lst_events = sorted(lst_events, key=lambda event: event.date)
+        date_stop = datetime.date.today()
         if request.method == 'POST':
-            event_name = request.form.get('selectEvent')
-            for item in year.events:
-                if item.name == event_name:
-                    event = item
+            event_n = request.form.get('selectEvent')
+            event_name = event_n[11:]
+            for item in lst_events:
+                if item.is_active:
+                    if item.name == event_name:
+                        event = item
             if event.temp_id == 1:
                 return redirect(url_for('views.temp1', event_id=event.id))
             elif event.temp_id == 2:
                 return f'jestem w template{event.temp_id}'
             elif event.temp_id == 3:
                 return f'jestem w template{event.temp_id}'
-        return render_template('home.html', year=year, user=current_user)
+        return render_template('home.html', year=year, user=current_user, lst_events=lst_events, date_stop=date_stop)
 
     return render_template('home.html', user=current_user)
 """if request.method == 'POST':
@@ -53,6 +59,8 @@ def home():
     else:
         return render_template('home.html', test=SignUpData.query.all(), events=EventsNew.query.all())"""
 
+#-----------------> templates
+
 @views.route('/temp1', methods=['GET','POST'])
 def temp1():
     event_id = request.args.get('event_id', None)
@@ -66,7 +74,24 @@ def temp1():
         return redirect(url_for('views.home'))
 
     return render_template('temp1.html', event=event, user=current_user)
-    
+
+@views.route('/temp2', methods=['GET','POST'])
+def temp2():
+    event_id = request.args.get('event_id', None)
+    event = Events.query.get(event_id)
+    if request.method == 'POST':
+        dic = get_form_val(temp1_schem)
+        if check_vals(dic, event.temp_id):
+            db_add_new_sigup(dic, event)
+        else:
+            return redirect(url_for('views.temp2', event_id=event.id))
+        return redirect(url_for('views.home'))
+
+    return render_template('temp2.html', event=event, user=current_user)
+
+
+#-----------------------------------> end templates
+  
 @views.route('/user', methods=['GET','POST'])
 def user_page():
     event_id = request.args.get('event_id', None)
@@ -147,8 +172,11 @@ def add_year():
         name = request.form.get('name')
         event_num = request.form.get('event_number')
         years = Year.query.all()
-        db_add_year(name, event_num, years)
-        return redirect(url_for('views.add_events'))
+        if check_year(name, event_num):
+            db_add_year(name, event_num, years)
+            return redirect(url_for('views.add_events'))
+        else:
+            return render_template('addyear.html', user=current_user)
 
     return render_template('addyear.html', user=current_user)
 
@@ -174,11 +202,13 @@ def add_events():
             if item.is_active:
                 year = item
         if request.method == 'POST':
-            db_add_event(year)
-            return redirect(url_for('views.dashboard'))
-        return render_template('addevents.html', year=year, user=current_user)
-    flash('Nie masz bezpośredniego dostępu do tej strony', category='error')
-    return redirect(url_for('views.dashboard'))   
+            tup = db_add_event(year)
+            if tup[1]:
+                return redirect(url_for('views.dashboard'))
+            else:
+                return render_template('addevents.html', year=year, user=current_user, dic=tup[0])
+        return render_template('addevents.html', year=year, user=current_user, dic={})
+    return render_template('addevents.html', year=year, user=current_user)  
 
 @views.route('/dashboard/blacklist', methods=['GET', 'POST'])
 @login_required
