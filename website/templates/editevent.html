@@ -1,0 +1,60 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy Kapszlak - Edycja bierzących akcji{% endblock %} 
+{% block content %}
+			
+<div class="card"> 
+	<div class="card-body">
+		<div class="card">
+			   <h3 class="card-title" align="center"><a href ='/dashboard'>Panel administracyjny</a> -> <a href='/dashboard/events'>Akcje</a> -> {{ event.name }}</h3>
+		  	<div class="card-body">
+			    <form method="POST">
+				  <div class="card">
+				    <div class="card-body">
+				      <h5 class="card-title">Edytuj dane:</h5>
+		  		<div class="card-body">
+				<div class="form-group">
+					<label for="name">Nazwa:</label>
+					 	<input
+					      type="text"
+					      class="form-control"
+					      id="name"
+					      name="name"
+					      value = {{ event.name }}
+							/>
+					</div>
+				<div class="form-group">
+					<label for="date">Data:</label>
+					 	<input
+					      type="date"
+					      class="form-control"
+					      id="date"
+					      name="date"
+					      value = {{ event.date }}
+					    />
+					</div>
+					<div class="form-group">
+					<label for="mail_temp">Szablon wiadomości email:</label>
+					 	<textarea
+					      class="form-control"
+					      id="mail_temp"
+					      name="mail_temp"
+					      rows="6" 
+					      cols="40"
+					    >{{ event.mail_temp }}</textarea>
+					</div>
+				</div>
+					</div>
+				</div>
+				<br>
+				<div class="col-md-12 text-center">
+					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+				</div>
+			</form>
+		
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

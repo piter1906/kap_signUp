@@ -97,7 +97,7 @@ def user_page():
     event_id = request.args.get('event_id', None)
     numer_id = 'number' + event_id
     number = request.form.get(numer_id)
-    return f'{event_id} {number}'
+    return render_template('body.html')
 
 @views.route('/aftersignup')
 def after_sign_up():
@@ -188,10 +188,36 @@ def edit_year():
         for item in years:
             if item.is_active:
                 year = item
+        if year.is_active:
+            lst_events = year.events
+            lst_events = sorted(lst_events, key=lambda event: event.date)
+            return render_template('edityear.html', years=Year.query.all(), year=year, user=current_user, lst_events=lst_events)
+        else:
+            flash('Brak aktywnej listy akcji', category='error')
+            return redirect(url_for('views.add_year'))
+    else:
+        flash('Najpierw dodaj rok', category='error')
+        return redirect(url_for('views.add_year'))
+
+@views.route('/dashboard/editevent', methods=['GET', 'POST'])
+@login_required
+def edit_event():
+    event_id = request.args.get('event_id', None)
+    backup = request.args.get('backup', None)
+    event = Events.query.get(int(event_id))
+    if event:
+        if request.method == 'POST':
+            check = db_update_event(event)
+            if check:
+                return redirect(url_for('views.edit_year'))
             else:
-                year = 0
-        return render_template('edityear.html', years=Year.query.all(), year=year, user=current_user)
-    return render_template('edityear.html', user=current_user) 
+                return redirect(f'/dashboard/editevent?event_id={event_id}')
+        return render_template('editevent.html', event=event, user=current_user)
+    else:
+        flash('Operacja nie jest dostepna', category='error')
+        return redirect(url_for('views.dashboard'))
+
+
 
 @views.route('/dashboard/addevents', methods=['GET', 'POST'])
 @login_required
@@ -201,14 +227,20 @@ def add_events():
         for item in years:
             if item.is_active:
                 year = item
-        if request.method == 'POST':
-            tup = db_add_event(year)
-            if tup[1]:
-                return redirect(url_for('views.dashboard'))
-            else:
-                return render_template('addevents.html', year=year, user=current_user, dic=tup[0])
-        return render_template('addevents.html', year=year, user=current_user, dic={})
-    return render_template('addevents.html', year=year, user=current_user)  
+        if not year.first_add:
+            if request.method == 'POST':
+                tup = db_add_event(year)
+                if tup[1]:
+                    return redirect(url_for('views.dashboard'))
+                else:
+                    return render_template('addevents.html', year=year, user=current_user, dic=tup[0])
+            return render_template('addevents.html', year=year, user=current_user, dic={})
+        else:
+            flash('Operacja nie jest dostepna', category='error')
+            return redirect(url_for('views.dashboard'))
+    else:
+        flash('Najpierw dodaj rok', category='error')
+        return redirect(url_for('views.add_year'))  
 
 @views.route('/dashboard/blacklist', methods=['GET', 'POST'])
 @login_required

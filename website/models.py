@@ -86,6 +86,7 @@ class Year(db.Model):
     name = db.Column(db.String(300))
     event_num = db.Column(db.Integer)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    first_add = db.Column(db.Boolean, default=False, nullable=False)
     events = db.relationship('Events', backref='year')
 
 

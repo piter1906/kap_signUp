@@ -6,7 +6,7 @@ from flask_mail import Mail, Message
 
 
 db = SQLAlchemy()
-DB_NAME = "dbaaaddddse.db"
+DB_NAME = "dbaaaddddsddsdssdse.db"
 mail = Mail()
 
 

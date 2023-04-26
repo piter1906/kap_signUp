@@ -54,6 +54,20 @@ def delete_year(itemID):
 
 #-----------------------------> end delete
 
+#-----------------------------> event actions
+
+@action.route('/event-status/<int:itemID>', methods=['GET','POST'])
+@login_required
+def event_status(itemID):
+    item = Events.query.get(itemID)
+    if item:
+        item.is_active = True if not item.is_active else False
+        db.session.commit()
+        flash(f'Status {item.name} zmieniony.')
+    return redirect(url_for('views.edit_year'))
+
+#-----------------------------> end event actions
+
 @action.route('/pdf')
 def pdf():
     years = Year.query.all()

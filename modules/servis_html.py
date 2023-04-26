@@ -47,6 +47,22 @@ def db_add_year(name, event_num, years):
 		db.session.add(new_year)
 		db.session.commit()
 
+def db_update_event(event):
+	dic = {}
+	name = request.form.get('name')
+	date = date_from_str(request.form.get('date'))
+	mail_temp = request.form.get('mail_temp')
+	tup = check_event(name=name, date=date, template="test", mail_temp=mail_temp, num=event.id)
+	if tup[0]:
+		event.name = name
+		event.date = date
+		event.mail_temp = mail_temp
+		db.session.commit()
+		flash(f'Zaktualizowano {event.name}', category='success')
+		return True
+	else:
+		return False
+
 def db_add_event(year):
 	dic = {}
 	lst_event = []
@@ -89,7 +105,9 @@ def db_add_event(year):
 	if check:
 		for event in lst_event:
 			db.session.add(event)
-			db.session.commit()	
+			db.session.commit()
+		year.first_add = True
+		db.session.commit()
 		flash('Dodano akcje do wybranego roku', category='success')
 	return (dic, check)
 

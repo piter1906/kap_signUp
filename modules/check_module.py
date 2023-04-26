@@ -3,6 +3,10 @@ from flask import flash, request
 from website.models import Blacklist
 import datetime
 
+class Backup():
+	pass
+
+
 def email_is_valid(email):
 	pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 	if re.fullmatch(pattern, email):
@@ -11,19 +15,20 @@ def email_is_valid(email):
 		return False
 
 
-def check_vals(dic, id_template):
+"""def check_vals(dic, id_template):
 	if id_template == 1:
 	    if not email_is_valid(dic['email']):
 	        flash('Podaj poprawny adres email.', category='error')
-	        return False
-	    elif len(dic['name']) < 5:
+            return False
+
+		elif len(dic['name']) < 5:
 	        flash('Imię i nazwisko: wprowadzone dane są za krótkie.', category='error')
 	        return False
 	    else:
 	        return True
 	else:
 		flash('To nie to id', category='error')
-		return False
+		return False"""
 
 def check_year(name, event_num):
 	if len(name) < 3:
@@ -36,30 +41,14 @@ def check_year(name, event_num):
 		return True
 
 
-class Backup():
-	pass
-
-
-def check_event(name, date, template, mail_temp, num):
-	if len(name) < 3:
-		backup = Backup()
-		flash(f'Nazwa akcji nr {num} jest za krótka - min. 3 znaki', category='error')
-		return (False, backup) 
-	if date == None or date < datetime.date.today():
-		backup = Backup()
+def backup_set(backup, name, date, template, mail_temp):
+	if name:
 		backup.name = name
-		flash(f'Wprowadź poprawną datę dla akcji nr {num}', category='error')
-		return (False, backup)
-	if template == "Wybierz opcję":
-		backup = Backup()
-		backup.name = name
+	if date:
 		backup.date = date
-		flash(f'Wybierz szablon dla akcji nr {num}', category='error')
-		return (False, backup)
-	if len(mail_temp) < 10:
-		backup = Backup()
-		backup.name = name
-		backup.date = date
+	if mail_temp:
+		backup.mail_temp = mail_temp
+	if template:
 		if template == 'Szablon 1':
 			backup.temp_id = 1
 		if template == 'Szablon 2':
@@ -72,8 +61,23 @@ def check_event(name, date, template, mail_temp, num):
 			backup.temp_id = 5
 		if template == 'Szablon 6':
 			backup.temp_id = 6
+	return backup
+
+
+def check_event(name, date, template, mail_temp, num):
+	backup = Backup()
+	if len(name) < 3:
+		flash(f'Nazwa akcji nr {num} jest za krótka - min. 3 znaki', category='error')
+		return (False, backup_set(backup, name, date, template, mail_temp)) 
+	if date == None or date < datetime.date.today():
+		flash(f'Wprowadź poprawną datę dla akcji nr {num}', category='error')
+		return (False, backup_set(backup, name, date, template, mail_temp))
+	if template == "Wybierz opcję":
+		flash(f'Wybierz szablon dla akcji nr {num}', category='error')
+		return (False, backup_set(backup, name, date, template, mail_temp))
+	if len(mail_temp) < 10:
 		flash(f'Mail dla akcji nr {num} jest za krótki - min. 10 znaków', category='error')
-		return (False, backup)
+		return (False, backup_set(backup, name, date, template, mail_temp))
 	
 	return (True, None)
 

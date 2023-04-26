@@ -1,7 +1,51 @@
 {% extends "base.html" %} 
 {% block title %}Zapisy Kapszlak - Edycja bierzących akcji{% endblock %} 
 {% block content %}
-			{% if years %}
+			
+	{% if year %}
+<div class="card"> 
+	<div class="card-body">
+		<div class="card">
+			   <h3 class="card-title" align="center"><a href ='/dashboard'>Panel administracyjny</a> -> <a href='/dashboard/events'>Akcje</a> -> {{ year.name }}</h3>
+		  	<div class="card-body">
+		  		<h4>Lista akcji:</h4><br>
+				  <div class="card">
+				    <div class="card-body">
+				      <table class="table table-bordered">
+                          <thead class="thead-dark" align="center">
+                            <tr>
+                              <th scope="col">Nazwa</th>
+                              <th scope="col">Data</th>
+                              <th scope="col">Liczba zapisów</th>
+                              <th scope="col">Status</th>
+                              <th scope="col">Operacje</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                          {% for event in lst_events%}
+                            <tr>
+                              <th scope="row">{{ event.name }}</th>
+                              <td>{{ event.date }}</td>
+                              <td>{{ event.signup|length }}</td>
+                              <td>{% if event.is_active %}Aktywny{% else %}Nieaktywny{% endif %}</td>
+                              <td><a href=""><button type="button" class="btn btn-secondary btn-sm">Zobacz</button></a>
+							  <a href="/dashboard/editevent?event_id={{ event.id }}"><button type="button" class="btn btn-warning btn-sm">Edytuj</button></a>
+							  <a href=""><button type="button" class="btn btn-success btn-sm">Generuj PDF</button></a>
+							  <a href="/event-status/{{ event.id }}"><button type="button" class="btn btn-danger btn-sm">Zmień status</button></a>
+							  </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+					</div>
+				</div>
+		
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% if years %}
 					<div class="card-body">
 		    		<p>Lista lat:</p>
 		    		<ul class="list-group list-group-flush" id="blacklistID">
@@ -12,19 +56,7 @@
 		    			</li>
 		    			{% endfor %}
 		    		</ul>
-				</div>
-				<div class="card-body">
-				<p>Lista evantów dla {{ year.name }}:</p>
-					{{ year.events }}
-				<p>Lista templatów:</p>
-				{% for event in year.events %}
-					{{ event.name }} {{ event.temp_id }} {{ event.date }} {{ event.mail_temp }} {{ event.is_active }}  
-					
-				{% endfor %}
-				<p></p>
-				</div>
 			{% endif %}
-
-				dfsdffssfdf
+			</div>
 
 {% endblock %}
