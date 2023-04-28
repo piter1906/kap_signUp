@@ -1,89 +1,12 @@
-{% extends "base.html" %} 
-{% block title %}test{% endblock %} 
-
-{% block content %}
-<div class="card">
-      <div class="card-body">
-      	<h3 aligne="center">Lista akcji</h3>
-      	<div class="card">
-		    <div class="card-body">
-		    	{% if events %}
-		    		{% for item in events%}
-		    			<p>{{ item.name }} {{ item.template }}</p>
-		    		{% endfor %}
-		    	{% endif %}
-		    </div>
-		</div>
-		<div class="card">
-		    <div class="card-body">
-			    <form method="POST">
-			    <h3 class="card-title" align="center">Usuń cos</h3>
-				  <p align="center">Wypełnij poniższy formularz</p>
-				  <div class="form-group">
-		    		<label for="selectEvent">Wybierz akcję:</label>
-		    		<ul class="list-group list-group-flush" id="eventID">
-		    			{% for item in events %}
-		    			<li class="list-group-item">
-		    				{{ item.name }}
-		    				<button type="button" class="close" onClick="delete_event({{ item.id }})">usuń</button>
-		    			</li>
-		    			{% endfor %}
-		    		</ul>
-
-		  		</div>
-
-			</form>
-		</div>
-	</div>
-		<div class="card">
-		    <div class="card-body">
-			   <h3 class="card-title" align="center">Edycja akcji kapszlakowych</h3>
-			   <br>
-			</div>
-			<div class="card-body">
-		<form method="POST">
-			<p align="center">dodaj akcję</p>
-			<div class="form-group">
-				<label for="name">Nazwa akcji:</label>
-				 	<input
-				      type="text"
-				      class="form-control"
-				      id="eventName"
-				      name="eventName"
-				    />
-				</div>
-				<div class="form-group">
-				<label for="template">Szablon akcji:</label>
-				 	<input
-				      type="number"
-				      class="form-control"
-				      id="template"
-				      name="template"
-				    />
-				</div>
-			<div class="col-md-12 text-center">
-				 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
-
-		</form>
-	</div>
-		</div>
-	</div>
-</div>
-<div class="card">
-      <div class="card-body">
-      	<h3 aligne="center">Lista zapisanych</h3>
-      	<div class="card">
-		    <div class="card-body">
-		    	{% if signup %}
-		    		{% for item in signup %}
-		    			{{ item.id|string + " " + item.selectEvent + " " + item.name + " " + item.email + " " + item.adress + " " + item.year|string + " " + item.telNum|string + " " + item.howMany|string + " " + item.whereKnew + " " + item.intro + " " + item.selectSize }}
-		    			<br>
-		    		{% endfor %}
-		    	{% endif %}
-		    </div>
-		</div>
-		
-	</div>
-</div>
-
-{% endblock %}
+<html>
+<head>
+	<title>Dropdown Form Example</title>
+</head>
+<body onload="document.forms[0].submit()">
+	<form method="POST" action="/forma">
+		{{ form.csrf_token }}
+		{{ form.dropdown.label }}
+		{{ form.dropdown }}
+	</form>
+</body>
+</html>

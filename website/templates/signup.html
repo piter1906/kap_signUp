@@ -1,0 +1,35 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy na {{ event.name }}{% endblock %} 
+
+{% block content %}
+
+ <div class="card">
+     <img class="card-img-top" src="./static/img/baner2.jpg" alt="Obrazek w karcie">
+      <div class="card-body">
+		<div class="card">
+		    <div class="card-body">
+		    	<h3 class="card-title" align="center">{{ event.name }} - Zapisz się!</h3>
+				  <p align="center">Wypełnij poniższy formularz</p>
+		    	<div class="card">
+		    		<div class="card-body">
+		    	{% if event.temp_id == 1 %}
+			    	{% include 'signup_temp/temp1.html' %}
+				{% elif event.temp_id == 2 %}
+					{% include 'signup_temp/temp2.html' %}
+				{% elif event.temp_id == 3 %}
+					{% include 'signup_temp/temp3.html' %}
+				{% elif event.temp_id == 4 %}
+					{% include 'signup_temp/temp4.html' %}
+				{% elif event.temp_id == 5 %}
+					{% include 'signup_temp/temp5.html' %}
+				{% elif event.temp_id == 6 %}
+					{% include 'signup_temp/temp6.html' %}
+				{% endif %}
+			</div>
+		</div>
+		    </div>
+
+		</div>
+	</div>
+</div>
+{% endblock %}

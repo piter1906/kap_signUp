@@ -61,9 +61,12 @@ def delete_year(itemID):
 def event_status(itemID):
     item = Events.query.get(itemID)
     if item:
-        item.is_active = True if not item.is_active else False
-        db.session.commit()
-        flash(f'Status {item.name} zmieniony.')
+        if item.date >= datetime.date.today():
+            item.is_active = True if not item.is_active else False
+            db.session.commit()
+            flash(f'Status {item.name} zmieniony.')
+        else:
+            flash(f'Status {item.name} nie został zmieniony, ponieważ data akcji jest już przestarzała')
     return redirect(url_for('views.edit_year'))
 
 #-----------------------------> end event actions

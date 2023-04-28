@@ -1,10 +1,20 @@
 import re 
-from flask import flash, request
-from website.models import Blacklist
+from flask import flash, request, session
+from website.models import Blacklist, Events
+from website import db
 import datetime
 
 class Backup():
 	pass
+
+
+def check_date():
+    events = Events.query.all()
+    if events:
+	    for event in events:
+	        if event.date < datetime.date.today():
+	            event.is_active = False
+	            db.session.commit()
 
 
 def email_is_valid(email):
@@ -15,20 +25,38 @@ def email_is_valid(email):
 		return False
 
 
-"""def check_vals(dic, id_template):
-	if id_template == 1:
-	    if not email_is_valid(dic['email']):
-	        flash('Podaj poprawny adres email.', category='error')
-            return False
+def check_member(telNum, email):
+	blacklist = Blacklist.query.all()
+	for item in blacklist:
+		if item.email == email or item.number == int(telNum):
+			return False
+		else:
+			return True
 
-		elif len(dic['name']) < 5:
-	        flash('Imię i nazwisko: wprowadzone dane są za krótkie.', category='error')
-	        return False
-	    else:
-	        return True
-	else:
-		flash('To nie to id', category='error')
-		return False"""
+
+def check_vals(num, **kwargs):
+	if 'name' in kwargs.keys():
+		if len(kwargs['name']) < 5:
+		    flash(f'Imię i nazwisko {num}: wprowadzone dane są za krótkie.', category='error')
+		    return False
+	if 'email' in kwargs.keys():
+		if not email_is_valid(kwargs['email']):
+			flash(f'Podaj poprawny adres email dla zapisu {num}.', category='error')
+			return False
+	if 'adress' in kwargs.keys():
+		if len(kwargs['adress']) < 3:
+			flash(f'Podaj poprawny adres dla zapisu {num}.', category='error')
+			return False
+	if 'year' in kwargs.keys():
+		if len(kwargs['year']) != 4 or int(kwargs['year']) < 1970 or int(kwargs['year']) > 2012:
+			flash(f'Podaj poprawny rok urodzenia (1970 - 2012) dla zapisu {num}.', category='error')
+			return False
+	if 'telNum' in kwargs.keys():
+		if len(kwargs['telNum']) != 9:
+			flash(f'Podaj poprawny numer telefonu dla zapisu {num}.', category='error')
+			return False
+	return True
+
 
 def check_year(name, event_num):
 	if len(name) < 3:
@@ -66,18 +94,19 @@ def backup_set(backup, name, date, template, mail_temp):
 
 def check_event(name, date, template, mail_temp, num):
 	backup = Backup()
+	bcup = backup_set(backup, name, date, template, mail_temp)
 	if len(name) < 3:
 		flash(f'Nazwa akcji nr {num} jest za krótka - min. 3 znaki', category='error')
-		return (False, backup_set(backup, name, date, template, mail_temp)) 
+		return (False, bcup) 
 	if date == None or date < datetime.date.today():
 		flash(f'Wprowadź poprawną datę dla akcji nr {num}', category='error')
-		return (False, backup_set(backup, name, date, template, mail_temp))
+		return (False, bcup)
 	if template == "Wybierz opcję":
 		flash(f'Wybierz szablon dla akcji nr {num}', category='error')
-		return (False, backup_set(backup, name, date, template, mail_temp))
+		return (False, bcup)
 	if len(mail_temp) < 10:
 		flash(f'Mail dla akcji nr {num} jest za krótki - min. 10 znaków', category='error')
-		return (False, backup_set(backup, name, date, template, mail_temp))
+		return (False, bcup)
 	
 	return (True, None)
 

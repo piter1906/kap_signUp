@@ -2,7 +2,7 @@ from flask import flash, request, redirect, url_for
 from flask_login import login_required, current_user
 from website import db
 from modules.check_module import *
-from website.models import Year, Blacklist, Events, Signup
+from website.models import Year, Blacklist, Events, Signup, Person, Turnament, Winter, Older, Basic
 import datetime 
 
 def date_from_str(date):
@@ -22,11 +22,18 @@ def get_form_val(lst):
 def db_add_new_sigup(dic, event):
 	if event.temp_id == 1:
 		signup = Signup(event_id=event.id)
-		db.session.add(template)
+		db.session.add(signup)
+		db.session.commit()
+		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], 
+				adress=dic['adress'], year=dic['year'], telNum=dic['telNum'], selectSize=dic['selectSize'])
+		db.session.add(person)
+		db.session.commit()
+		basic = Basic(signup_id=signup.id, howMany=dic['howMany'], whereKnew=dic['whereKnew'], intro=dic['intro'])
+		db.session.add(basic)
 		db.session.commit()
 		flash('Udało się zapisać!', category='success')
 	else:
-		flash('To nie to id', category='error')
+		flash(f'To nie to id{event.id}', category='error')
 
 def db_add_new_blacklist(email, number):
     new_item = Blacklist(email=email, number=number)
@@ -62,6 +69,45 @@ def db_update_event(event):
 		return True
 	else:
 		return False
+
+def db_new_event(year):
+	check = True
+	name = request.form.get('name')
+	date = date_from_str(request.form.get('date'))
+	template = request.form.get('template')
+	mail_temp = request.form.get('mail_temp')
+	tup = check_event(name=name, date=date, template=template, mail_temp=mail_temp, num='nowa')
+	if tup[0]:
+		if template == 'Szablon 1':
+			temp_id = 1
+			event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
+		elif template == 'Szablon 2':
+			temp_id = 2
+			event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
+		elif template == 'Szablon 3':
+			temp_id = 3
+			event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
+
+		elif template == 'Szablon 4':
+			temp_id = 4
+			event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
+
+		elif template == 'Szablon 5':
+			temp_id = 5
+			event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
+
+		elif template == 'Szablon 6':
+			temp_id = 6
+			event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
+
+		db.session.add(event)
+		db.session.commit()
+		flash(f'Dodano {event.name} do wydarzeń', category='success')
+		backup = False
+	else:
+		backup = tup[1]
+		check = False
+	return (check, backup)
 
 def db_add_event(year):
 	dic = {}

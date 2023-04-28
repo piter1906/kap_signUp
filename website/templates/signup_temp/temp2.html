@@ -1,0 +1,219 @@
+<form method="POST">
+				  <div class="form-group">
+				    <label for="name">Imię i nazwisko:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="name"
+				      name="name"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="email">Adres email:</label>
+				    <input
+				      type="email"
+				      class="form-control"
+				      id="email"
+				      name="email"
+				      placeholder="twoj@przykladowymail.com"
+				    />
+			  		</div>
+			  	  <div class="form-group">
+				    <label for="adress">Adres zamieszkania:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="adress"
+				      name="adress"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="year">Rok urodzenia:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="year"
+				      name="year"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="telNum">Numer telefonu:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="telNum"
+				      name="telNum"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="howMany">Który raz wybierasz się na naszą akcję?</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="howMany"
+				      name="howMany"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="whereKnew">Skąd dowiedziałeś się o akcji?</label>
+				    <select 
+		    			class="form-control" 
+		    			id="whereKnew"
+		    			name="whereKnew">
+			      			<option>Facebook</option>
+			      			<option>Internet</option>
+			      			<option>Parafia / kościół</option>
+			      			<option>Znajomi / rodzice</option>
+			      			<option>Ulotka</option>
+			      			<option>Inne</option>
+		    		</select>
+				  </div>
+				  <div class="form-group">
+				    <label for="intro">Kilka słów o sobie:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="intro"
+				      name="intro"
+				    />
+				  </div>
+				  <label>Czy jeździłeś kiedyś na nartach?</label><br>
+				  <div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiEver" id="skiEver1">
+				  <label class="form-check-label" for="skiEver1">
+				    Tak
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiEver" id="skiEver2">
+				  <label class="form-check-label" for="skiEver2">
+				    Nie
+				  </label>
+				</div><br>
+				<label>Jak oceniasz swoje umiejętności jazdy na nartach?</label><br>
+				  <div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiSkill" id="skiSkill1">
+				  <label class="form-check-label" for="skiSkill1">
+				    Bardzo dobrze
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiSkill" id="skiSkill2">
+				  <label class="form-check-label" for="skiSkill2">
+				    Dobrze
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiSkill" id="skiSkill3">
+				  <label class="form-check-label" for="skiSkill3">
+				    Słabo
+				  </label>
+				</div><br>
+				<label>Czy będziesz potrzebował instruktora do nauki jazdy na nartach / desce?</label><br>
+				  <div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiInst" id="skiInst1">
+				  <label class="form-check-label" for="skiInst1">
+				    Tak
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="radio" name="skiInst" id="skiInst2">
+				  <label class="form-check-label" for="skiInst2">
+				    Nie
+				  </label>
+				</div><br>
+				<label>Jaki karnet wybierasz?</label><br>
+				  <div class="form-check">
+				  <input class="form-check-input" type="radio" name="passBuy" id="passBuy1">
+				  <label class="form-check-label" for="passBuy1">
+				    Ulgowy <i>(do 16 roku życia)</i>
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="radio" name="passBuy" id="passBuy2">
+				  <label class="form-check-label" for="passBuy2">
+				    Normalny
+				  </label>
+				</div><br>
+				<label>Czy będziesz wypożyczał sprzęt narciarski?</label><br>
+				  <div class="form-check">
+				  <input class="form-check-input" type="radio" name="isLent" id="isLent1">
+				  <label class="form-check-label" for="isLent1">
+				    Tak
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="radio" name="isLent" id="isLent2">
+				  <label class="form-check-label" for="isLent2">
+				    Nie
+				  </label>
+				</div><br>
+				<div class="card">
+				<div class="card-body">
+				<font color="red"><h5>* Wypełnij tylko jeśli będziesz wypożyczał sprzęt narciarski.</h5></font>
+				<label><font color="red">*</font> Jaki sprzęt zamierzasz wypożyczyć?</label><br>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" name="skiLent" id="skiLent1">
+				  <label class="form-check-label" for="skiLent1">
+				    Narty
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" name="skiLent" id="skiLent2">
+				  <label class="form-check-label" for="skiLent2">
+				    Buty
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" name="skiLent" id="skiLent3">
+				  <label class="form-check-label" for="skiLent3">
+				    Deska
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" name="skiLent" id="skiLent4">
+				  <label class="form-check-label" for="skiLent4">
+				    Kask
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" name="skiLent" id="skiLent5">
+				  <label class="form-check-label" for="skiLent5">
+				    Kijki
+				  </label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" name="skiLent" id="skiLent6">
+				  <label class="form-check-label" for="skiLent6">
+				    Gogle
+				  </label>
+				</div><br>
+				<div class="form-group">
+				    <label for="height"><font color="red">*</font> Podaj swój wzrost w cm:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="height"
+				      name="height"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="weight"><font color="red">*</font> Podaj swóją wagę w kg:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="weight"
+				      name="weight"
+				    />
+				  </div>
+				</div>
+			</div>
+
+		    	
+				  
+				  <br />
+				  <div class="col-md-12 text-center">
+				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+				  	<p align="center">Klikając "Prześlij" akceptujesz <a href="./static/files/regulamin.doc">regulamin dostępny po kliknięciu w ten link.</a></p>
+				</div>
+				</form>

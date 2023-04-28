@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for, make_response, send_file
+from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for, make_response, send_file, session
 from flask_login import login_required, current_user
 from modules.check_module import *
 from modules.servis_html import *
@@ -11,13 +11,18 @@ from . import mail
 views = Blueprint('views', __name__)
 
 #--------> Templates paterns
-temp1_schem = ['name', 'email']
+temp1_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro']
+temp2_schem = ['name', 'email', 'telNum', 'adress', 'year', 'howMany', 'whereKnew', 'intro', 'skiEver', 'skiSkill', 'skiInst', 'passBuy', 'isLent', 'skiLent', 'weight', 'height']
+temp4_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro', 'isBike', 'attrac', 'pray', 'freeTime']
+temp5_schem = ['name', 'email', 'telNum', 'adress', 'year', 'howMany', 'whereKnew', 'intro']
 
 nextt = True
+
 
 #--------> For client
 @views.route('/', methods=['GET', 'POST'])
 def home():
+    #check_date()
     years = Year.query.all()
     if years:
         for yr in years:
@@ -33,12 +38,9 @@ def home():
                 if item.is_active:
                     if item.name == event_name:
                         event = item
-            if event.temp_id == 1:
-                return redirect(url_for('views.temp1', event_id=event.id))
-            elif event.temp_id == 2:
-                return f'jestem w template{event.temp_id}'
-            elif event.temp_id == 3:
-                return f'jestem w template{event.temp_id}'
+            session['event_id'] = event.id
+            return redirect(url_for('views.signup'))
+
         return render_template('home.html', year=year, user=current_user, lst_events=lst_events, date_stop=date_stop)
 
     return render_template('home.html', user=current_user)
@@ -61,33 +63,27 @@ def home():
 
 #-----------------> templates
 
-@views.route('/temp1', methods=['GET','POST'])
-def temp1():
-    event_id = request.args.get('event_id', None)
+@views.route('/signup', methods=['GET','POST'])
+def signup():
+    event_id = session['event_id']
     event = Events.query.get(event_id)
     if request.method == 'POST':
-        dic = get_form_val(temp1_schem)
-        if check_vals(dic, event.temp_id):
-            db_add_new_sigup(dic, event)
-        else:
-            return redirect(url_for('views.temp1', event_id=event.id))
-        return redirect(url_for('views.home'))
+        if event.temp_id == 1:
+            dic = get_form_val(temp1_schem)
+            num = ""
+            if check_vals(num, **dic):
+                if check_member(dic['telNum'], dic['email']):
+                    db_add_new_sigup(dic, event)
+                    return render_template('aftersignup.html', event=event, user=current_user)
+                else:
+                    flash(f'Przepraszamy ale nie możesz zapisać się na to wydarzenie', category='error')
+                    return redirect(url_for('views.home'))
+            else:
+                return render_template('signup.html', event=event, user=current_user, dic=dic)
+        return "elo"
 
-    return render_template('temp1.html', event=event, user=current_user)
+    return render_template('signup.html', event=event, user=current_user)
 
-@views.route('/temp2', methods=['GET','POST'])
-def temp2():
-    event_id = request.args.get('event_id', None)
-    event = Events.query.get(event_id)
-    if request.method == 'POST':
-        dic = get_form_val(temp1_schem)
-        if check_vals(dic, event.temp_id):
-            db_add_new_sigup(dic, event)
-        else:
-            return redirect(url_for('views.temp2', event_id=event.id))
-        return redirect(url_for('views.home'))
-
-    return render_template('temp2.html', event=event, user=current_user)
 
 
 #-----------------------------------> end templates
@@ -102,52 +98,6 @@ def user_page():
 @views.route('/aftersignup')
 def after_sign_up():
     return render_template('aftersignup.html', user=current_user)
-
-
-#--------> For admin
-@views.route('/test', methods=['GET', 'POST'])
-def test():
-    if request.method == 'POST':
-        eventName = request.form.get('eventName')
-        template = request.form.get('template')
-        new_event = EventsNew(name=eventName, template=template)
-        db.session.add(new_event)
-        db.session.commit()
-    return render_template('test.html', signup=SignUpData.query.all(), events=EventsNew.query.all(), user=current_user)
-
-#----------> delete items
-
-@views.route('/delete-event', methods=['POST'])
-@login_required
-def delete_event():
-    event = json.loads(request.data)
-    eventID = event['itemID']
-    event = EventsNew.query.get(eventID)
-    if event:
-        db.session.delete(event)
-        db.session.commit()
-    return jsonify({})
-
-
-#----------> get event
-
-@views.route('/get-event', methods=['POST'])
-def get_event():
-    event = json.loads(request.data)
-    eventID = event['itemID']
-    event = EventsNew.query.get(eventID)
-    if event:
-        db.session.delete(event)
-        db.session.commit()
-    return jsonify({})
-
-#----------> end get event
-
-@views.route('/form', methods=['GET','POST'])
-def form():
-    years = Year.query.all()
-    return render_template('form.html', years=years, user=current_user)
-
 
 @views.route('/dashboard')
 @login_required
@@ -191,6 +141,12 @@ def edit_year():
         if year.is_active:
             lst_events = year.events
             lst_events = sorted(lst_events, key=lambda event: event.date)
+            if request.method == 'POST':
+                tup = db_new_event(year)
+                if tup[0]:
+                    return redirect(url_for('views.edit_year'))
+                else:
+                    return render_template('edityear.html', years=Year.query.all(), year=year, user=current_user, lst_events=lst_events, backup=tup[1])
             return render_template('edityear.html', years=Year.query.all(), year=year, user=current_user, lst_events=lst_events)
         else:
             flash('Brak aktywnej listy akcji', category='error')

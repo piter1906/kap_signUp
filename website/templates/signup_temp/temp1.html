@@ -1,0 +1,115 @@
+
+<form method="POST">
+				  <div class="form-group">
+				    <label for="name">Imię i nazwisko:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="name"
+				      name="name"
+				      value="{% if dic %}{{ dic['name'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="email">Adres email:</label>
+				    <input
+				      type="email"
+				      class="form-control"
+				      id="email"
+				      name="email"
+				      placeholder="twoj@przykladowymail.com"
+				      value="{% if dic %}{{ dic['email'] }}{% endif %}"
+				    />
+			  		</div>
+			  	  <div class="form-group">
+				    <label for="adress">Adres zamieszkania:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="adress"
+				      name="adress"
+				      value="{% if dic %}{{ dic['adress'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="year">Rok urodzenia:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="year"
+				      name="year"
+				      value="{% if dic %}{{ dic['year'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="telNum">Numer telefonu:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="telNum"
+				      name="telNum"
+				      value="{% if dic %}{{ dic['telNum'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="howMany">Który raz wybierasz się na naszą akcję?</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="howMany"
+				      name="howMany"
+				      value="{% if dic %}{{ dic['howMany'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="whereKnew">Skąd dowiedziałeś się o akcji?</label>
+				     <select 
+		    			class="form-control" 
+		    			id="whereKnew"
+		    			name="whereKnew">
+		 					{% if dic %}
+		    				<option>{{ dic['whereKnew'] }}</option>
+		    				{% endif %}
+			      			<option>Facebook</option>
+			      			<option>Internet</option>
+			      			<option>Parafia / kościół</option>
+			      			<option>Znajomi / rodzice</option>
+			      			<option>Ulotka</option>
+			      			<option>Inne</option>
+		    		</select>
+				  </div>
+				  <div class="form-group">
+				    <label for="intro">Kilka słów o sobie:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="intro"
+				      name="intro"
+				      value="{% if dic %}{{ dic['intro'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+		    		<label for="selectSize">Wybierz rozmiar koszulki:</label>
+		    		<select 
+		    			class="form-control" 
+		    			id="selectSize"
+		    			name="selectSize">
+		    			{% if dic %}
+		    				<option>{{ dic['selectSize'] }}</option>
+		    				{% endif %}
+			      			<option>XS</option>
+			      			<option>S</option>
+			      			<option>M</option>
+			      			<option>L</option>
+			      			<option>XL</option>
+			      			<option>XXL</option>
+		    		</select>
+		  		</div>
+				  
+				  <br />
+				  <div class="col-md-12 text-center">
+				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+				  	<p align="center">Klikając "Prześlij" akceptujesz <a href="./static/files/regulamin.doc">regulamin dostępny po kliknięciu w ten link.</a></p>
+				</div>
+				</form>
+

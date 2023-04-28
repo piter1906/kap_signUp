@@ -9,7 +9,17 @@
 		    <div class="card-body">
 			   <h3 class="card-title" align="center">Wiadomość po zapisaniu się</h3>
 		    </div>
-
+		    {% if event.signup %}
+		    {% for signup in event.signup %}
+		    	{% for person in signup.person %}
+		    		{{ person.name }} {{ person.email }} {{ person.selectSize }} {{ person.telNum }}
+		    		{% endfor %}
+		    	{% for basic in signup.basic %}
+		    		{{ basic.howMany }} {{ basic.selectSize }} {{ basic.intro }} <br>
+		    		{% endfor %}
+		    		<br>
+		    {% endfor %}
+		    {% endif %}
 		</div>
 	</div>
 </div>
