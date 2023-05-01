@@ -65,25 +65,33 @@ def home():
 
 @views.route('/signup', methods=['GET','POST'])
 def signup():
-    event_id = session['event_id']
-    event = Events.query.get(event_id)
-    if request.method == 'POST':
-        if event.temp_id == 1:
-            dic = get_form_val(temp1_schem)
-            num = ""
-            if check_vals(num, **dic):
-                if check_member(dic['telNum'], dic['email']):
-                    db_add_new_sigup(dic, event)
-                    return render_template('aftersignup.html', event=event, user=current_user)
+    if 'event_id' in session.keys():
+        event_id = session['event_id']
+        event = Events.query.get(event_id)
+        if request.method == 'POST':
+            if event.temp_id == 1:
+                dic = get_form_val(temp1_schem)
+                num = ""
+                if check_vals(num, event, **dic):
+                    if check_member(dic['telNum'], dic['email']):
+                        person = db_add_new_sigup(dic, event)
+                        session['person_id'] = person.id
+                        return redirect(url_for('views.after_sign_up'))
+                    else:
+                        return redirect(url_for('views.home'))
                 else:
-                    flash(f'Przepraszamy ale nie możesz zapisać się na to wydarzenie', category='error')
-                    return redirect(url_for('views.home'))
-            else:
-                return render_template('signup.html', event=event, user=current_user, dic=dic)
-        return "elo"
+                    return render_template('signup.html', event=event, user=current_user, dic=dic)
+            return "elo"
+        return render_template('signup.html', event=event, user=current_user)
+    else:
+        flash('Operacja nie jest dostępna.', category='error')
+        return redirect(url_for('views.home'))
 
-    return render_template('signup.html', event=event, user=current_user)
 
+@views.route('/aftersignup')
+def after_sign_up():
+    return redirect(url_for('action.send_mail_gmail'))
+    
 
 
 #-----------------------------------> end templates
@@ -94,10 +102,6 @@ def user_page():
     numer_id = 'number' + event_id
     number = request.form.get(numer_id)
     return render_template('body.html')
-
-@views.route('/aftersignup')
-def after_sign_up():
-    return render_template('aftersignup.html', user=current_user)
 
 @views.route('/dashboard')
 @login_required
@@ -173,6 +177,19 @@ def edit_event():
         flash('Operacja nie jest dostepna', category='error')
         return redirect(url_for('views.dashboard'))
 
+
+@views.route('/dashboard/eventview', methods=['GET', 'POST'])
+@login_required
+def event_view():
+    event_id = request.args.get('event_id', None)
+    event = Events.query.get(int(event_id))
+    if event:
+        sn_lst = event.signup
+        sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
+        return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user)
+    else:
+        flash('Operacja nie jest dostepna', category='error')
+        return redirect(url_for('views.dashboard'))
 
 
 @views.route('/dashboard/addevents', methods=['GET', 'POST'])

@@ -12,6 +12,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, From, To, Subject, PlainTextContent, HtmlContent, SendGridException
 from xhtml2pdf import pisa
 import io
+import sys
 import datetime 
 
 action = Blueprint('action', __name__)
@@ -66,52 +67,85 @@ def event_status(itemID):
             db.session.commit()
             flash(f'Status {item.name} zmieniony.')
         else:
-            flash(f'Status {item.name} nie został zmieniony, ponieważ data akcji jest już przestarzała')
+            flash(f'Status {item.name} nie został zmieniony, ponieważ data akcji jest już przestarzała', category='error')
+    return redirect(url_for('views.edit_year'))
+
+@action.route('/signup-verified', methods=['GET','POST'])
+@login_required
+def signup_verified():
+    event_id = request.args.get('event_id', None)
+    event = Events.query.get(int(event_id))
+    person_id = request.args.get('person_id', None)
+    person = Person.query.get(int(person_id))
+    sn_lst = event.signup
+    sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
+    if person:
+        if not person.is_verified:
+            person.is_verified = True
+            db.session.commit()
+            flash('Zapis został zweryfikowany.', category='success')
+            return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user)
+        else:
+            flash('Operacja nie jest dostępna', category='error')
     return redirect(url_for('views.edit_year'))
 
 #-----------------------------> end event actions
 
 @action.route('/pdf')
+@login_required
 def pdf():
-    years = Year.query.all()
-    for yr in years:
-        if yr.is_active:
-            year = yr
-            for item in year.events:
-                if item.name == 'Góry':
-                    event = item
+    event_id = request.args.get('event_id', None)
+    event = Events.query.get(event_id)
+    if event:
+        sn_lst = event.signup
+        sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
+        body = render_template('html2pdf.html', event=event, sn_lst=sn_lst, user=current_user)
 
+        in_stream = io.BytesIO(body.encode('utf-8'))
+        sys.stdin = io.TextIOWrapper(in_stream, encoding='utf-8')
+        pdf_file = io.BytesIO()
+        sys.stdout = io.TextIOWrapper(pdf_file, encoding='utf-8')
+        pisa.CreatePDF(in_stream, pdf_file)
+        
+        # Set the stream position to the beginning
+        pdf_file.seek(0)
+        
+        # Create a Flask response object with the PDF file
+        response = make_response(pdf_file.getvalue())
+        
+        # Set the content type and headers for the response
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename=Uczestnicy_{event.name}.pdf'
 
-    body = render_template('pdf.html', event=event, year=year)
+        return response
+    else:
+        flash('Nie masz bezpośredniego dostępu do tej strony', category='error')
+        return redirect(url_for('views.dashboard'))
 
-    pdf_file = io.BytesIO()
-    pisa.CreatePDF(io.StringIO(body), pdf_file, encoding='UTF-8')
-    
-    # Set the stream position to the beginning
-    pdf_file.seek(0)
-    
-    # Create a Flask response object with the PDF file
-    response = make_response(pdf_file.getvalue())
-    
-    # Set the content type and headers for the response
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=output.pdf'
-
-    return response
 
 @action.route('/testo')
 def testto():
 	return "elo ziomek"
 
-@action.route('/gmail/<text>', methods=['GET','POST'])
-def send_mail_gmail(text):
-    msg = Message(f'Hello {text}', sender = 'kapszlaksend@gmail.com', recipients = ['brpiotrwojtowicz@gmail.com'])
-    msg.body = f"Hello Flask message sent from {text} Flask-Mail"
-    mail.send(msg)
-    msg1 = Message(f'Admin {text}', sender = 'kapszlaksend@gmail.com', recipients = ['kapszlaksend@gmail.com', 'brpiotrwojtowicz@gmail.com'])
-    msg1.body = f"Wlasnie zapisał sie {text} Flask-Mail"
-    mail.send(msg1)
-    return "Sent"
+@action.route('/gmail', methods=['GET','POST'])
+def send_mail_gmail():
+    if 'person_id' in session.keys() and 'event_id' in session.keys():
+        event_id = session['event_id']
+        event = Events.query.get(event_id)
+        person_id = session['person_id']
+        person = Person.query.get(person_id)
+        msg = Message(f'Witaj {person.name}', sender = 'kapszlaksend@gmail.com', recipients = [person.email])
+        msg.body = f"Siemano ziomek. Udało Ci się zapisać na akcję {event.name}. \n Oto treść maila: {event.mail_temp}"
+        mail.send(msg)
+        msg1 = Message(f'Nowy zapis dla {event.name}', sender = 'kapszlaksend@gmail.com', recipients = ['brpiotrwojtowicz@gmail.com'])
+        msg1.body = f"Wlasnie zapisał sie {person.name} na akcję {event.name}"
+        mail.send(msg1)
+        session.pop('event_id')
+        session.pop('person_id')
+        return render_template('aftersignup.html', person=person, event=event, user=current_user)
+    else:
+        flash('Operacja nie jest dostępna', category='error')
+        return redirect(url_for('views.home'))
 
 @action.route('/sendgrid/<text>', methods=['GET','POST'])
 def send_mail(text):

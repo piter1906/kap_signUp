@@ -27,14 +27,17 @@ def email_is_valid(email):
 
 def check_member(telNum, email):
 	blacklist = Blacklist.query.all()
-	for item in blacklist:
-		if item.email == email or item.number == int(telNum):
-			return False
-		else:
-			return True
+	if blacklist:
+		for item in blacklist:
+			if item.email == email or item.number == int(telNum):
+				flash(f'Przepraszamy ale nie możesz zapisać się na to wydarzenie', category='error')
+				return False
+			else:
+				return True
+	return True
 
 
-def check_vals(num, **kwargs):
+def check_vals(num, event, **kwargs):
 	if 'name' in kwargs.keys():
 		if len(kwargs['name']) < 5:
 		    flash(f'Imię i nazwisko {num}: wprowadzone dane są za krótkie.', category='error')
@@ -43,6 +46,11 @@ def check_vals(num, **kwargs):
 		if not email_is_valid(kwargs['email']):
 			flash(f'Podaj poprawny adres email dla zapisu {num}.', category='error')
 			return False
+		"""for sn in event.signup:
+									for ps in sn.person:
+										if ps.email == kwargs['email']:
+											flash(f'Podany mail dla zapisu {num} już jest w bazie uczestników tej akcji.', category='error')
+											return False"""
 	if 'adress' in kwargs.keys():
 		if len(kwargs['adress']) < 3:
 			flash(f'Podaj poprawny adres dla zapisu {num}.', category='error')

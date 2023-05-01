@@ -1,0 +1,32 @@
+<h3 align="center">Lista uczestnikow {{ event.name }}</h3>
+{% for signup in sn_lst %}
+<div class="card">
+    <div class="card-header">
+<h5>Uczestnik nr {{ loop.index }}</h5>
+</div>
+    {% for item in signup.person %}
+<h6>Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}</font></h6>
+<h6>Data zapisu: {{ signup.date }}</h6>
+<h6>Dane uczestnika:</h6>
+<ul>
+<li>Imie i nazwisko: {{ item.name }}</li>
+<li>Email: {{ item.email }}</li>
+<li>Adres: {{ item.adress }}</li>
+<li>Rok urodzenia: {{ item.year }}</li>
+<li>Numer telefonu: {{ item.telNum }}</li>
+<li>Rozmiar koszulki: {{ item.selectSize }}</li>
+</ul>
+{% endfor %}
+          
+{% for item in signup.basic %}
+<h6>Dodatkowe informacje:</h6>
+<ul>
+<li>Ktory raz na akcji: {{ item.howMany }}</li>
+<li>Skad sie dowiedzial: {{ item.whereKnew }}</li>
+<li>O sobie: {{ item.intro }}</li>
+</ul>
+
+               {% endfor %}
+               <br>
+<hr>
+               {% endfor %}

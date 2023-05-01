@@ -11,6 +11,14 @@ def date_from_str(date):
         month = int(date[5:7]) if date[5] == '1' else int(date[6])
         day = int(date[8:]) if int(date[8]) != 0 else int(date[9])
         return datetime.date(year=year, month=month, day=day)
+    else:
+        year = int(date[:4])
+        month = int(date[5:7])
+        day = int(date[8:10])
+        hour = int(date[11:13])
+        minute = int(date[14:16])
+        second = int(date[17:19])
+        return datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=second)
 
 def get_form_val(lst):
 	dic = {}
@@ -21,7 +29,9 @@ def get_form_val(lst):
 
 def db_add_new_sigup(dic, event):
 	if event.temp_id == 1:
-		signup = Signup(event_id=event.id)
+		date = str(datetime.datetime.now())
+		date = date_from_str(date)
+		signup = Signup(event_id=event.id, date=date)
 		db.session.add(signup)
 		db.session.commit()
 		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], 
@@ -32,8 +42,10 @@ def db_add_new_sigup(dic, event):
 		db.session.add(basic)
 		db.session.commit()
 		flash('Udało się zapisać!', category='success')
+		return person
 	else:
 		flash(f'To nie to id{event.id}', category='error')
+		return None
 
 def db_add_new_blacklist(email, number):
     new_item = Blacklist(email=email, number=number)

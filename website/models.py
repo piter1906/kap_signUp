@@ -22,6 +22,7 @@ class Events(db.Model):
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
+    is_verified = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(300))
     email = db.Column(db.String(300))
     adress = db.Column(db.String(300))
@@ -35,6 +36,7 @@ class Person(db.Model):
 class Signup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    date  = db.Column(db.DateTime)
     person = db.relationship('Person', backref='signup')
     basic = db.relationship('Basic', backref='signup')
     winter = db.relationship('Winter', backref='signup')

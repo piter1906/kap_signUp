@@ -1,0 +1,19 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy na {{ event.name }}{% endblock %} 
+
+{% block content %}
+<div class="card">
+		    <div class="card-body">
+		    	<h3 class="card-title" align="center">Lista uczestników {{ event.name }}</h3>
+		    	<div class="card">
+		    		<div class="card-body">
+		    		{% if event.temp_id == 1 %}
+			    		{% include 'signup_view/ev1.html' %}
+			    	{% endif %}
+		    		</div>
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}
