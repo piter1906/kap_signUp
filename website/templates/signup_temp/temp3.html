@@ -1,1 +1,104 @@
-3
+<form method="POST">
+				<div class="form-group">
+				    <label for="ageCat">Wybierz kategorię wiekową:</label>
+				     <select 
+		    			class="form-control" 
+		    			id="ageCat"
+		    			name="ageCat">
+		 					{% if dic %}
+		    				<option>{{ dic['ageCat'] }}</option>
+		    				{% endif %}
+			      			<option>Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)</option>
+			      			<option>Od 14 do 19 roku życia (drużyna składa się z 5 osób + bramkarz)</option>
+		    		</select>
+				  </div>
+				  <div class="form-group">
+				    <label for="teamName">Nazwa drużyny:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="teamName"
+				      name="teamName"
+				      required="required"
+				      value="{% if dic %}{{ dic['teamName'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="teamFrom">Miasto / Klasztor pochodzenia drużyny:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="teamFrom"
+				      name="teamFrom"
+				      required="required"
+				      value="{% if dic %}{{ dic['teamFrom'] }}{% endif %}"
+				    />
+				  </div>
+				   <div class="form-group">
+				    <label for="teamNum">Liczba zawodników waszej drużyny:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="teamNum"
+				      name="teamNum"
+				      required="required"
+				      value="{% if dic %}{{ dic['teamNum'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="peopleNum">Jeśli zostajecie na niedzielę, podaj liczbę osób:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="peopleNum"
+				      name="peopleNum"
+				      value="{% if dic %}{{ dic['peopleNum'] }}{% endif %}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="say">Twoje uwagi:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="say"
+				      name="say"
+				      value="{% if dic %}{{ dic['say'] }}{% endif %}"
+				    />
+				  </div><br>
+				  <h5>Dane opiekuna pełnoletniego (osoba kontaktowa):</h5>
+				  	<div class="form-group">
+				    <label for="name">Imię i nazwisko:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="name"
+				      name="name"
+				      value="{% if dic %}{{ dic['name'] }}{% endif %}"
+				    />
+				  </div>
+				  	<div class="form-group">
+				    <label for="email">Adres email:</label>
+				    <input
+				      type="email"
+				      class="form-control"
+				      id="email"
+				      name="email"
+				      placeholder="twoj@przykladowymail.com"
+				      value="{% if dic %}{{ dic['email'] }}{% endif %}"
+				    />
+			  		</div>
+			  		<div class="form-group">
+				    <label for="telNum">Numer telefonu:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="telNum"
+				      name="telNum"
+				      value="{% if dic %}{{ dic['telNum'] }}{% endif %}"
+				    />
+				  </div>
+				 <br />
+				  <div class="col-md-12 text-center">
+				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Przejdź dalej</button></a>
+				</div>
+				</form>

@@ -7,6 +7,7 @@
 				      class="form-control"
 				      id="name"
 				      name="name"
+				      value="{% if dic %}{{ dic['name'] }}{% endif %}"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -17,6 +18,7 @@
 				      id="email"
 				      name="email"
 				      placeholder="twoj@przykladowymail.com"
+				      value="{% if dic %}{{ dic['email'] }}{% endif %}"
 				    />
 			  		</div>
 			  	  <div class="form-group">
@@ -26,6 +28,7 @@
 				      class="form-control"
 				      id="adress"
 				      name="adress"
+				      value="{% if dic %}{{ dic['adress'] }}{% endif %}"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -35,6 +38,7 @@
 				      class="form-control"
 				      id="year"
 				      name="year"
+				      value="{% if dic %}{{ dic['year'] }}{% endif %}"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -44,6 +48,7 @@
 				      class="form-control"
 				      id="telNum"
 				      name="telNum"
+				      value="{% if dic %}{{ dic['telNum'] }}{% endif %}"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -53,6 +58,8 @@
 				      class="form-control"
 				      id="howMany"
 				      name="howMany"
+				      required="required"
+				      value="{% if dic %}{{ dic['howMany'] }}{% endif %}"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -61,6 +68,9 @@
 		    			class="form-control" 
 		    			id="whereKnew"
 		    			name="whereKnew">
+		 					{% if dic %}
+		    				<option>{{ dic['whereKnew'] }}</option>
+		    				{% endif %}
 			      			<option>Facebook</option>
 			      			<option>Internet</option>
 			      			<option>Parafia / kościół</option>
@@ -76,6 +86,8 @@
 				      class="form-control"
 				      id="intro"
 				      name="intro"
+				      required="required"
+				      value="{% if dic %}{{ dic['intro'] }}{% endif %}"
 				    />
 				  </div>
 				  <div class="form-group">
@@ -84,6 +96,9 @@
 		    			class="form-control" 
 		    			id="selectSize"
 		    			name="selectSize">
+		    			{% if dic %}
+		    				<option>{{ dic['selectSize'] }}</option>
+		    				{% endif %}
 			      			<option>XS</option>
 			      			<option>S</option>
 			      			<option>M</option>
@@ -94,13 +109,13 @@
 		  		</div>
 		  		<label>Czy zabierasz ze sobą rower?</label><br>
 				  <div class="form-check">
-				  <input class="form-check-input" type="radio" name="isBike" id="isBike1">
+				  <input class="form-check-input" type="radio" name="isBike" value="true" required="required" id="isBike1" {% if dic['isBike'] == 'true' %}checked{% endif %}>
 				  <label class="form-check-label" for="isBike1">
 				    Tak
 				  </label>
 				</div>
 				<div class="form-check">
-				  <input class="form-check-input" type="radio" name="isBike" id="isBike2">
+				  <input class="form-check-input" type="radio" name="isBike" value="false" required="required" id="isBike2" {% if dic['isBike'] == 'false' %}checked{% endif %}>
 				  <label class="form-check-label" for="isBike2">
 				    Nie
 				  </label>
@@ -112,6 +127,8 @@
 				      class="form-control"
 				      id="pray"
 				      name="pray"
+				      required="required"
+				      value="{% if dic %}{{ dic['pray'] }}{% endif %}"
 				      placeholder="np. adoracja, brewiarz, konferencja..."
 				    />
 				  </div>
@@ -122,16 +139,20 @@
 				      class="form-control"
 				      id="attrac"
 				      name="attrac"
+				      required="required"
+				      value="{% if dic %}{{ dic['attrac'] }}{% endif %}"
 				      placeholder="np. góry, kajaki, paintball, rowery..."
 				    />
 				  </div>
 				  <div class="form-group">
-				    <label for="attrac">Twoje propozycje spedzania wolnego czasu:</label>
+				    <label for="freeTime">Twoje propozycje spedzania wolnego czasu:</label>
 				    <input
 				      type="text"
 				      class="form-control"
 				      id="freeTime"
 				      name="freeTime"
+				      required="required"
+				      value="{% if dic %}{{ dic['freeTime'] }}{% endif %}"
 				      placeholder="np. gry planszowe, piłka nożna..."
 				    />
 				  </div>

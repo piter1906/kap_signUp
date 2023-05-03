@@ -22,8 +22,9 @@
 					      class="form-control"
 					      id="name{{ i + 1 }}"
 					      name="name{{ i + 1 }}"
+					      required="required"
 					      {% if dic[i+1] %}
-					      value = {{ dic[i+1].name }}
+					      value = "{{ dic[i+1].name }}"
 					      {% endif %}
 					    >
 					</div>
@@ -34,8 +35,9 @@
 					      class="form-control"
 					      id="date{{ i + 1 }}"
 					      name="date{{ i + 1 }}"
+					      required="required"
 					      {% if dic[i+1] %}
-					      value = {{ dic[i+1].date | string }}
+					      value = "{{ dic[i+1].date | string }}"
 					      {% endif %}
 					    />
 					</div>

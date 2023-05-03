@@ -134,12 +134,12 @@ def send_mail_gmail():
         event = Events.query.get(event_id)
         person_id = session['person_id']
         person = Person.query.get(person_id)
-        msg = Message(f'Witaj {person.name}', sender = 'kapszlaksend@gmail.com', recipients = [person.email])
-        msg.body = f"Siemano ziomek. Udało Ci się zapisać na akcję {event.name}. \n Oto treść maila: {event.mail_temp}"
-        mail.send(msg)
-        msg1 = Message(f'Nowy zapis dla {event.name}', sender = 'kapszlaksend@gmail.com', recipients = ['brpiotrwojtowicz@gmail.com'])
-        msg1.body = f"Wlasnie zapisał sie {person.name} na akcję {event.name}"
-        mail.send(msg1)
+        """msg = Message(f'Witaj {person.name}', sender = 'kapszlaksend@gmail.com', recipients = [person.email])
+                                msg.body = f"Siemano ziomek. Udało Ci się zapisać na akcję {event.name}. \n Oto treść maila: {event.mail_temp}"
+                                mail.send(msg)
+                                msg1 = Message(f'Nowy zapis dla {event.name}', sender = 'kapszlaksend@gmail.com', recipients = ['brpiotrwojtowicz@gmail.com'])
+                                msg1.body = f"Wlasnie zapisał sie {person.name} na akcję {event.name}"
+                                mail.send(msg1)"""
         session.pop('event_id')
         session.pop('person_id')
         return render_template('aftersignup.html', person=person, event=event, user=current_user)

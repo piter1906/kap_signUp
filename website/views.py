@@ -13,6 +13,8 @@ views = Blueprint('views', __name__)
 #--------> Templates paterns
 temp1_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro']
 temp2_schem = ['name', 'email', 'telNum', 'adress', 'year', 'howMany', 'whereKnew', 'intro', 'skiEver', 'skiSkill', 'skiInst', 'passBuy', 'isLent', 'skiLent', 'weight', 'height']
+temp3_schem_1 = ['name', 'email', 'telNum', 'ageCat', 'teamName', 'teamFrom', 'teamNum', 'peopleNum', 'say']
+temp3_schem_2 = ['name', 'email', 'telNum', 'adress', 'year']
 temp4_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro', 'isBike', 'attrac', 'pray', 'freeTime']
 temp5_schem = ['name', 'email', 'telNum', 'adress', 'year', 'howMany', 'whereKnew', 'intro']
 
@@ -69,9 +71,38 @@ def signup():
         event_id = session['event_id']
         event = Events.query.get(event_id)
         if request.method == 'POST':
-            if event.temp_id == 1:
-                dic = get_form_val(temp1_schem)
+            if event.temp_id == 3:
+                dic = get_form_val(temp3_schem_1)
                 num = ""
+                if check_vals(num, event, **dic):
+                    if check_member(dic['telNum'], dic['email']):
+                        session['first_step'] = True
+                        tup = db_add_new_sigup(dic, event)
+                        session['person_id'] = tup[0]
+                        session['signup_id'] = tup[1]
+                        session['teamNum'] = tup[2]
+                        basket.event = event
+                        return redirect(url_for('views.signup_next'))
+                    else:
+                        return redirect(url_for('views.home'))
+                else:
+                    return render_template('signup.html', event=event, user=current_user, dic=dic)
+
+            elif event.temp_id == 6:
+                pass
+            else:
+                if event.temp_id == 1:
+                    dic = get_form_val(temp1_schem)
+                    num = ""
+                if event.temp_id == 2:
+                    dic = get_form_val(temp2_schem)
+                    num = ""
+                if event.temp_id == 4:
+                    dic = get_form_val(temp4_schem)
+                    num = ""
+                if event.temp_id == 5:
+                    dic = get_form_val(temp5_schem)
+                    num = ""
                 if check_vals(num, event, **dic):
                     if check_member(dic['telNum'], dic['email']):
                         person = db_add_new_sigup(dic, event)
@@ -81,16 +112,53 @@ def signup():
                         return redirect(url_for('views.home'))
                 else:
                     return render_template('signup.html', event=event, user=current_user, dic=dic)
-            return "elo"
-        return render_template('signup.html', event=event, user=current_user)
+            return render_template('signup.html', event=event, user=current_user, dic={})
+        return render_template('signup.html', event=event, user=current_user, dic={})
     else:
         flash('Operacja nie jest dostępna.', category='error')
         return redirect(url_for('views.home'))
 
 
+@views.route('/signup_next', methods=['GET','POST'])
+def signup_next():
+    if 'event_id' in session.keys():
+        event_id = session['event_id']
+        event = Events.query.get(event_id)
+        if request.method == 'POST':
+            if event.temp_id == 3:
+                for i in range(int(session['teamNum'])):
+                    lst_val = [f'name{i+1}', f'email{i+1}', f'telNum{i+1}', f'adress{i+1}', f'year{i+1}']
+                    dic = get_form_val(lst_val)
+                    if check_vals(i+1, event, **dic):
+                        session['currentNum'] = i + 1
+                        db_add_new_sigup(dic, event)
+                    else:
+                        return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=session['teamNum'])
+                session.pop('teamNum')
+                session.pop('first_step')
+                flash('Udało się drużynę!', category='success')
+                return redirect(url_for('views.after_sign_up'))
+            return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['teamNum'])
+        return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['teamNum'])
+    else:
+        flash('Operacja nie jest dostępna.', category='error')
+        return redirect(url_for('views.home'))
+
 @views.route('/aftersignup')
 def after_sign_up():
-    return redirect(url_for('action.send_mail_gmail'))
+    if 'person_id' in session.keys() and 'event_id' in session.keys():
+        event_id = session['event_id']
+        event = Events.query.get(event_id)
+        person_id = session['person_id']
+        person = Person.query.get(person_id)
+        session.pop('event_id')
+        session.pop('person_id')
+        #send_mail(event, person)
+
+        return render_template('aftersignup.html', person=person, event=event, user=current_user)
+    else:
+        flash('Brak dostępu do tej strony', category='error')
+        return redirect(url_for('views.home'))
     
 
 

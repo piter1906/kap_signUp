@@ -6,8 +6,9 @@ from flask_mail import Mail, Message
 import datetime
 
 
+
 db = SQLAlchemy()
-DB_NAME = "daaaataaa.db"
+DB_NAME = "daaaataaabassseeee.db"
 mail = Mail()
 
 
@@ -35,6 +36,7 @@ def create_app():
 
     with app.app_context():
         check_date()
+
     
     login_manager = LoginManager()
     login_manager.login_view = 'views.home'
@@ -52,6 +54,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = 'fimyklgnxqvdleti'
 
     mail = Mail(app)
+ 
     
     return app
 

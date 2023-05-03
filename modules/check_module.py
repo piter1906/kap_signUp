@@ -38,12 +38,12 @@ def check_member(telNum, email):
 
 
 def check_vals(num, event, **kwargs):
-	if 'name' in kwargs.keys():
-		if len(kwargs['name']) < 5:
+	if f'name{num}' in kwargs.keys():
+		if len(kwargs[f'name{num}']) < 5:
 		    flash(f'Imię i nazwisko {num}: wprowadzone dane są za krótkie.', category='error')
 		    return False
-	if 'email' in kwargs.keys():
-		if not email_is_valid(kwargs['email']):
+	if f'email{num}' in kwargs.keys():
+		if not email_is_valid(kwargs[f'email{num}']):
 			flash(f'Podaj poprawny adres email dla zapisu {num}.', category='error')
 			return False
 		"""for sn in event.signup:
@@ -51,18 +51,33 @@ def check_vals(num, event, **kwargs):
 										if ps.email == kwargs['email']:
 											flash(f'Podany mail dla zapisu {num} już jest w bazie uczestników tej akcji.', category='error')
 											return False"""
-	if 'adress' in kwargs.keys():
-		if len(kwargs['adress']) < 3:
+	if f'adress{num}' in kwargs.keys():
+		if len(kwargs[f'adress{num}']) < 3:
 			flash(f'Podaj poprawny adres dla zapisu {num}.', category='error')
 			return False
-	if 'year' in kwargs.keys():
-		if len(kwargs['year']) != 4 or int(kwargs['year']) < 1970 or int(kwargs['year']) > 2012:
+	if f'year{num}' in kwargs.keys():
+		if len(kwargs[f'year{num}']) != 4 or int(kwargs[f'year{num}']) < 1970 or int(kwargs[f'year{num}']) > 2012:
 			flash(f'Podaj poprawny rok urodzenia (1970 - 2012) dla zapisu {num}.', category='error')
 			return False
-	if 'telNum' in kwargs.keys():
-		if len(kwargs['telNum']) != 9:
+	if f'telNum{num}' in kwargs.keys():
+		if len(kwargs[f'telNum{num}']) != 9:
 			flash(f'Podaj poprawny numer telefonu dla zapisu {num}.', category='error')
 			return False
+		"""for sn in event.signup:
+									for ps in sn.person:
+										if ps.telNum == kwargs['telNum']:
+											flash(f'Podany telefon dla zapisu {num} już jest w bazie uczestników tej akcji.', category='error')
+											return False"""
+	if 'height' in kwargs.keys():
+		if kwargs['isLent'] == 'true':
+			if len(kwargs['height']) < 3:
+				flash(f'Podaj poprawny wzrost w cm.', category='error')
+				return False
+	if 'weight' in kwargs.keys():
+		if kwargs['isLent'] == 'true':
+			if len(kwargs['weight']) < 2:
+				flash(f'Podaj poprawną wagę w kg.', category='error')
+				return False
 	return True
 
 

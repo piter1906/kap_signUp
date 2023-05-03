@@ -9,6 +9,14 @@
 		    		<div class="card-body">
 		    		{% if event.temp_id == 1 %}
 			    		{% include 'signup_view/ev1.html' %}
+			    	{% elif event.temp_id == 2 %}
+			    		{% include 'signup_view/ev2.html' %}
+			    	{% elif event.temp_id == 3 %}
+			    		{% include 'signup_view/ev3.html' %}
+			    	{% elif event.temp_id == 4 %}
+			    		{% include 'signup_view/ev4.html' %}
+			    	{% elif event.temp_id == 5 %}
+			    		{% include 'signup_view/ev5.html' %}
 			    	{% endif %}
 		    		</div>
 

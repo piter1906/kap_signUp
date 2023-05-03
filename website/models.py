@@ -23,6 +23,7 @@ class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     signup_id = db.Column(db.Integer, db.ForeignKey('signup.id'))
     is_verified = db.Column(db.Boolean, default=False)
+    is_contact = db.Column(db.Boolean, default=True)
     name = db.Column(db.String(300))
     email = db.Column(db.String(300))
     adress = db.Column(db.String(300))

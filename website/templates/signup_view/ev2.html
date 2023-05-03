@@ -1,4 +1,3 @@
-
 {% for signup in sn_lst %}
 <div class="card">
     <div class="card-header" style="background-color: #323a3e">
@@ -24,7 +23,8 @@
                               <th scope="col">Adres</th>
                               <th scope="col">Rok urodzenia</th>
                               <th scope="col">Numer telefonu</th>
-                              <th scope="col">Rozmiar koszulki</th>
+                              <th scope="col">Wzrost</th>
+                              <th scope="col">Waga</th>
                             </tr>
                           </thead>
                           <tbody align="center">
@@ -34,7 +34,8 @@
                               <td>{{ item.adress }}</td>
                               <td>{{ item.year }}</td>
                               <td>{{ item.telNum }}</td>
-                              <td>{{ item.selectSize }}</td>
+                              <td>{{ item.height }} cm</td>
+                              <td>{{ item.weight }} kg</td>
                             </tr>
                            
                           </tbody>
@@ -61,7 +62,29 @@
                           </tbody>
                         </table>
                {% endfor %}
-               <br>
+               
              </div>
+    {% for item in signup.winter %}
+    <div class="card">
+      <div class="card-header">
+        <h6>Informacje od umiejętnościach jazdy i sprzęcie narciarskim:</h6>
+      </div>
+    <div class="card-body">
+    
+<ul>
+<li>Czy jeździł na nartach: {% if item.skiEver %}Tak{% else %}Nie{% endif %}</li>
+<li>Ocena umiejętności jazdy: {{ item.skiSkill }}</li>
+<li>Czy będzie potrzebował instruktora: {% if item.skiInst %}Tak{% else %}Nie{% endif %}</li>
+<li>Rodzaj karnetu: {{ item.passBuy }}</li>
+<li>Czy będzie wypożyczał sprzęt narciarski: {% if item.skiLent %}Tak{% else %}Nie{% endif %}</li>
+{% if item.skiLent %}
+<li>Jaki sprzęt będzie wyporzyczał: {{ item.skiLent }}</li>
+</ul>
+{% else %}
+</ul>
+{% endif %}
+</div>
+</div>
+{% endfor %}
            </div><br>
                {% endfor %}

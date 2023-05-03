@@ -63,5 +63,21 @@
                {% endfor %}
                <br>
              </div>
+             {% for item in signup.older %}
+    <div class="card">
+      <div class="card-header">
+        <h6>Informacje o chęci spędzania czasu:</h6>
+      </div>
+    <div class="card-body">
+<ul>
+<li>Czy będzie brał rower: {% if item.isBike %}Tak{% else %}Nie{% endif %}</li>
+<li>Propozycje o charakterze duchowym: {{ item.pray }}</li>
+<li>Propozycje aktywności: {{ item.attrac }}</li>
+<li>Propozycje spędzania wolnego czasu: {{ item.freeTime }}</li>
+</ul>
+
+</div>
+</div>
+{% endfor %}
            </div><br>
                {% endfor %}
