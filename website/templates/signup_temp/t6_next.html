@@ -1,0 +1,66 @@
+{% if number == 1 %}
+<p align="center">Uzupełnij dane syna / uczestnika pod opieką</p>
+{% else %}
+<p align="center">Uzupełnij dane synów / uczestników po opieką</p>
+{% endif %}
+		    	<div class="card">
+		    		<div class="card-body">
+		    			<form method="POST">
+		  		<h4>Wpisz dane:</h4><br>
+		  		{% for i in range(number | int) %}
+				  <div class="card">
+				  	<h5 class="card-header">Syn / uczestnik numer {{ i + 1 }}</h5>
+				    <div class="card-body">
+				    	
+		  		<div class="card-body">
+				<div class="form-group">
+					<label for="name{{ i + 1 }}">Imię i nazwisko:</label>
+					 	<input
+					      type="text"
+					      class="form-control"
+					      id="name{{ i + 1 }}"
+					      name="name{{ i + 1 }}"
+					      value="{{ dic['name' + (i+1)|string] }}"
+					    >
+					</div>
+				  <div class="form-group">
+				    <label for="year{{ i + 1 }}">Rok urodzenia:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="year{{ i + 1 }}"
+				      name="year{{ i + 1 }}"
+				      value="{% if dic %}{{ dic['year'+ (i+1)|string] }}{% endif %}"
+				    />
+				  </div>
+				<div class="form-group">
+		    		<label for="selectSize{{ i + 1 }}">Wybierz rozmiar koszulki:</label>
+		    		<select 
+		    			class="form-control" 
+		    			id="selectSize{{ i + 1 }}"
+		    			name="selectSize{{ i + 1 }}"
+		    			required="required">
+		    			{% if dic %}
+		    				<option>{{ dic['selectSize' + (i+1)|string] }}</option>
+		    				{% endif %}
+			      			<option>XS</option>
+			      			<option>S</option>
+			      			<option>M</option>
+			      			<option>L</option>
+			      			<option>XL</option>
+			      			<option>XXL</option>
+		    		</select>
+		  		</div>
+				</div>
+			</div>
+					</div><br>
+					{% endfor %}
+					<br>
+				<div class="col-md-12 text-center">
+					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+					 <p align="center">Klikając "Prześlij" akceptujesz <a href="./static/files/regulamin.doc">regulamin dostępny po kliknięciu w ten link.</a></p>
+				</div>
+			</form>
+		    	
+			</div>
+		</div>

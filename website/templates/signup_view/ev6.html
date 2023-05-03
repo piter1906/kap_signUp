@@ -1,0 +1,95 @@
+
+{% for signup in sn_lst %}
+<div class="card">
+    <div class="card-header" style="background-color: #323a3e">
+<h5><font color="white">Zapis nr {{ loop.index }}</font></h5>
+</div>
+    {% for item in signup.person %}
+    {% if item.is_contact %}
+    <div class="card-body">
+      <div class="col-md-12 text-right">
+        {% if not item.is_verified %}
+        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-danger">Potwierdź zapis</button></a>
+        {% else %}
+        <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
+
+        {% endif %}
+      </div>
+<h6>Data zapisu: {{ signup.date }}</h6>
+<h6>Dane ojca / opiekuna:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Imię i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Adres</th>
+                              <th scope="col">Rok urodzenia</th>
+                              <th scope="col">Numer telefonu</th>
+                              <th scope="col">Rozmiar koszulki</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.adress }}</td>
+                              <td>{{ item.year }}</td>
+                              <td>{{ item.telNum }}</td>
+                              <td>{{ item.selectSize }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                      {% endif %}
+               {% endfor %}
+               <br>
+{% if signup.person|length > 1 %}
+<h6>Dane synów / uczestników pod opieką:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Imię i nazwisko</th>
+                              <th scope="col">Rok urodzenia</th>
+                              <th scope="col">Rozmiar koszulki</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            {% for item in signup.person %}
+                              {% if not item.is_contact %}
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.year }}</td>
+                              <td>{{ item.selectSize }}</td>
+                            </tr>
+                           {% endif %}
+                        {% endfor %}
+                          </tbody>
+                        </table>
+{% else %}
+<h6>Brak zapisanych synów / uczestników pod opieką.</h6>
+{% endif %}
+               <br>
+{% for item in signup.basic %}
+    <h6>Dodatkowe informacje:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Który raz na akcji</th>
+                              <th scope="col">Informacja o akcji</th>
+                              <th scope="col">Coś sobie</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.howMany }}</td>
+                              <td>{{ item.whereKnew }}</td>
+                              <td>{{ item.intro }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                        {% endfor %}
+                         <br>
+             </div>
+           </div><br>
+               {% endfor %}

@@ -1,0 +1,75 @@
+<p align="center">Uzupełnij dane zawodników</p>
+		    	<div class="card">
+		    		<div class="card-body">
+		    			<form method="POST">
+		  		<h4>Wpisz dane:</h4><br>
+		  		{% for i in range(number | int) %}
+				  <div class="card">
+				  	<h5 class="card-header">Zawodnik numer {{ i + 1 }}</h5>
+				    <div class="card-body">
+				    	
+		  		<div class="card-body">
+				<div class="form-group">
+					<label for="name{{ i + 1 }}">Imię i nazwisko:</label>
+					 	<input
+					      type="text"
+					      class="form-control"
+					      id="name{{ i + 1 }}"
+					      name="name{{ i + 1 }}"
+					      value="{{ dic['name' + (i+1)|string] }}"
+					    >
+					</div>
+				<div class="form-group">
+				    <label for="email{{ i + 1 }}">Adres email:</label>
+				    <input
+				      type="email"
+				      class="form-control"
+				      id="email{{ i + 1 }}"
+				      name="email{{ i + 1 }}"
+				      placeholder="twoj@przykladowymail.com"
+				      value="{{ dic['email' + (i+1)|string] }}"
+				    />
+			  		</div>
+			  	  <div class="form-group">
+				    <label for="adress{{ i + 1 }}">Adres zamieszkania:</label>
+				    <input
+				      type="text"
+				      class="form-control"
+				      id="adress{{ i + 1 }}"
+				      name="adress{{ i + 1 }}"
+				      value="{{ dic['adress' + (i+1)|string] }}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="year{{ i + 1 }}">Rok urodzenia:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="year{{ i + 1 }}"
+				      name="year{{ i + 1 }}"
+				      value="{{ dic['year' + (i+1)|string] }}"
+				    />
+				  </div>
+				  <div class="form-group">
+				    <label for="telNum{{ i + 1 }}">Numer telefonu:</label>
+				    <input
+				      type="number"
+				      class="form-control"
+				      id="telNum{{ i + 1 }}"
+				      name="telNum{{ i + 1 }}"
+				      value="{{ dic['telNum' + (i+1)|string] }}"
+				    />
+				  </div>
+				</div>
+			</div>
+					</div>
+					<br>
+					{% endfor %}
+					<br>
+				<div class="col-md-12 text-center">
+					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Prześlij</button></a>
+				</div>
+			</form>
+		    	
+			</div>
+		</div>

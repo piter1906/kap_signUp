@@ -23,11 +23,11 @@ def login():
 					user = item
 			if user:
 				if check_password_hash(user.password, password):
-					flash(f'zalogowany jako {user.login}', category='success')
+					flash(f'Zalogowany jako {user.login}.', category='success')
 					login_user(user, remember=True)
 					return redirect(url_for('views.dashboard'))
 				else:
-					flash(f'zle hasło dla {user.login}', category='error')
+					flash(f'Złe hasło dla {user.login}.', category='error')
 	else:
 		flash(f'Nie ma jeszcze usera', category='error')
 		return redirect(url_for('views.home'))

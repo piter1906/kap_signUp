@@ -1,5 +1,11 @@
 
-{% for signup in sn_lst %}
+{% if lst_young %}
+<div class="card">
+    <div class="card-header">
+<h4><font color="red">KATEGORIA: MŁODSI</font></h4>
+</div>
+<div class="card-body">
+{% for signup in lst_young %}
 <div class="card">
     <div class="card-header" style="background-color: #323a3e">
 <h5><font color="white">Drużyna nr {{ loop.index }}</font></h5>
@@ -37,6 +43,32 @@
                       {% endif %}
                {% endfor %}
                <br>
+{% for item in signup.turnament %}
+    <h6>Informacje o drużynie:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Nazwa drużyny</th>
+                              <th scope="col">Miasto / klasztor:</th>
+                              <th scope="col">Liczba zawodników</th>
+                              <th scope="col">Liczba nocujących</th>
+                              <th scope="col">Uwagi</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.teamName }}</td>
+                              <td>{{ item.teamFrom }}</td>
+                              <td>{{ item.teamNum }}</td>
+                              <td>{{ item.peopleNum }}</td>
+                              <td>{{ item.say }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                        {% endfor %}
+                         <br>
+
 <h6>Dane Zawodników:</h6>
 <table class="table table-bordered">
                           <thead class="thead-light" align="center">
@@ -68,3 +100,111 @@
              </div>
            </div><br>
                {% endfor %}
+             </div>
+             </div>
+             <br>
+             {% endif %}
+    {% if lst_old %}
+    <div class="card">
+    <div class="card-header">
+<h4><font color="red">KATEGORIA: STARSI</font></h4>
+</div>
+<div class="card-body">
+{% for signup in lst_old %}
+<div class="card">
+    <div class="card-header" style="background-color: #323a3e">
+<h5><font color="white">Drużyna nr {{ loop.index }}</font></h5>
+</div>
+    {% for item in signup.person %}
+    {% if item.is_contact %}
+    <div class="card-body">
+      <div class="col-md-12 text-right">
+        {% if not item.is_verified %}
+        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-danger">Potwierdź zapis</button></a>
+        {% else %}
+        <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
+
+        {% endif %}
+      </div>
+<h6>Data zapisu: {{ signup.date }}</h6>
+<h6>Dane opiekuna:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Imię i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Numer telefonu</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.telNum }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                      {% endif %}
+               {% endfor %}
+               <br>
+{% for item in signup.turnament %}
+    <h6>Informacje o drużynie:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Nazwa drużyny</th>
+                              <th scope="col">Miasto / klasztor:</th>
+                              <th scope="col">Liczba zawodników</th>
+                              <th scope="col">Liczba nocujących</th>
+                              <th scope="col">Uwagi</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.teamName }}</td>
+                              <td>{{ item.teamFrom }}</td>
+                              <td>{{ item.teamNum }}</td>
+                              <td>{{ item.peopleNum }}</td>
+                              <td>{{ item.say }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                        {% endfor %}
+                         <br>
+
+<h6>Dane Zawodników:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Imię i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Adres</th>
+                              <th scope="col">Rok urodzenia</th>
+                              <th scope="col">Numer telefonu</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            {% for item in signup.person %}
+                              {% if not item.is_contact %}
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.adress }}</td>
+                              <td>{{ item.year }}</td>
+                              <td>{{ item.telNum }}</td>
+                            </tr>
+                           {% endif %}
+                        {% endfor %}
+                          </tbody>
+                        </table>
+
+
+               <br>
+             </div>
+           </div><br>
+               {% endfor %}
+               <div>
+                </div>
+    {% endif %}

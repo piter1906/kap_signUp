@@ -46,33 +46,45 @@ def send_mail(event, person):
     mail.send(msg1)
 
 
-def db_add_new_sigup(dic, event):
+def db_add_new_sigup(dic, event, lst):
 	if event.temp_id == 3:
-		if session['first_step']:
-			date = str(datetime.datetime.now())
-			date = date_from_str(date, False)
-			signup = Signup(event_id=event.id, date=date)
-			db.session.add(signup)
-			db.session.commit()
-			person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], telNum=dic['telNum'])
-			db.session.add(person)
-			db.session.commit()
-			turnament = Turnament(signup_id=signup.id, ageCat=dic['ageCat'], teamName=dic['teamName'],
+		date = str(datetime.datetime.now())
+		date = date_from_str(date, False)
+		signup = Signup(event_id=event.id, date=date)
+		db.session.add(signup)
+		db.session.commit()
+		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], telNum=dic['telNum'])
+		db.session.add(person)
+		db.session.commit()
+		turnament = Turnament(signup_id=signup.id, ageCat=dic['ageCat'], teamName=dic['teamName'],
 						teamFrom=dic['teamFrom'], teamNum=dic['teamNum'], peopleNum=dic['peopleNum'], say=dic['say'])
-			db.session.add(turnament)
-			db.session.commit()
-			session['first_step'] = False
-			return (person.id, signup.id, turnament.teamNum)
-		else:
-			num = session['currentNum']
-			player = Person(signup_id=session['signup_id'], name=dic[f'name{num}'],
-					email=dic[f'email{num}'], adress=dic[f'adress{num}'],
-					year=dic[f'year{num}'], telNum=dic[f'telNum{num}'], is_contact=False)
+		db.session.add(turnament)
+		db.session.commit()
+		for player in lst:
+			player.signup_id = signup.id
 			db.session.add(player)
 			db.session.commit()
+		flash(f'Udało się zapisać drużynę!', category='success')
 
 	elif event.temp_id == 6:
-		pass
+		date = str(datetime.datetime.now())
+		date = date_from_str(date, False)
+		signup = Signup(event_id=event.id, date=date)
+		db.session.add(signup)
+		db.session.commit()
+		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], telNum=dic['telNum'],
+					adress=dic['adress'], year=dic['year'], selectSize=dic['selectSize'])
+		db.session.add(person)
+		db.session.commit()
+		basic = Basic(signup_id=signup.id, howMany=dic['howMany'], whereKnew=dic['whereKnew'], intro=dic['intro'])
+		db.session.add(basic)
+		db.session.commit()
+		for son in lst:
+			son.signup_id = signup.id
+			db.session.add(son)
+			db.session.commit()
+		flash(f'Udało się zapisać!', category='success')
+
 	else:
 		date = str(datetime.datetime.now())
 		date = date_from_str(date, False)
@@ -109,7 +121,19 @@ def db_add_new_sigup(dic, event):
 			db.session.commit()
 
 		flash('Udało się zapisać!', category='success')
-		return person
+	return person
+
+
+def get_member(dic, event):
+	if event.temp_id == 3:
+		num = session['currentNum']
+		member = Person(name=dic[f'name{num}'], email=dic[f'email{num}'], adress=dic[f'adress{num}'],
+					year=dic[f'year{num}'], telNum=dic[f'telNum{num}'], is_contact=False)
+		return member 
+	if event.temp_id == 6:
+		num = session['currentNum']
+		member = Person(name=dic[f'name{num}'], year=dic[f'year{num}'], selectSize=dic[f'selectSize{num}'], is_contact=False)
+		return member 
 
 
 def db_add_new_blacklist(email, number):

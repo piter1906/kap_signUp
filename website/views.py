@@ -7,24 +7,19 @@ from . import db
 import json
 from . import mail
 
-
 views = Blueprint('views', __name__)
 
 #--------> Templates paterns
 temp1_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro']
 temp2_schem = ['name', 'email', 'telNum', 'adress', 'year', 'howMany', 'whereKnew', 'intro', 'skiEver', 'skiSkill', 'skiInst', 'passBuy', 'isLent', 'skiLent', 'weight', 'height']
-temp3_schem_1 = ['name', 'email', 'telNum', 'ageCat', 'teamName', 'teamFrom', 'teamNum', 'peopleNum', 'say']
-temp3_schem_2 = ['name', 'email', 'telNum', 'adress', 'year']
+temp3_schem = ['name', 'email', 'telNum', 'ageCat', 'teamName', 'teamFrom', 'teamNum', 'peopleNum', 'say']
 temp4_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro', 'isBike', 'attrac', 'pray', 'freeTime']
 temp5_schem = ['name', 'email', 'telNum', 'adress', 'year', 'howMany', 'whereKnew', 'intro']
-
-nextt = True
-
+temp6_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro', 'sonNum']
 
 #--------> For client
 @views.route('/', methods=['GET', 'POST'])
 def home():
-    #check_date()
     years = Year.query.all()
     if years:
         for yr in years:
@@ -46,24 +41,9 @@ def home():
         return render_template('home.html', year=year, user=current_user, lst_events=lst_events, date_stop=date_stop)
 
     return render_template('home.html', user=current_user)
-"""if request.method == 'POST':
-        event = EventsNew.query.filter_by(name=request.form.get('selectEvent')).first()
-        if event:
-            if event.template == 1:
-                dic = get_form_val(temp1)
 
-                if check_vals(dic, event.template):
-                    db_add_new_sigup(dic, event.template)
-            else:
-                flash(f'ziomek to nie ten event, wybrales {event.template}', category='error')
-            return render_template('home.html', ev=event, test=SignUpData.query.all(), events=EventsNew.query.all())
-        else:
-            flash(f'ziomek tu nie ma eventow, wybrales', category='error')
-            return render_template('home.html')
-    else:
-        return render_template('home.html', test=SignUpData.query.all(), events=EventsNew.query.all())"""
 
-#-----------------> templates
+#-----------------> For client ---------> sign up 
 
 @views.route('/signup', methods=['GET','POST'])
 def signup():
@@ -72,16 +52,11 @@ def signup():
         event = Events.query.get(event_id)
         if request.method == 'POST':
             if event.temp_id == 3:
-                dic = get_form_val(temp3_schem_1)
+                dic = get_form_val(temp3_schem)
                 num = ""
                 if check_vals(num, event, **dic):
                     if check_member(dic['telNum'], dic['email']):
-                        session['first_step'] = True
-                        tup = db_add_new_sigup(dic, event)
-                        session['person_id'] = tup[0]
-                        session['signup_id'] = tup[1]
-                        session['teamNum'] = tup[2]
-                        basket.event = event
+                        session['dict'] = dic
                         return redirect(url_for('views.signup_next'))
                     else:
                         return redirect(url_for('views.home'))
@@ -89,7 +64,21 @@ def signup():
                     return render_template('signup.html', event=event, user=current_user, dic=dic)
 
             elif event.temp_id == 6:
-                pass
+                dic = get_form_val(temp6_schem)
+                num = ""
+                if check_vals(num, event, **dic):
+                    if check_member(dic['telNum'], dic['email']):
+                        if int(dic['sonNum']) == 0:
+                            person = db_add_new_sigup(session['dict'], event, [])
+                            session['person_id'] = person.id
+                            return redirect(url_for('views.after_sign_up'))
+                        else:
+                            session['dict'] = dic
+                            return redirect(url_for('views.signup_next'))
+                    else:
+                        return redirect(url_for('views.home'))
+                else:
+                    return render_template('signup.html', event=event, user=current_user, dic=dic)
             else:
                 if event.temp_id == 1:
                     dic = get_form_val(temp1_schem)
@@ -105,7 +94,7 @@ def signup():
                     num = ""
                 if check_vals(num, event, **dic):
                     if check_member(dic['telNum'], dic['email']):
-                        person = db_add_new_sigup(dic, event)
+                        person = db_add_new_sigup(dic, event, [])
                         session['person_id'] = person.id
                         return redirect(url_for('views.after_sign_up'))
                     else:
@@ -124,22 +113,53 @@ def signup_next():
     if 'event_id' in session.keys():
         event_id = session['event_id']
         event = Events.query.get(event_id)
-        if request.method == 'POST':
-            if event.temp_id == 3:
-                for i in range(int(session['teamNum'])):
+        if event.temp_id == 3:
+            if request.method == 'POST':           
+                lst_mem = []
+                dic = {}
+                for i in range(int(session['dict']['teamNum'])):
                     lst_val = [f'name{i+1}', f'email{i+1}', f'telNum{i+1}', f'adress{i+1}', f'year{i+1}']
-                    dic = get_form_val(lst_val)
+                    dic.update(get_form_val(lst_val))
+                for i in range(int(session['dict']['teamNum'])):    
                     if check_vals(i+1, event, **dic):
                         session['currentNum'] = i + 1
-                        db_add_new_sigup(dic, event)
+                        player = get_member(dic, event)
+                        lst_mem.append(player)
                     else:
-                        return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=session['teamNum'])
-                session.pop('teamNum')
-                session.pop('first_step')
-                flash('Udało się drużynę!', category='success')
+                        lst_mem.clear()
+                        return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=session['dict']['teamNum'])
+                person = db_add_new_sigup(session['dict'], event, lst_mem)
+                session['person_id'] = person.id
+                session.pop('dict')
+                session.pop('currentNum')
                 return redirect(url_for('views.after_sign_up'))
-            return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['teamNum'])
-        return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['teamNum'])
+            return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['dict']['teamNum'])
+        elif event.temp_id == 6:
+            if request.method == 'POST':
+                lst_mem = []
+                dic = {}
+                for i in range(int(session['dict']['sonNum'])):
+                    lst_val = [f'name{i+1}', f'year{i+1}', f'selectSize{i+1}']
+                    dic.update(get_form_val(lst_val))
+                for i in range(int(session['dict']['sonNum'])):
+                    if check_vals(i+1, event, **dic):
+                        session['currentNum'] = i + 1
+                        son = get_member(dic, event)
+                        lst_mem.append(son)
+                        flash(f'{dic}')
+                    else:
+                        flash(f'{dic}')
+                        lst_mem.clear()
+                        return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=session['dict']['sonNum'])
+                person = db_add_new_sigup(session['dict'], event, lst_mem)
+                session['person_id'] = person.id
+                session.pop('dict')
+                session.pop('currentNum')
+                return redirect(url_for('views.after_sign_up'))
+            return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['dict']['sonNum'])
+        else:
+            flash('Operacja nie jest dostępna.', category='error')
+            return redirect(url_for('views.home'))
     else:
         flash('Operacja nie jest dostępna.', category='error')
         return redirect(url_for('views.home'))
@@ -161,8 +181,9 @@ def after_sign_up():
         return redirect(url_for('views.home'))
     
 
+#-----------------------------------> end sign up
 
-#-----------------------------------> end templates
+#-----------------> end For client
   
 @views.route('/user', methods=['GET','POST'])
 def user_page():
@@ -252,9 +273,23 @@ def event_view():
     event_id = request.args.get('event_id', None)
     event = Events.query.get(int(event_id))
     if event:
-        sn_lst = event.signup
-        sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
-        return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user)
+        if event.temp_id != 3:
+            sn_lst = event.signup
+            sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
+            return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user)
+        else:
+            lst_young = []
+            lst_old = []
+            for signup in event.signup:
+                for turn in signup.turnament:
+                    if turn.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
+                        lst_young.append(signup)
+                    else:
+                        lst_old.append(signup)
+            lst_young = sorted(lst_young, key=lambda signup: signup.id, reverse=True)
+            lst_old = sorted(lst_old, key=lambda signup: signup.id, reverse=True)
+            return render_template('event_view.html', event=event, lst_young=lst_young, lst_old=lst_old, user=current_user)
+
     else:
         flash('Operacja nie jest dostepna', category='error')
         return redirect(url_for('views.dashboard'))

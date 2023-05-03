@@ -56,9 +56,14 @@ def check_vals(num, event, **kwargs):
 			flash(f'Podaj poprawny adres dla zapisu {num}.', category='error')
 			return False
 	if f'year{num}' in kwargs.keys():
-		if len(kwargs[f'year{num}']) != 4 or int(kwargs[f'year{num}']) < 1970 or int(kwargs[f'year{num}']) > 2012:
-			flash(f'Podaj poprawny rok urodzenia (1970 - 2012) dla zapisu {num}.', category='error')
-			return False
+		if event.temp_id != 6 or event.temp_id != 3 and num != '':
+			if len(kwargs[f'year{num}']) != 4 or int(kwargs[f'year{num}']) < 1970 or int(kwargs[f'year{num}']) > 2012:
+				flash(f'Podaj poprawny rok urodzenia (1970 - 2012) dla zapisu {num}.', category='error')
+				return False
+		else:
+			if len(kwargs['year']) != 4:
+				flash('Podaj poprawny rok urodzenia', category='error')
+				return False
 	if f'telNum{num}' in kwargs.keys():
 		if len(kwargs[f'telNum{num}']) != 9:
 			flash(f'Podaj poprawny numer telefonu dla zapisu {num}.', category='error')
@@ -78,6 +83,15 @@ def check_vals(num, event, **kwargs):
 			if len(kwargs['weight']) < 2:
 				flash(f'Podaj poprawną wagę w kg.', category='error')
 				return False
+	if 'teamNum' in kwargs.keys():
+		if int(kwargs['teamNum']) < 4:
+		    flash(f'Podaj poprawną liczbę zawodników, min. 4', category='error')
+		    return False
+	if 'sonNum' in kwargs.keys():
+		if int(kwargs['sonNum']) < 0:
+		    flash(f'Liczba synów / uczestników po opieką nie może być mniejsza od 0', category='error')
+		    return False
+
 	return True
 
 
