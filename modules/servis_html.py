@@ -1,4 +1,4 @@
-from flask import flash, request, redirect, url_for, session
+from flask import flash, request, redirect, url_for, session, render_template
 from flask_login import login_required, current_user
 from flask_mail import Mail, Message
 from website import mail
@@ -47,12 +47,12 @@ def send_mail(event, person):
 
 
 def db_add_new_sigup(dic, event, lst):
+	date = str(datetime.datetime.now())
+	date = date_from_str(date, False)
+	signup = Signup(event_id=event.id, date=date)
+	db.session.add(signup)
+	db.session.commit()
 	if event.temp_id == 3:
-		date = str(datetime.datetime.now())
-		date = date_from_str(date, False)
-		signup = Signup(event_id=event.id, date=date)
-		db.session.add(signup)
-		db.session.commit()
 		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], telNum=dic['telNum'])
 		db.session.add(person)
 		db.session.commit()
@@ -65,32 +65,7 @@ def db_add_new_sigup(dic, event, lst):
 			db.session.add(player)
 			db.session.commit()
 		flash(f'Udało się zapisać drużynę!', category='success')
-
-	elif event.temp_id == 6:
-		date = str(datetime.datetime.now())
-		date = date_from_str(date, False)
-		signup = Signup(event_id=event.id, date=date)
-		db.session.add(signup)
-		db.session.commit()
-		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], telNum=dic['telNum'],
-					adress=dic['adress'], year=dic['year'], selectSize=dic['selectSize'])
-		db.session.add(person)
-		db.session.commit()
-		basic = Basic(signup_id=signup.id, howMany=dic['howMany'], whereKnew=dic['whereKnew'], intro=dic['intro'])
-		db.session.add(basic)
-		db.session.commit()
-		for son in lst:
-			son.signup_id = signup.id
-			db.session.add(son)
-			db.session.commit()
-		flash(f'Udało się zapisać!', category='success')
-
 	else:
-		date = str(datetime.datetime.now())
-		date = date_from_str(date, False)
-		signup = Signup(event_id=event.id, date=date)
-		db.session.add(signup)
-		db.session.commit()
 		basic = Basic(signup_id=signup.id, howMany=dic['howMany'], whereKnew=dic['whereKnew'], intro=dic['intro'])
 		db.session.add(basic)
 		db.session.commit()
@@ -119,20 +94,23 @@ def db_add_new_sigup(dic, event, lst):
 					pray=dic['pray'], freeTime=dic['freeTime'])
 			db.session.add(older)
 			db.session.commit()
-
+		if event.temp_id == 6:
+			for son in lst:
+				son.signup_id = signup.id
+				db.session.add(son)
+				db.session.commit()
 		flash('Udało się zapisać!', category='success')
 	return person
 
 
-def get_member(dic, event):
+def get_member(dic, event, num):
 	if event.temp_id == 3:
-		num = session['currentNum']
 		member = Person(name=dic[f'name{num}'], email=dic[f'email{num}'], adress=dic[f'adress{num}'],
 					year=dic[f'year{num}'], telNum=dic[f'telNum{num}'], is_contact=False)
 		return member 
 	if event.temp_id == 6:
-		num = session['currentNum']
-		member = Person(name=dic[f'name{num}'], year=dic[f'year{num}'], selectSize=dic[f'selectSize{num}'], is_contact=False)
+		member = Person(name=dic[f'name{num}'], email=dic[f'email{num}'], adress=dic[f'adress{num}'],
+					 year=dic[f'year{num}'], telNum=dic[f'telNum{num}'], selectSize=dic[f'selectSize{num}'], is_contact=False)
 		return member 
 
 

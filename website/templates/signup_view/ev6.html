@@ -49,7 +49,10 @@
                           <thead class="thead-light" align="center">
                             <tr>
                               <th scope="col">Imię i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Adres</th>
                               <th scope="col">Rok urodzenia</th>
+                              <th scope="col">Numer telefonu</th>
                               <th scope="col">Rozmiar koszulki</th>
                             </tr>
                           </thead>
@@ -58,7 +61,10 @@
                               {% if not item.is_contact %}
                             <tr>
                               <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.adress }}</td>
                               <td>{{ item.year }}</td>
+                              <td>{{ item.telNum }}</td>
                               <td>{{ item.selectSize }}</td>
                             </tr>
                            {% endif %}

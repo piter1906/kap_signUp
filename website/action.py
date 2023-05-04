@@ -11,6 +11,7 @@ from flask_mail import Mail, Message
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, From, To, Subject, PlainTextContent, HtmlContent, SendGridException
 from xhtml2pdf import pisa
+from xhtml2pdf.default import DEFAULT_FONT
 import io
 import sys
 import datetime 
@@ -114,11 +115,14 @@ def pdf():
         sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
         body = render_template('html2pdf.html', event=event, sn_lst=sn_lst, user=current_user)
 
+        FONT_CONFIG = DEFAULT_FONT
+        FONT_CONFIG['normal'] = 'Roboto'
+
         in_stream = io.BytesIO(body.encode('utf-8'))
         sys.stdin = io.TextIOWrapper(in_stream, encoding='utf-8')
         pdf_file = io.BytesIO()
         sys.stdout = io.TextIOWrapper(pdf_file, encoding='utf-8')
-        pisa.CreatePDF(in_stream, pdf_file)
+        pisa.CreatePDF(in_stream, pdf_file, encoding='utf-8', font_config=FONT_CONFIG)
         
         # Set the stream position to the beginning
         pdf_file.seek(0)

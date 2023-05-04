@@ -1,8 +1,20 @@
+ <a name="top"></a>
+<div class="card">
+<div class="card-header" style="background-color:   #c3ccd0">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="#young">MŁODSI</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#old">STARSI</a>
+      </li>
+    </ul>
+  </div>
 
 {% if lst_young %}
 <div class="card">
     <div class="card-header">
-<h4><font color="red">KATEGORIA: MŁODSI</font></h4>
+<a name="young"><h4><font color="red">KATEGORIA: MŁODSI</font></h4></a>
 </div>
 <div class="card-body">
 {% for signup in lst_young %}
@@ -104,10 +116,14 @@
              </div>
              <br>
              {% endif %}
+             <div class="col-md-12 text-right">
+<a href="#young"><button type="button" class="btn btn-dark">Przejdź do Młodsi</button></a>
+</div>
     {% if lst_old %}
     <div class="card">
     <div class="card-header">
-<h4><font color="red">KATEGORIA: STARSI</font></h4>
+<a name="old"><h4><font color="red">KATEGORIA: STARSI</font></h4></a>
+
 </div>
 <div class="card-body">
 {% for signup in lst_old %}
@@ -208,3 +224,8 @@
                <div>
                 </div>
     {% endif %}
+    <div class="col-md-12 text-right">
+<a href="#top"><button type="button" class="btn btn-dark">Wróć do początku strony</button></a>
+</div>
+    </div>
+  </div>

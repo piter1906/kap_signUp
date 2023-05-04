@@ -37,7 +37,7 @@ def check_member(telNum, email):
 	return True
 
 
-def check_vals(num, event, **kwargs):
+def check_vals(event, num='', **kwargs):
 	if f'name{num}' in kwargs.keys():
 		if len(kwargs[f'name{num}']) < 5:
 		    flash(f'Imię i nazwisko {num}: wprowadzone dane są za krótkie.', category='error')
@@ -61,8 +61,9 @@ def check_vals(num, event, **kwargs):
 				flash(f'Podaj poprawny rok urodzenia (1970 - 2012) dla zapisu {num}.', category='error')
 				return False
 		else:
-			if len(kwargs['year']) != 4:
-				flash('Podaj poprawny rok urodzenia', category='error')
+			if len(kwargs['year']) != 4 or datetime.date.today().year - int(kwargs[f'year{num}']) > 80 \
+				 or datetime.date.today().year - int(kwargs[f'year{num}']) < 18:
+				flash('Podaj poprawny rok urodzenia - musisz mieć minium 18 lat', category='error')
 				return False
 	if f'telNum{num}' in kwargs.keys():
 		if len(kwargs[f'telNum{num}']) != 9:

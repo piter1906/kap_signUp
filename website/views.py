@@ -27,7 +27,6 @@ def home():
                 year = yr
         lst_events = year.events
         lst_events = sorted(lst_events, key=lambda event: event.date)
-        date_stop = datetime.date.today()
         if request.method == 'POST':
             event_n = request.form.get('selectEvent')
             event_name = event_n[11:]
@@ -37,11 +36,8 @@ def home():
                         event = item
             session['event_id'] = event.id
             return redirect(url_for('views.signup'))
-
-        return render_template('home.html', year=year, user=current_user, lst_events=lst_events, date_stop=date_stop)
-
+        return render_template('home.html', year=year, user=current_user, lst_events=lst_events)
     return render_template('home.html', user=current_user)
-
 
 #-----------------> For client ---------> sign up 
 
@@ -51,115 +47,70 @@ def signup():
         event_id = session['event_id']
         event = Events.query.get(event_id)
         if request.method == 'POST':
+            if event.temp_id == 1:
+                dic = get_form_val(temp1_schem)
+            if event.temp_id == 2:
+                dic = get_form_val(temp2_schem)
             if event.temp_id == 3:
                 dic = get_form_val(temp3_schem)
-                num = ""
-                if check_vals(num, event, **dic):
-                    if check_member(dic['telNum'], dic['email']):
+            if event.temp_id == 4:
+                dic = get_form_val(temp4_schem)
+            if event.temp_id == 5:
+                dic = get_form_val(temp5_schem)
+            if event.temp_id == 6:
+                dic = get_form_val(temp6_schem)
+            if check_vals(event, **dic):
+                if check_member(dic['telNum'], dic['email']):
+                    if event.temp_id != 3 and event.temp_id != 6:
+                        person = db_add_new_sigup(dic, event, [])
+                        session['person_id'] = person.id
+                        return redirect(url_for('views.after_sign_up'))
+                    if event.temp_id == 3:
                         session['dict'] = dic
                         return redirect(url_for('views.signup_next'))
-                    else:
-                        return redirect(url_for('views.home'))
-                else:
-                    return render_template('signup.html', event=event, user=current_user, dic=dic)
-
-            elif event.temp_id == 6:
-                dic = get_form_val(temp6_schem)
-                num = ""
-                if check_vals(num, event, **dic):
-                    if check_member(dic['telNum'], dic['email']):
+                    if event.temp_id == 6:
                         if int(dic['sonNum']) == 0:
-                            person = db_add_new_sigup(session['dict'], event, [])
+                            person = db_add_new_sigup(dic, event, [])
                             session['person_id'] = person.id
                             return redirect(url_for('views.after_sign_up'))
                         else:
                             session['dict'] = dic
                             return redirect(url_for('views.signup_next'))
-                    else:
-                        return redirect(url_for('views.home'))
                 else:
-                    return render_template('signup.html', event=event, user=current_user, dic=dic)
+                    return redirect(url_for('views.home'))
             else:
-                if event.temp_id == 1:
-                    dic = get_form_val(temp1_schem)
-                    num = ""
-                if event.temp_id == 2:
-                    dic = get_form_val(temp2_schem)
-                    num = ""
-                if event.temp_id == 4:
-                    dic = get_form_val(temp4_schem)
-                    num = ""
-                if event.temp_id == 5:
-                    dic = get_form_val(temp5_schem)
-                    num = ""
-                if check_vals(num, event, **dic):
-                    if check_member(dic['telNum'], dic['email']):
-                        person = db_add_new_sigup(dic, event, [])
-                        session['person_id'] = person.id
-                        return redirect(url_for('views.after_sign_up'))
-                    else:
-                        return redirect(url_for('views.home'))
-                else:
-                    return render_template('signup.html', event=event, user=current_user, dic=dic)
-            return render_template('signup.html', event=event, user=current_user, dic={})
+                return render_template('signup.html', event=event, user=current_user, dic=dic)
         return render_template('signup.html', event=event, user=current_user, dic={})
     else:
         flash('Operacja nie jest dostępna.', category='error')
         return redirect(url_for('views.home'))
-
 
 @views.route('/signup_next', methods=['GET','POST'])
 def signup_next():
     if 'event_id' in session.keys():
         event_id = session['event_id']
         event = Events.query.get(event_id)
-        if event.temp_id == 3:
-            if request.method == 'POST':           
-                lst_mem = []
-                dic = {}
-                for i in range(int(session['dict']['teamNum'])):
-                    lst_val = [f'name{i+1}', f'email{i+1}', f'telNum{i+1}', f'adress{i+1}', f'year{i+1}']
-                    dic.update(get_form_val(lst_val))
-                for i in range(int(session['dict']['teamNum'])):    
-                    if check_vals(i+1, event, **dic):
-                        session['currentNum'] = i + 1
-                        player = get_member(dic, event)
-                        lst_mem.append(player)
-                    else:
-                        lst_mem.clear()
-                        return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=session['dict']['teamNum'])
-                person = db_add_new_sigup(session['dict'], event, lst_mem)
-                session['person_id'] = person.id
-                session.pop('dict')
-                session.pop('currentNum')
-                return redirect(url_for('views.after_sign_up'))
-            return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['dict']['teamNum'])
-        elif event.temp_id == 6:
-            if request.method == 'POST':
-                lst_mem = []
-                dic = {}
-                for i in range(int(session['dict']['sonNum'])):
-                    lst_val = [f'name{i+1}', f'year{i+1}', f'selectSize{i+1}']
-                    dic.update(get_form_val(lst_val))
-                for i in range(int(session['dict']['sonNum'])):
-                    if check_vals(i+1, event, **dic):
-                        session['currentNum'] = i + 1
-                        son = get_member(dic, event)
-                        lst_mem.append(son)
-                        flash(f'{dic}')
-                    else:
-                        flash(f'{dic}')
-                        lst_mem.clear()
-                        return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=session['dict']['sonNum'])
-                person = db_add_new_sigup(session['dict'], event, lst_mem)
-                session['person_id'] = person.id
-                session.pop('dict')
-                session.pop('currentNum')
-                return redirect(url_for('views.after_sign_up'))
-            return render_template('signup_next.html', event=event, user=current_user, dic={}, number=session['dict']['sonNum'])
-        else:
-            flash('Operacja nie jest dostępna.', category='error')
-            return redirect(url_for('views.home'))
+        number = int(session['dict']['teamNum']) if event.temp_id == 3 else int(session['dict']['sonNum'])
+        if request.method == 'POST':        
+            lst_mem = []
+            dic = {}
+            for i in range(number):
+                lst_val = [f'name{i+1}', f'email{i+1}', f'telNum{i+1}', f'adress{i+1}', f'year{i+1}'] if event.temp_id == 3 \
+                            else [f'name{i+1}', f'email{i+1}', f'telNum{i+1}', f'adress{i+1}', f'year{i+1}', f'selectSize{i+1}']
+                dic.update(get_form_val(lst_val))
+            for i in range(number):    
+                if check_vals(event, num=i+1, **dic):
+                    num = i + 1
+                    member = get_member(dic, event, num)
+                    lst_mem.append(member)
+                else:
+                    lst_mem.clear()
+                    return render_template('signup_next.html', event=event, user=current_user, dic=dic, number=number)
+            person = db_add_new_sigup(session['dict'], event, lst_mem)
+            session['person_id'] = person.id
+            session.pop('dict')
+            return redirect(url_for('views.after_sign_up'))
+        return render_template('signup_next.html', event=event, user=current_user, dic={}, number=number)
     else:
         flash('Operacja nie jest dostępna.', category='error')
         return redirect(url_for('views.home'))
