@@ -1,3 +1,73 @@
+<a name="top"></a>
+<div class="card">
+    <div class="card-header" style="background-color: #323a3e">
+<h4><font color="white">Podsumowanie:</font></h4>
+</div>
+<div class="card-body">
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Zgloszenia</th>
+                              <th scope="col">Potwierdzone</th>
+                              <th scope="col">Jeździło na nartach</th>
+                              <th scope="col">Potrzebuje instruktora</th>
+                              <th scope="col">Wyporzycza sprzęt</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ dic['num_signup'] }}</td>
+                              <td>{{ dic['num_active'] }}</td>
+                              <td>{{ dic['n_skiEver'] }}</td>
+                              <td>{{ dic['n_skiInst'] }}</td>
+                              <td>{{ dic['n_isLent'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+<br>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th colspan="2">Rodzaj karnetu</th>
+                              <th colspan="6">Wyporzyczany sprzęt</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td><b>Ulgowy</b></td>
+                              <td><b>Normalny</b></td>
+                              <td><b>Narty</b></td>
+                              <td><b>Buty</b></td>
+                              <td><b>Deska</b></td>
+                              <td><b>Kask</b></td>
+                              <td><b>Kijki</b></td>
+                              <td><b>Gogle</b></td>
+                            </tr>
+                            <tr>
+                              <td>{{ dic['discount'] }}</td>
+                              <td>{{ dic['normal'] }}</td>
+                              <td>{{ dic['narty'] }}</td>
+                              <td>{{ dic['buty'] }}</td>
+                              <td>{{ dic['deska'] }}</td>
+                              <td>{{ dic['kask'] }}</td>
+                              <td>{{ dic['kijki'] }}</td>
+                              <td>{{ dic['gogle'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+                      </div>
+</div>
+<br>
+    <div class="card-header">
+      {% if dic['num_signup'] != 0 %}
+<h4><font color="blue">Lista uczestników:</font></h4>
+{% else %}
+<h4><font color="red">Brak zapisanych uczestników:</font></h4>
+{% endif %}
+
+</div>
+<br>
+
 {% for signup in sn_lst %}
 <div class="card">
     <div class="card-header" style="background-color: #323a3e">
@@ -34,8 +104,8 @@
                               <td>{{ item.adress }}</td>
                               <td>{{ item.year }}</td>
                               <td>{{ item.telNum }}</td>
-                              <td>{{ item.height }} cm</td>
-                              <td>{{ item.weight }} kg</td>
+                              <td>{% if item.skiLent %}{{ item.height }} cm{% else %} - {% endif %}</td>
+                              <td>{% if item.skiLent %}{{ item.weight }} kg{% else %} - {% endif %}</td>
                             </tr>
                            
                           </tbody>
@@ -63,28 +133,48 @@
                         </table>
                {% endfor %}
                
-             </div>
+             <br>
     {% for item in signup.winter %}
-    <div class="card">
-      <div class="card-header">
-        <h6>Informacje od umiejętnościach jazdy i sprzęcie narciarskim:</h6>
-      </div>
-    <div class="card-body">
+
+<h6>Informacje od umiejętnościach jazdy i sprzęcie narciarskim:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Czy jeździł na nartach</th>
+                              <th scope="col">Ocena umiejętności jazdy</th>
+                              <th scope="col">Czy będzie potrzebował instruktora</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{% if item.skiEver %}Tak{% else %}Nie{% endif %}</td>
+                              <td>{{ item.skiSkill }}</td>
+                              <td>{% if item.skiInst %}Tak{% else %}Nie{% endif %}</td>
+                            </tr>
+                           
+                          </tbody>
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Rodzaj karnetu</th>
+                              <th scope="col">Czy będzie wypożyczał sprzęt narciarski</th>
+                              <th scope="col">Jaki sprzęt będzie wyporzyczał</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.passBuy }}</td>
+                              <td>{% if item.skiLent %}Tak{% else %}Nie{% endif %}</td>
+                              <td>{% if item.skiLent %}{{ item.skiLent }}{% else %} - {% endif %}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
     
-<ul>
-<li>Czy jeździł na nartach: {% if item.skiEver %}Tak{% else %}Nie{% endif %}</li>
-<li>Ocena umiejętności jazdy: {{ item.skiSkill }}</li>
-<li>Czy będzie potrzebował instruktora: {% if item.skiInst %}Tak{% else %}Nie{% endif %}</li>
-<li>Rodzaj karnetu: {{ item.passBuy }}</li>
-<li>Czy będzie wypożyczał sprzęt narciarski: {% if item.skiLent %}Tak{% else %}Nie{% endif %}</li>
-{% if item.skiLent %}
-<li>Jaki sprzęt będzie wyporzyczał: {{ item.skiLent }}</li>
-</ul>
-{% else %}
-</ul>
-{% endif %}
-</div>
-</div>
+
 {% endfor %}
+</div>
            </div><br>
                {% endfor %}
+               <div class="col-md-12 text-right">
+<a href="#top"><button type="button" class="btn btn-dark">Wróć do początku strony</button></a>
+</div>

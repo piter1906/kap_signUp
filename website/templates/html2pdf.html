@@ -1,5 +1,28 @@
-{% if event.temp_id == 1 %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+  
+td {
+  text-align: center;
+  padding: 3px;
+}
+th {
+  background-color: #ebeef0;
+  padding: 3px;
+}
+    </style>
+  </head>
+
+  <body>
+    {% if event.temp_id == 1 %}
   {% include 'pdf_temp/pdf1.html' %}
-{% elif event.temp_id == 2 %}
-Siemanko :D
-{% endif %}
+  {% elif event.temp_id == 2 %}
+    Siemanko :D
+  {% endif %}
+
+
+  </body>
+
+</html>

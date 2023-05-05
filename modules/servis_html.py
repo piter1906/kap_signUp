@@ -217,5 +217,69 @@ def db_add_event(year):
 		flash('Dodano akcje do wybranego roku', category='success')
 	return (dic, check)
 
+def get_sumup(event_id, lst):
+	dic = {}
+	dic['num_signup'] = len(lst)
+	dic['num_active'] = 0
+	dic['xs'] = 0
+	dic['s'] = 0
+	dic['m'] = 0
+	dic['l'] = 0
+	dic['xl'] = 0
+	dic['xxl'] = 0
+	dic['n_skiEver'] = 0
+	dic['n_skiInst'] = 0
+	dic['n_isLent'] = 0
+	dic['discount'] = 0
+	dic['normal'] = 0
+	dic['narty'] = 0
+	dic['buty'] = 0
+	dic['deska'] = 0
+	dic['kask'] = 0
+	dic['kijki'] = 0
+	dic['gogle'] = 0
+	for signup in lst:
+		for member in signup.person:
+			if member.is_verified:
+				dic['num_active'] += 1
+			if event_id in (1, 4, 6):
+				if member.selectSize == 'XS':
+					dic['xs'] += 1
+				elif member.selectSize == 'S':
+					dic['s'] += 1
+				elif member.selectSize == 'M':
+					dic['m'] += 1
+				elif member.selectSize == 'L':
+					dic['l'] += 1
+				elif member.selectSize == 'XL':
+					dic['xl'] += 1
+				elif member.selectSize == 'XXL':
+					dic['xxl'] += 1
+		if event_id == 2:
+			for win in signup.winter:
+				if win.skiEver:
+					dic['n_skiEver'] += 1
+				if win.skiInst:
+					dic['n_skiInst'] += 1
+				if win.isLent:
+					dic['n_isLent'] += 1
+				if win.passBuy == 'Ulgowy':
+					dic['discount'] += 1
+				else:
+					dic['normal'] += 1
+				if 'Narty' in win.skiLent:
+					 dic['narty'] += 1
+				if 'Buty' in win.skiLent:
+					 dic['buty'] += 1
+				if 'Deska' in win.skiLent:
+					 dic['deska'] += 1
+				if 'Kask' in win.skiLent:
+					 dic['kask'] += 1
+				if 'Kijki' in win.skiLent:
+					 dic['kijki'] += 1
+				if 'Gogle' in win.skiLent:
+					 dic['gogle'] += 1
+	return dic
+
 
 

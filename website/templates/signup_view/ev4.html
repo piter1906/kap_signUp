@@ -1,4 +1,50 @@
+<a name="top"></a>
+<div class="card">
+    <div class="card-header" style="background-color: #323a3e">
+<h4><font color="white">Podsumowanie:</font></h4>
+</div>
+<div class="card-body">
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                            <th colspan="6">Rozmiary koszulek</th>
+                              <th scope="col">Zgloszenia</th>
+                              <th scope="col">Potwierdzone</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                                <td><b>XS</b></td>
+                              <td><b>S</b></td>
+                              <td><b>M</b></td>
+                              <td><b>L</b></td>
+                              <td><b>XL</b></td>
+                              <td><b>XXL</b></td>
+                              <td>{{ dic['num_signup'] }}</td>
+                              <td>{{ dic['num_active'] }}</td>
+                            </tr>
+                            <tr>
+                              <td>{{ dic['xs'] }}</td>
+                              <td>{{ dic['s'] }}</td>
+                              <td>{{ dic['m'] }}</td>
+                              <td>{{ dic['l'] }}</td>
+                              <td>{{ dic['xl'] }}</td>
+                              <td>{{ dic['xxl'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+                      </div>
+</div>
+<br>
+    <div class="card-header">
+      {% if dic['num_signup'] != 0 %}
+<h4><font color="blue">Lista uczestników:</font></h4>
+{% else %}
+<h4><font color="red">Brak zapisanych uczestników:</font></h4>
+{% endif %}
 
+</div>
+<br>
 {% for signup in sn_lst %}
 <div class="card">
     <div class="card-header" style="background-color: #323a3e">
@@ -81,3 +127,6 @@
 {% endfor %}
            </div><br>
                {% endfor %}
+                <div class="col-md-12 text-right">
+<a href="#top"><button type="button" class="btn btn-dark">Wróć do początku strony</button></a>
+</div>

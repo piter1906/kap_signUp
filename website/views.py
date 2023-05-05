@@ -224,10 +224,11 @@ def event_view():
     event_id = request.args.get('event_id', None)
     event = Events.query.get(int(event_id))
     if event:
+        sn_lst = event.signup
+        sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
+        dic = get_sumup(event.id, sn_lst)
         if event.temp_id != 3:
-            sn_lst = event.signup
-            sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
-            return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user)
+            return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user, dic=dic)
         else:
             lst_young = []
             lst_old = []

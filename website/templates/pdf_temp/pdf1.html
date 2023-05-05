@@ -1,4 +1,37 @@
-<h3 align="center">Lista uczestnikow {{ event.name }}</h3>
+<h2 align="center">{{ event.name }}</h2>
+<h3>Podsumowanie:</h3>
+<table  border="0.5">
+                          <thead align="center">
+                            <tr>
+                            <th colspan="6">Rozmiary koszulek</th>
+                              <th scope="col">Zgloszenia</th>
+                              <th scope="col">Potwierdzone</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                                <td><b>XS</b></td>
+                              <td><b>S</b></td>
+                              <td><b>M</b></td>
+                              <td><b>L</b></td>
+                              <td><b>XL</b></td>
+                              <td><b>XXL</b></td>
+                              <td>{{ dic['num_signup'] }}</td>
+                              <td>{{ dic['num_active'] }}</td>
+                            </tr>
+                            <tr>
+                              <td>{{ dic['xs'] }}</td>
+                              <td>{{ dic['s'] }}</td>
+                              <td>{{ dic['m'] }}</td>
+                              <td>{{ dic['l'] }}</td>
+                              <td>{{ dic['xl'] }}</td>
+                              <td>{{ dic['xxl'] }}</td>
+                            </tr>
+                    </tbody>
+                    </table>
+<br>
+<h3>Lista uczestników:</h3>
+<hr>
 {% for signup in sn_lst %}
 <div class="card">
     <div class="card-header">
@@ -8,23 +41,59 @@
 <h6>Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}</font></h6>
 <h6>Data zapisu: {{ signup.date }}</h6>
 <h6>Dane uczestnika:</h6>
-<ul>
-<li>Imie i nazwisko: {{ item.name }}</li>
-<li>Email: {{ item.email }}</li>
-<li>Adres: {{ item.adress }}</li>
-<li>Rok urodzenia: {{ item.year }}</li>
-<li>Numer telefonu: {{ item.telNum }}</li>
-<li>Rozmiar koszulki: {{ item.selectSize }}</li>
-</ul>
+<table  border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Imie i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Adres</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.adress }}</td>
+                            </tr>
+                           
+                          </tbody>
+                           <thead align="center">
+                            <tr>
+                              <th scope="col">Rok urodzenia</th>
+                              <th scope="col">Numer telefonu</th>
+                              <th scope="col">Rozmiar koszulki</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.year }}</td>
+                              <td>{{ item.telNum }}</td>
+                              <td>{{ item.selectSize }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
 {% endfor %}
           
 {% for item in signup.basic %}
 <h6>Dodatkowe informacje:</h6>
-<ul>
-<li>Ktory raz na akcji: {{ item.howMany }}</li>
-<li>Skad sie dowiedzial: {{ item.whereKnew }}</li>
-<li>O sobie: {{ item.intro }}</li>
-</ul>
+<table  border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Ktory raz na akcji</th>
+                              <th scope="col">Skad sie dowiedzial</th>
+                              <th scope="col">O sobie</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.howMany }}</td>
+                              <td>{{ item.whereKnew }}</td>
+                              <td>{{ item.intro }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
 
                {% endfor %}
                <br>

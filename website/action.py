@@ -83,22 +83,7 @@ def signup_verified():
             person.is_verified = True
             db.session.commit()
             flash('Zapis został zweryfikowany.', category='success')
-            if event.temp_id != 3:
-                sn_lst = event.signup
-                sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
-                return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user)
-            else:
-                lst_young = []
-                lst_old = []
-                for signup in event.signup:
-                    for turn in signup.turnament:
-                        if turn.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
-                            lst_young.append(signup)
-                        else:
-                            lst_old.append(signup)
-                lst_young = sorted(lst_young, key=lambda signup: signup.id, reverse=True)
-                lst_old = sorted(lst_old, key=lambda signup: signup.id, reverse=True)
-                return render_template('event_view.html', event=event, lst_young=lst_young, lst_old=lst_old, user=current_user)
+            return redirect(f'/dashboard/eventview?event_id={event.id}')
         else:
             flash('Operacja nie jest dostępna', category='error')
     return redirect(url_for('views.edit_year'))
@@ -113,7 +98,8 @@ def pdf():
     if event:
         sn_lst = event.signup
         sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
-        body = render_template('html2pdf.html', event=event, sn_lst=sn_lst, user=current_user)
+        dic = get_sumup(event.id, sn_lst)
+        body = render_template('html2pdf.html', event=event, sn_lst=sn_lst, user=current_user, dic=dic)
 
         FONT_CONFIG = DEFAULT_FONT
         FONT_CONFIG['normal'] = 'Roboto'
