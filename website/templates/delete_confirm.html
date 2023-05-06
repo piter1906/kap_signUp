@@ -1,0 +1,36 @@
+{% extends "base.html" %} 
+{% block title %}Zapisy na akcje Kapszlakowe{% endblock %} 
+
+{% block content %}
+<div class="card"> 
+	<div class="card-body">
+		<div class="card-header">
+			   <h3 class="card-title" align="center">Potwierdzenie usunięcia</h3>
+			</div>
+		  	<div class="card-body">
+		  		<h4>Czy na pewno chcesz usunąć {% if signup and event %} z akcji {{ event.name }} zapis z datą {{ signup.date }}{% else %} {% if event %}Czy na pewno chcesz usunąć {{ event.name }} {{ event.date }} {% endif%} {% endif %}
+		  		?</h4><br>
+				  <div class="card">
+				    <div class="card-body">
+				    	<form>
+				    	<div class="col-md-12 text-center">
+				    <a href="/dashboard/edityear"><button type="button" class="btn btn-success btn-lg">Wróć do panelu</button></a>
+				    {% if signup and event %}
+				  	<a href="/delete-signup"><button type="button" class="btn btn-danger btn-lg">Usuń</button></a>
+				  	{% else %}  
+				    {% if event %}
+				  	<a href="/delete-event/{{ event.id }}"><button type="button" class="btn btn-danger btn-lg">Usuń</button></a>
+				  	{% endif %}
+				  	{% endif %}
+				  	
+				</div>
+				</form>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

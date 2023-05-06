@@ -8,7 +8,7 @@
                           <thead class="thead-light" align="center">
                             <tr>
                             <th colspan="6">Rozmiary koszulek</th>
-                              <th scope="col">Zgloszenia</th>
+                              <th scope="col">Zgłoszenia</th>
                               <th scope="col">Potwierdzone</th>
                             </tr>
                           </thead>
@@ -54,10 +54,13 @@
     <div class="card-body">
       <div class="col-md-12 text-right">
         {% if not item.is_verified %}
-        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-danger">Potwierdź zapis</button></a>
+        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-info">Potwierdź zapis</button></a>
         {% else %}
         <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
 
+        {% endif %}
+        {% if event.is_active %}
+        <a href="/delete?event_id={{ event.id }}&signup_id={{ signup.id }}"><button type="button" class="btn btn-danger">Usuń</button></a>
         {% endif %}
       </div>
 <h6>Data zapisu: {{ signup.date }}</h6>
@@ -108,23 +111,33 @@
                         </table>
                {% endfor %}
                <br>
-             </div>
-             {% for item in signup.older %}
-    <div class="card">
-      <div class="card-header">
-        <h6>Informacje o chęci spędzania czasu:</h6>
-      </div>
-    <div class="card-body">
-<ul>
-<li>Czy będzie brał rower: {% if item.isBike %}Tak{% else %}Nie{% endif %}</li>
-<li>Propozycje o charakterze duchowym: {{ item.pray }}</li>
-<li>Propozycje aktywności: {{ item.attrac }}</li>
-<li>Propozycje spędzania wolnego czasu: {{ item.freeTime }}</li>
-</ul>
+{% for item in signup.older %}
+<h6>Propozycje:</h6>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Czy będzie brał rower</th>
+                              <th scope="col">Dla ducha</th>
+                              <th scope="col">Aktywności</th>
+                              <th scope="col">Czas wolny</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{% if item.isBike %}Tak{% else %}Nie{% endif %}</td>
+                              <td>{{ item.pray }}</td>
+                              <td>{{ item.attrac }}</td>
+                              <td>{{ item.freeTime }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
 
-</div>
-</div>
+
 {% endfor %}
+
+             </div>
+          
            </div><br>
                {% endfor %}
                 <div class="col-md-12 text-right">

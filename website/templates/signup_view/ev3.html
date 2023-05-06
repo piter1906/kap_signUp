@@ -1,5 +1,59 @@
  <a name="top"></a>
 <div class="card">
+    <div class="card-header" style="background-color: #323a3e">
+<h4><font color="white">Podsumowanie:</font></h4>
+</div>
+<div class="card-body">
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th scope="col">Zgłoszenia</th>
+                              <th scope="col">Potwierdzone</th>
+                              <th scope="col">Zawodnicy</th>
+                              <th scope="col">Nocujący z soboty na niedzielę</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ dic['num_signup'] }}</td>
+                              <td>{{ dic['num_active'] }}</td>
+                              <td>{{ dic['players'] }}</td>
+                              <td>{{ dic['sleep'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+<br>
+<table class="table table-bordered">
+                          <thead class="thead-light" align="center">
+                            <tr>
+                              <th colspan="2">Drużyny w danej kategorii</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td><b>Młodsi</b></td>
+                              <td><b>Starsi</b></td>
+                            </tr>
+                            <tr>
+                              <td>{{ dic['young'] }}</td>
+                              <td>{{ dic['old'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+                      </div>
+</div>
+<br>
+    <div class="card-header">
+      {% if dic['num_signup'] != 0 %}
+<h4><font color="blue">Lista uczestników:</font></h4>
+{% else %}
+<h4><font color="red">Brak zapisanych uczestników:</font></h4>
+{% endif %}
+
+</div>
+<br>
+
+<div class="card">
 <div class="card-header" style="background-color:   #c3ccd0">
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item">
@@ -27,10 +81,13 @@
     <div class="card-body">
       <div class="col-md-12 text-right">
         {% if not item.is_verified %}
-        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-danger">Potwierdź zapis</button></a>
+        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-info">Potwierdź zapis</button></a>
         {% else %}
         <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
 
+        {% endif %}
+        {% if event.is_active %}
+        <a href="/delete?event_id={{ event.id }}&signup_id={{ signup.id }}"><button type="button" class="btn btn-danger">Usuń</button></a>
         {% endif %}
       </div>
 <h6>Data zapisu: {{ signup.date }}</h6>
@@ -136,10 +193,13 @@
     <div class="card-body">
       <div class="col-md-12 text-right">
         {% if not item.is_verified %}
-        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-danger">Potwierdź zapis</button></a>
+        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-info">Potwierdź zapis</button></a>
         {% else %}
         <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
 
+        {% endif %}
+        {% if event.is_active %}
+        <a href="/delete?event_id={{ event.id }}&signup_id={{ signup.id }}"><button type="button" class="btn btn-danger">Usuń</button></a>
         {% endif %}
       </div>
 <h6>Data zapisu: {{ signup.date }}</h6>

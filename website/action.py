@@ -33,6 +33,13 @@ options = {
     'encoding': "UTF-8"
 }
 
+@action.route('/test-signup/<int:itemID>')
+@login_required
+def test_sn(itemID):
+    event = Events.query.get(itemID)
+    test_signup(event, 10)
+    return redirect(url_for('views.home'))
+
 
 @action.route('/delete-bl/<int:itemID>', methods=['GET','POST'])
 @login_required
@@ -52,7 +59,53 @@ def delete_year(itemID):
         db.session.delete(item)
         db.session.commit()
         flash(f'Element {item.name} {item.is_active} usunięty lat')
-    return redirect(url_for('views.edit_year'))  
+    return redirect(url_for('views.edit_year'))
+
+@action.route('/delete-event/<int:itemID>', methods=['GET','POST'])
+@login_required
+def delete_event(itemID):
+    item = Events.query.get(itemID)
+    if item:
+        db.session.delete(item)
+        db.session.commit()
+        flash(f'Wydarzenie {item.name} usunięte listy')
+    return redirect(url_for('views.edit_year'))
+
+@action.route('/delete-signup', methods=['GET','POST'])
+@login_required
+def delete_signup():
+    event_id = session['event_id']
+    signup_id = session['signup_id']
+    event = Events.query.get(event_id)
+    signup = Signup.query.get(signup_id)
+    if signup:
+        db.session.delete(signup)
+        db.session.commit()
+        session.pop('event_id')
+        session.pop('signup_id')
+        flash(f'Zapis został usunięty.')
+    return redirect(f'/dashboard/eventview?event_id={event.id}')
+
+@action.route('/delete', methods=['GET','POST'])
+@login_required
+def delete_conf():
+    event_id = request.args.get('event_id', None)
+    signup_id = request.args.get('signup_id', None)
+    if event_id and signup_id:
+        event = Events.query.get(int(event_id))
+        signup = Signup.query.get(int(signup_id))
+        session['event_id'] = event.id
+        session['signup_id'] = signup.id
+        return render_template('delete_confirm.html', event=event, signup=signup, user=current_user)
+    elif event_id:
+        event = Events.query.get(int(event_id))
+        session['event_id'] = event_id
+        return render_template('delete_confirm.html', event=event, signup='', user=current_user)
+    else:
+        flash('Nie masz dostępu do tej strony.', category='error')
+        return redirect(url_for('views.dashboard'))
+
+      
 
 #-----------------------------> end delete
 
@@ -97,30 +150,36 @@ def pdf():
     event = Events.query.get(event_id)
     if event:
         sn_lst = event.signup
-        sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
-        dic = get_sumup(event.id, sn_lst)
-        body = render_template('html2pdf.html', event=event, sn_lst=sn_lst, user=current_user, dic=dic)
+        if sn_lst:
+            sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
+            sn_lst = change_polish_char(event, sn_lst)
+            dic = get_sumup(event, sn_lst)
+            if event.temp_id != 3:
+                body = render_template('html2pdf.html', event=event, sn_lst=sn_lst, user=current_user, dic=dic)
+            else:
+                lst_young = []
+                lst_old = []
+                for signup in event.signup:
+                    for turn in signup.turnament:
+                        if turn.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
+                         lst_young.append(signup)
+                        else:
+                            lst_old.append(signup)
+                lst_young = sorted(lst_young, key=lambda signup: signup.id, reverse=True)
+                lst_old = sorted(lst_old, key=lambda signup: signup.id, reverse=True)
+                body = render_template('html2pdf.html', event=event, lst_young=lst_young, lst_old=lst_old, user=current_user, dic=dic)
 
-        FONT_CONFIG = DEFAULT_FONT
-        FONT_CONFIG['normal'] = 'Roboto'
+            pdf_file = io.BytesIO()
+            pisa.CreatePDF(body, pdf_file, encoding='utf-8')
+            pdf_file.seek(0)
+            response = make_response(pdf_file.getvalue())
+            response.headers['Content-Type'] = 'application/pdf'
+            response.headers['Content-Disposition'] = f'attachment; filename=Uczestnicy_{event.name}.pdf'
 
-        in_stream = io.BytesIO(body.encode('utf-8'))
-        sys.stdin = io.TextIOWrapper(in_stream, encoding='utf-8')
-        pdf_file = io.BytesIO()
-        sys.stdout = io.TextIOWrapper(pdf_file, encoding='utf-8')
-        pisa.CreatePDF(in_stream, pdf_file, encoding='utf-8', font_config=FONT_CONFIG)
-        
-        # Set the stream position to the beginning
-        pdf_file.seek(0)
-        
-        # Create a Flask response object with the PDF file
-        response = make_response(pdf_file.getvalue())
-        
-        # Set the content type and headers for the response
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename=Uczestnicy_{event.name}.pdf'
-
-        return response
+            return response
+        else:
+            flash('Brak zapisów na daną akcję. PDF nie został wygenerowany', category='error')
+            return redirect(url_for('views.edit_year'))
     else:
         flash('Nie masz bezpośredniego dostępu do tej strony', category='error')
         return redirect(url_for('views.dashboard'))

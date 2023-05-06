@@ -17,9 +17,17 @@ th {
 
   <body>
     {% if event.temp_id == 1 %}
-  {% include 'pdf_temp/pdf1.html' %}
-  {% elif event.temp_id == 2 %}
-    Siemanko :D
+      {% include 'pdf_temp/pdf1.html' %}
+    {% elif event.temp_id == 2 %}
+      {% include 'pdf_temp/pdf2.html' %}
+    {% elif event.temp_id == 3 %}
+      {% include 'pdf_temp/pdf3.html' %}
+    {% elif event.temp_id == 4 %}
+      {% include 'pdf_temp/pdf4.html' %}
+    {% elif event.temp_id == 5 %}
+      {% include 'pdf_temp/pdf5.html' %}
+    {% elif event.temp_id == 6 %}
+      {% include 'pdf_temp/pdf6.html' %}
   {% endif %}
 
 

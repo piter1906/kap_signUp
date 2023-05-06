@@ -7,6 +7,35 @@ from modules.check_module import *
 from website.models import Year, Blacklist, Events, Signup, Person, Turnament, Winter, Older, Basic
 import datetime 
 
+'attrac', 'pray', 'freeTime'
+
+def change_polish_char(event, lst):
+	chars = 'ąćęłńśźżĄĆĘŁŃŚŹŻ'
+	replace ='acelnszzACELNSZZ'
+	translator = str.maketrans(chars, replace)
+	for signup in lst:
+		if event.temp_id != 3:
+			for person in signup.person:
+				person.name = person.name.translate(translator)
+				person.adress = person.adress.translate(translator)
+			for basic in signup.basic:
+				basic.intro = basic.intro.translate(translator)
+		if event.temp_id == 3:
+			for person in signup.person:
+				person.name = person.name.translate(translator)
+				if not person.is_contact:
+					person.adress = person.adress.translate(translator)
+			for turn in signup.turnament:
+				turn.teamName = turn.teamName.translate(translator)
+				turn.teamFrom = turn.teamFrom.translate(translator)
+				turn.say = turn.say.translate(translator)
+		if event.temp_id == 4:
+			for old in signup.older:
+				old.attrac = old.attrac.translate(translator)
+				old.pray = old.pray.translate(translator)
+				old.freeTime = old.freeTime.translate(translator)
+	return lst
+
 
 def date_from_str(date, create_ev):
 	if date:
@@ -81,11 +110,18 @@ def db_add_new_sigup(dic, event, lst):
 			skiEver = True if dic['skiEver'] == 'true' else False
 			skiInst = True if dic['skiInst'] == 'true' else False
 			isLent = True if dic['isLent'] == 'true' else False
-			skiLent = ''
-			for item in dic['skiLent']:
-				skiLent += item + ', '
-			winter = Winter(signup_id=signup.id, skiEver=skiEver, skiSkill=dic['skiSkill'],
+			if isLent:
+				skiLent = ''
+				for item in dic['skiLent']:
+					skiLent += item + ', '
+				winter = Winter(signup_id=signup.id, skiEver=skiEver, skiSkill=dic['skiSkill'],
 					skiInst=skiInst, passBuy=dic['passBuy'], isLent=isLent, skiLent=skiLent)
+			else:
+				person.height= ''
+				person.weight= ''
+				db.session.commit()
+				winter = Winter(signup_id=signup.id, skiEver=skiEver, skiSkill=dic['skiSkill'],
+					skiInst=skiInst, passBuy=dic['passBuy'], isLent=isLent)
 			db.session.add(winter)
 			db.session.commit()
 		if event.temp_id == 4:
@@ -136,7 +172,7 @@ def db_add_year(name, event_num, years):
 def db_update_event(event):
 	dic = {}
 	name = request.form.get('name')
-	date = date_from_str(request.form.get('date'))
+	date = date_from_str(request.form.get('date'), True)
 	mail_temp = request.form.get('mail_temp')
 	tup = check_event(name=name, date=date, template="test", mail_temp=mail_temp, num=event.id)
 	if tup[0]:
@@ -217,32 +253,40 @@ def db_add_event(year):
 		flash('Dodano akcje do wybranego roku', category='success')
 	return (dic, check)
 
-def get_sumup(event_id, lst):
+def get_sumup(event, lst):
 	dic = {}
+	dic_1 = {}
+	dic_2 = {}
+	dic_3 = {}
 	dic['num_signup'] = len(lst)
 	dic['num_active'] = 0
-	dic['xs'] = 0
-	dic['s'] = 0
-	dic['m'] = 0
-	dic['l'] = 0
-	dic['xl'] = 0
-	dic['xxl'] = 0
-	dic['n_skiEver'] = 0
-	dic['n_skiInst'] = 0
-	dic['n_isLent'] = 0
-	dic['discount'] = 0
-	dic['normal'] = 0
-	dic['narty'] = 0
-	dic['buty'] = 0
-	dic['deska'] = 0
-	dic['kask'] = 0
-	dic['kijki'] = 0
-	dic['gogle'] = 0
+	temp1 = ['xs', 's', 'm', 'l', 'xl', 'xxl']
+	temp2 = ['n_skiEver', 'n_skiInst', 'n_isLent', 'discount', 'normal', 'narty', 
+				'buty', 'deska', 'kask', 'kijki', 'gogle']
+	temp3 = ['players', 'sleep', 'young', 'old']
+	if event.temp_id in (1, 4):
+		for item in temp1:
+			dic_1[item] = 0
+		dic.update(dic_1)
+	if event.temp_id == 2:	
+		for item in temp2:
+			dic_2[item] = 0
+		dic.update(dic_2)
+	if event.temp_id == 3:	
+		for item in temp3:
+			dic_3[item] = 0
+		dic.update(dic_3)
+	if event.temp_id == 6:
+		for item in temp1:
+			dic_1[item] = 0
+		dic.update(dic_1)
+		dic['members'] = 0
+
 	for signup in lst:
 		for member in signup.person:
 			if member.is_verified:
 				dic['num_active'] += 1
-			if event_id in (1, 4, 6):
+			if event.temp_id in (1, 4, 6):
 				if member.selectSize == 'XS':
 					dic['xs'] += 1
 				elif member.selectSize == 'S':
@@ -255,7 +299,9 @@ def get_sumup(event_id, lst):
 					dic['xl'] += 1
 				elif member.selectSize == 'XXL':
 					dic['xxl'] += 1
-		if event_id == 2:
+			if event.temp_id == 6:
+				dic['members'] += 1
+		if event.temp_id == 2:
 			for win in signup.winter:
 				if win.skiEver:
 					dic['n_skiEver'] += 1
@@ -267,19 +313,47 @@ def get_sumup(event_id, lst):
 					dic['discount'] += 1
 				else:
 					dic['normal'] += 1
-				if 'Narty' in win.skiLent:
-					 dic['narty'] += 1
-				if 'Buty' in win.skiLent:
-					 dic['buty'] += 1
-				if 'Deska' in win.skiLent:
-					 dic['deska'] += 1
-				if 'Kask' in win.skiLent:
-					 dic['kask'] += 1
-				if 'Kijki' in win.skiLent:
-					 dic['kijki'] += 1
-				if 'Gogle' in win.skiLent:
-					 dic['gogle'] += 1
+				if win.isLent:
+					if 'Narty' in win.skiLent:
+						 dic['narty'] += 1
+					if 'Buty' in win.skiLent:
+						 dic['buty'] += 1
+					if 'Deska' in win.skiLent:
+						 dic['deska'] += 1
+					if 'Kask' in win.skiLent:
+						 dic['kask'] += 1
+					if 'Kijki' in win.skiLent:
+						 dic['kijki'] += 1
+					if 'Gogle' in win.skiLent:
+						 dic['gogle'] += 1
+		if event.temp_id == 3:
+			for tur in signup.turnament:
+				dic['players'] += tur.teamNum 
+				dic['sleep'] += tur.peopleNum
+				if tur.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
+					dic['young'] += 1
+				else:
+					dic['old'] += 1
 	return dic
 
+def test_signup(event, number):
+	for i in range(number):
+		date = str(datetime.datetime.now())
+		date = date_from_str(date, False)
+		signup = Signup(event_id=event.id, date=date)
+		db.session.add(signup)
+		db.session.commit()
+		person = Person(signup_id=signup.id, name=f'{i} Opiekun', email='email@email.com', telNum='345456567')
+		db.session.add(person)
+		db.session.commit()
+		turnament = Turnament(signup_id=signup.id, ageCat='Od 14 do 19 roku życia (drużyna składa się z 5 osób + bramkarz)', teamName=f'{i} teamName',
+						teamFrom='teamFrom', teamNum=10, peopleNum=5, say='elo ziombelo')
+		db.session.add(turnament)
+		db.session.commit()
+		for j in range(10):
+			player = Person(signup_id=signup.id, name=f'name {i}', email='edsadas@dsad.pl', 
+				adress='dasdasdsadd', year='1993', telNum='354635457', is_contact=False)
+			db.session.add(player)
+			db.session.commit()
 
 

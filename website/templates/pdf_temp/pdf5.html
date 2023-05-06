@@ -3,29 +3,14 @@
 <table  border="0.5">
                           <thead align="center">
                             <tr>
-                            <th colspan="6">Rozmiary koszulek</th>
                               <th scope="col">Zgloszenia</th>
                               <th scope="col">Potwierdzone</th>
                             </tr>
                           </thead>
                           <tbody align="center">
                             <tr>
-                                <td><b>XS</b></td>
-                              <td><b>S</b></td>
-                              <td><b>M</b></td>
-                              <td><b>L</b></td>
-                              <td><b>XL</b></td>
-                              <td><b>XXL</b></td>
                               <td>{{ dic['num_signup'] }}</td>
                               <td>{{ dic['num_active'] }}</td>
-                            </tr>
-                            <tr>
-                              <td>{{ dic['xs'] }}</td>
-                              <td>{{ dic['s'] }}</td>
-                              <td>{{ dic['m'] }}</td>
-                              <td>{{ dic['l'] }}</td>
-                              <td>{{ dic['xl'] }}</td>
-                              <td>{{ dic['xxl'] }}</td>
                             </tr>
                     </tbody>
                     </table>
@@ -46,29 +31,29 @@
                             <tr>
                               <th scope="col">Imie i nazwisko</th>
                               <th scope="col">Email</th>
-                              <th scope="col">Adres</th>
+                              <th scope="col" style="width:12%">Numer telefonu</th>
                             </tr>
                           </thead>
                           <tbody align="center">
                             <tr>
                               <td>{{ item.name }}</td>
                               <td>{{ item.email }}</td>
-                              <td>{{ item.adress }}</td>
+                              <td style="width:12%">{{ item.telNum }}</td>
                             </tr>
                            
                           </tbody>
+                        </table>
+                        <table  border="0.5">
                            <thead align="center">
                             <tr>
-                              <th scope="col">Rok urodzenia</th>
-                              <th scope="col">Numer telefonu</th>
-                              <th scope="col">Rozmiar koszulki</th>
+                              <th scope="col" style="width:12%">Rok urodzenia</th>
+                              <th scope="col">Adres</th>
                             </tr>
                           </thead>
                           <tbody align="center">
                             <tr>
-                              <td>{{ item.year }}</td>
-                              <td>{{ item.telNum }}</td>
-                              <td>{{ item.selectSize }}</td>
+                              <td style="width:12%">{{ item.year }}</td>
+                              <td>{{ item.adress }}</td>
                             </tr>
                            
                           </tbody>

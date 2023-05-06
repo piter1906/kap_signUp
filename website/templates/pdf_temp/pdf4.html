@@ -97,5 +97,29 @@
 
                {% endfor %}
                <br>
+               {% for item in signup.older %}
+<h6>Propozycje:</h6>
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Czy bedzie bral rower</th>
+                              <th scope="col">Dla ducha</th>
+                              <th scope="col">Aktywnosci</th>
+                              <th scope="col">Czas wolny</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{% if item.isBike %}Tak{% else %}Nie{% endif %}</td>
+                              <td>{{ item.pray }}</td>
+                              <td>{{ item.attrac }}</td>
+                              <td>{{ item.freeTime }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+
+               {% endfor %}
+               <br>
 <hr>
                {% endfor %}

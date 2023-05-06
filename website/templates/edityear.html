@@ -31,7 +31,8 @@
                               <td><a href="/dashboard/eventview?event_id={{ event.id }}"><button type="button" class="btn btn-secondary btn-sm">Zobacz</button></a>
 							  <a href="/dashboard/editevent?event_id={{ event.id }}"><button type="button" class="btn btn-warning btn-sm">Edytuj</button></a>
 							  <a href="/pdf?event_id={{ event.id }}"><button type="button" class="btn btn-success btn-sm">Generuj PDF</button></a>
-							  <a href="/event-status/{{ event.id }}"><button type="button" class="btn btn-danger btn-sm">Zmień status</button></a>
+							  <a href="/event-status/{{ event.id }}"><button type="button" class="btn btn-info btn-sm">Zmień status</button></a>
+							  <a href="/delete?event_id={{ event.id }}"><button type="button" class="btn btn-danger btn-sm">Usuń</button></a>
 							  </td>
                             </tr>
                             {% endfor %}

@@ -6,6 +6,7 @@
                             <th colspan="6">Rozmiary koszulek</th>
                               <th scope="col">Zgloszenia</th>
                               <th scope="col">Potwierdzone</th>
+                              <th scope="col">Uczestnicy</th>
                             </tr>
                           </thead>
                           <tbody align="center">
@@ -18,6 +19,7 @@
                               <td><b>XXL</b></td>
                               <td>{{ dic['num_signup'] }}</td>
                               <td>{{ dic['num_active'] }}</td>
+                              <td>{{ dic['members'] }}</td>
                             </tr>
                             <tr>
                               <td>{{ dic['xs'] }}</td>
@@ -33,62 +35,53 @@
 <h3>Lista uczestników:</h3>
 <hr>
 {% for signup in sn_lst %}
-<div class="card">
-    <div class="card-header">
-<h5>Uczestnik nr {{ loop.index }}</h5>
-</div>
+<h5>Zapis nr {{ loop.index }}</h5>
     {% for item in signup.person %}
-<h6>Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}</font></h6>
+<h6>{% if item.is_contact %}Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}{% endif %}</font></h6>
+{% endfor %}
 <h6>Data zapisu: {{ signup.date }}</h6>
 <h6>Dane uczestnika:</h6>
-<table  border="0.5">
+<table  border="0.5" style="width:100%">
                           <thead align="center">
                             <tr>
                               <th scope="col">Imie i nazwisko</th>
                               <th scope="col">Email</th>
                               <th scope="col">Adres</th>
+                              <th scope="col" style="width:10%">Rok urodzenia</th>
+                              <th scope="col" style="width:12%">Numer telefonu</th>
+                              <th scope="col" style="width:8%">Koszulka</th>
                             </tr>
                           </thead>
                           <tbody align="center">
+                            {% for item in signup.person %}
                             <tr>
                               <td>{{ item.name }}</td>
                               <td>{{ item.email }}</td>
                               <td>{{ item.adress }}</td>
+                              <td style="width:10%">{{ item.year }}</td>
+                              <td style="width:12%">{{ item.telNum }}</td>
+                              <td style="width:8%">{{ item.selectSize }}</td>
                             </tr>
+                            {% endfor %}
                            
                           </tbody>
-                           <thead align="center">
-                            <tr>
-                              <th scope="col">Rok urodzenia</th>
-                              <th scope="col">Numer telefonu</th>
-                              <th scope="col">Rozmiar koszulki</th>
-                            </tr>
-                          </thead>
-                          <tbody align="center">
-                            <tr>
-                              <td>{{ item.year }}</td>
-                              <td>{{ item.telNum }}</td>
-                              <td>{{ item.selectSize }}</td>
-                            </tr>
-                           
-                          </tbody>
+
                         </table>
-{% endfor %}
           
 {% for item in signup.basic %}
 <h6>Dodatkowe informacje:</h6>
 <table  border="0.5">
                           <thead align="center">
-                            <tr>
+                          <tr>
                               <th scope="col" style="width:15%">Ktory raz na akcji</th>
-                              <th scope="col" style="width:15%">Skad sie dowiedzial</th>
-                              <th scope="col">O sobie</th>
+                              <th scope="col" style="width:18%">Skad sie dowiedzieli</th>
+                              <th scope="col">O nich</th>
                             </tr>
                           </thead>
                           <tbody align="center">
                             <tr>
                               <td style="width:15%">{{ item.howMany }}</td>
-                              <td style="width:15%">{{ item.whereKnew }}</td>
+                              <td style="width:18%">{{ item.whereKnew }}</td>
                               <td>{{ item.intro }}</td>
                             </tr>
                            

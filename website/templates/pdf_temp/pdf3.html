@@ -1,0 +1,230 @@
+<h2 align="center">{{ event.name }} {{ event.date }}</h2>
+<h3>Podsumowanie:</h3>
+<table  border="0.5">
+	<thead align="center">
+                            <tr>
+                              <th scope="col">Zgloszenia</th>
+                              <th scope="col">Potwierdzone</th>
+                              <th scope="col">Zawodnicy</th>
+                              <th scope="col">Nocujacy z soboty na niedziele</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ dic['num_signup'] }}</td>
+                              <td>{{ dic['num_active'] }}</td>
+                              <td>{{ dic['players'] }}</td>
+                              <td>{{ dic['sleep'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+                        <br>
+
+ <table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th colspan="2">Druzyny w danej kategorii</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td><b>Mlodsi</b></td>
+                              <td><b>Starsi</b></td>
+                            </tr>
+                            <tr>
+                              <td>{{ dic['young'] }}</td>
+                              <td>{{ dic['old'] }}</td>
+                            </tr>
+                    </tbody>
+                        </table>
+                        <br>
+
+  {% if dic['num_signup'] != 0 %}
+<h4><font color="blue">Lista uczestników:</font></h4>
+{% else %}
+<h4><font color="red">Brak zapisanych uczestników:</font></h4>
+{% endif %}
+
+
+{% if lst_young %}
+
+<h4><font color="red">KATEGORIA: MLODSI</font></h4>
+<hr>
+{% for signup in lst_young %}
+<h5>Druzyna nr {{ loop.index }}</h5>
+    {% for item in signup.person %}
+<h6>{% if item.is_contact %}Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}{% endif %}</font></h6>
+{% endfor %}
+
+<h6>Data zapisu: {{ signup.date }}</h6>
+<h6>Dane opiekuna:</h6>
+{% for item in signup.person %}
+{% if item.is_contact %}
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Imie i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Numer telefonu</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.telNum }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                      {% endif %}
+                      {% endfor %}
+               <br>
+{% for item in signup.turnament %}
+    <h6>Informacje o druzynie:</h6>
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Nazwa</th>
+                              <th scope="col">Miasto / klasztor:</th>
+                              <th scope="col" style="width:10%">Zawodników</th>
+                              <th scope="col" style="width:10%">Nocujacych</th>
+                              <th scope="col">Uwagi</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.teamName }}</td>
+                              <td>{{ item.teamFrom }}</td>
+                              <td style="width:10%">{{ item.teamNum }}</td>
+                              <td style="width:10%">{{ item.peopleNum }}</td>
+                              <td>{{ item.say }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                        {% endfor %}
+                         <br>
+
+<h6>Dane Zawodników:</h6>
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Imie i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Adres</th>
+                              <th scope="col" style="width:12%">Rok urodzenia</th>
+                              <th scope="col" style="width:12%">Numer telefonu</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            {% for item in signup.person %}
+                              {% if not item.is_contact %}
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.adress }}</td>
+                              <td style="width:12%">{{ item.year }}</td>
+                              <td style="width:12%">{{ item.telNum }}</td>
+                            </tr>
+                           {% endif %}
+                        {% endfor %}
+                          </tbody>
+                        </table>
+
+
+<br>
+<hr>
+               {% endfor %}
+             {% endif %}
+             
+    {% if lst_old %}
+    <h4><font color="red">KATEGORIA: STARSI</font></h4>
+    <hr>
+{% for signup in lst_old %}
+<h5>Druzyna nr {{ loop.index }}</h5>
+    {% for item in signup.person %}
+<h6>{% if item.is_contact %}Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}{% endif %}</font></h6>
+{% endfor %}
+
+<h6>Data zapisu: {{ signup.date }}</h6>
+<h6>Dane opiekuna:</h6>
+{% for item in signup.person %}
+{% if item.is_contact %}
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Imie i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Numer telefonu</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.telNum }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                      {% endif %}
+                      {% endfor %}
+               <br>
+{% for item in signup.turnament %}
+    <h6>Informacje o druzynie:</h6>
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Nazwa</th>
+                              <th scope="col">Miasto / klasztor:</th>
+                              <th scope="col" style="width:10%">Zawodników</th>
+                              <th scope="col" style="width:10%">Nocujacych</th>
+                              <th scope="col">Uwagi</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td>{{ item.teamName }}</td>
+                              <td>{{ item.teamFrom }}</td>
+                              <td style="width:10%">{{ item.teamNum }}</td>
+                              <td style="width:10%">{{ item.peopleNum }}</td>
+                              <td>{{ item.say }}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+                        {% endfor %}
+                         <br>
+
+<h6>Dane Zawodników:</h6>
+<table border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col">Imie i nazwisko</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Adres</th>
+                              <th scope="col" style="width:12%">Rok urodzenia</th>
+                              <th scope="col" style="width:12%">Numer telefonu</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            {% for item in signup.person %}
+                              {% if not item.is_contact %}
+                            <tr>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.adress }}</td>
+                              <td style="width:12%">{{ item.year }}</td>
+                              <td style="width:12%">{{ item.telNum }}</td>
+                            </tr>
+                           {% endif %}
+                        {% endfor %}
+                          </tbody>
+                        </table>
+
+
+<br>
+<hr>
+               {% endfor %}
+             {% endif %}

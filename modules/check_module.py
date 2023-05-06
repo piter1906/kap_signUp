@@ -74,6 +74,11 @@ def check_vals(event, num='', **kwargs):
 										if ps.telNum == kwargs['telNum']:
 											flash(f'Podany telefon dla zapisu {num} już jest w bazie uczestników tej akcji.', category='error')
 											return False"""
+	if 'isLent' in kwargs.keys():
+		if kwargs['isLent'] == 'true':
+			if not kwargs['skiLent']:
+				flash(f'Zaznacz co zamierzasz wyporzyczyć.', category='error')
+				return False
 	if 'height' in kwargs.keys():
 		if kwargs['isLent'] == 'true':
 			if len(kwargs['height']) < 3:
@@ -92,6 +97,9 @@ def check_vals(event, num='', **kwargs):
 		if int(kwargs['sonNum']) < 0:
 		    flash(f'Liczba synów / uczestników po opieką nie może być mniejsza od 0', category='error')
 		    return False
+	
+
+
 
 	return True
 

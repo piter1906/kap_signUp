@@ -8,7 +8,7 @@
                           <thead class="thead-light" align="center">
                             <tr>
                             <th colspan="6">Rozmiary koszulek</th>
-                              <th scope="col">Zgloszenia</th>
+                              <th scope="col">Zgłoszenia</th>
                               <th scope="col">Potwierdzone</th>
                             </tr>
                           </thead>
@@ -54,10 +54,13 @@
     <div class="card-body">
       <div class="col-md-12 text-right">
         {% if not item.is_verified %}
-        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-danger">Potwierdź zapis</button></a>
+        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-info">Potwierdź zapis</button></a>
         {% else %}
         <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
 
+        {% endif %}
+        {% if event.is_active %}
+        <a href="/delete?event_id={{ event.id }}&signup_id={{ signup.id }}"><button type="button" class="btn btn-danger">Usuń</button></a>
         {% endif %}
       </div>
 <h6>Data zapisu: {{ signup.date }}</h6>

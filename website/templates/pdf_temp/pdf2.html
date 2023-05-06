@@ -1,17 +1,13 @@
-<a name="top"></a>
-<div class="card">
-    <div class="card-header" style="background-color: #323a3e">
-<h4><font color="white">Podsumowanie:</font></h4>
-</div>
-<div class="card-body">
-<table class="table table-bordered">
-                          <thead class="thead-light" align="center">
+<h2 align="center">{{ event.name }} {{ event.date }}</h2>
+<h3>Podsumowanie:</h3>
+<table border="0.5">
+                          <thead align="center">
                             <tr>
-                              <th scope="col">Zgłoszenia</th>
+                              <th scope="col">Zgloszenia</th>
                               <th scope="col">Potwierdzone</th>
-                              <th scope="col">Jeździło na nartach</th>
+                              <th scope="col">Jezdzilo na nartach</th>
                               <th scope="col">Potrzebuje instruktora</th>
-                              <th scope="col">Wyporzycza sprzęt</th>
+                              <th scope="col">Wyporzycza sprzet</th>
                             </tr>
                           </thead>
                           <tbody align="center">
@@ -25,11 +21,11 @@
                     </tbody>
                         </table>
 <br>
-<table class="table table-bordered">
-                          <thead class="thead-light" align="center">
+<table border="0.5">
+                          <thead align="center">
                             <tr>
                               <th colspan="2">Rodzaj karnetu</th>
-                              <th colspan="6">Wyporzyczany sprzęt</th>
+                              <th colspan="6">Wyporzyczany sprzet</th>
                             </tr>
                           </thead>
                           <tbody align="center">
@@ -55,97 +51,87 @@
                             </tr>
                     </tbody>
                         </table>
-                      </div>
-</div>
 <br>
-    <div class="card-header">
-      {% if dic['num_signup'] != 0 %}
-<h4><font color="blue">Lista uczestników:</font></h4>
-{% else %}
-<h4><font color="red">Brak zapisanych uczestników:</font></h4>
-{% endif %}
-
-</div>
-<br>
-
+<h3>Lista uczestników:</h3>
+<hr>
 {% for signup in sn_lst %}
 <div class="card">
-    <div class="card-header" style="background-color: #323a3e">
-<h5><font color="white">Uczestnik nr {{ loop.index }}</font></h5>
+    <div class="card-header">
+<h5>Uczestnik nr {{ loop.index }}</h5>
 </div>
     {% for item in signup.person %}
-    <div class="card-body">
-      <div class="col-md-12 text-right">
-        {% if not item.is_verified %}
-        <a href="/signup-verified?event_id={{ event.id }}&person_id={{ item.id }}"><button type="button" class="btn btn-info">Potwierdź zapis</button></a>
-        {% else %}
-        <button type="button" class="btn btn-success" disabled>Zgłoszenie potwierdzone</button>
-
-        {% endif %}
-        {% if event.is_active %}
-        <a href="/delete?event_id={{ event.id }}&signup_id={{ signup.id }}"><button type="button" class="btn btn-danger">Usuń</button></a>
-        {% endif %}
-      </div>
+<h6>Weryfikacja: {% if item.is_verified %}<font color="green">Zapis potwierdzony</font>{% else %}<font color="red">Czeka na potwierdzenie{% endif %}</font></h6>
 <h6>Data zapisu: {{ signup.date }}</h6>
 <h6>Dane uczestnika:</h6>
-<table class="table table-bordered">
-                          <thead class="thead-light" align="center">
+<table  border="0.5">
+                          <thead align="center">
                             <tr>
-                              <th scope="col">Imię i nazwisko</th>
+                              <th scope="col">Imie i nazwisko</th>
                               <th scope="col">Email</th>
-                              <th scope="col">Adres</th>
-                              <th scope="col">Rok urodzenia</th>
-                              <th scope="col">Numer telefonu</th>
-                              <th scope="col">Wzrost</th>
-                              <th scope="col">Waga</th>
+                              <th scope="col" style="width:12%">Numer telefonu</th>
                             </tr>
                           </thead>
                           <tbody align="center">
                             <tr>
                               <td>{{ item.name }}</td>
                               <td>{{ item.email }}</td>
-                              <td>{{ item.adress }}</td>
-                              <td>{{ item.year }}</td>
-                              <td>{{ item.telNum }}</td>
-                              <td>{% if item.height %}{{ item.height }} cm{% else %} - {% endif %}</td>
-                              <td>{% if item.weight %}{{ item.weight }} kg{% else %} - {% endif %}</td>
+                              <td style="width:12%">{{ item.telNum }}</td>
                             </tr>
                            
                           </tbody>
                         </table>
-               {% endfor %}
-               <br>
-{% for item in signup.basic %}
-<h6>Dodatkowe informacje:</h6>
-<table class="table table-bordered">
-                          <thead class="thead-light" align="center">
+                        <table  border="0.5">
+                           <thead align="center">
                             <tr>
-                              <th scope="col">Który raz na akcji</th>
-                              <th scope="col">Skąd się dowiedział</th>
-                              <th scope="col">Coś o sobie</th>
+                              <th scope="col" style="width:12%">Rok urodzenia</th>
+                              <th scope="col">Adres</th>
+                              <th scope="col" style="width:12%">Wzrost</th>
+                              <th scope="col" style="width:12%">Waga</th>
                             </tr>
                           </thead>
                           <tbody align="center">
                             <tr>
-                              <td>{{ item.howMany }}</td>
-                              <td>{{ item.whereKnew }}</td>
+                              <td style="width:12%">{{ item.year }}</td>
+                              <td>{{ item.adress }}</td>
+                              <td style="width:12%">{% if item.height %}{{ item.height }} cm{% else %} - {% endif %}</td>
+                              <td style="width:12%">{% if item.weight %}{{ item.weight }} kg{% else %} - {% endif %}</td>
+                            </tr>
+                           
+                          </tbody>
+                        </table>
+{% endfor %}
+          
+{% for item in signup.basic %}
+<h6>Dodatkowe informacje:</h6>
+<table  border="0.5">
+                          <thead align="center">
+                            <tr>
+                              <th scope="col" style="width:15%">Ktory raz na akcji</th>
+                              <th scope="col" style="width:15%">Skad sie dowiedzial</th>
+                              <th scope="col">O sobie</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                            <tr>
+                              <td style="width:15%">{{ item.howMany }}</td>
+                              <td style="width:15%">{{ item.whereKnew }}</td>
                               <td>{{ item.intro }}</td>
                             </tr>
                            
                           </tbody>
                         </table>
-               {% endfor %}
-               
-             <br>
-    {% for item in signup.winter %}
 
-<h6>Informacje od umiejętnościach jazdy i sprzęcie narciarskim:</h6>
-<table class="table table-bordered">
-                          <thead class="thead-light" align="center">
+               {% endfor %}
+               <br>
+{% for item in signup.winter %}
+
+<h6>Informacje od umiejetnosciach jazdy i sprzecie narciarskim:</h6>
+<table border="0.5">
+                          <thead align="center">
                             <tr>
-                              <th scope="col">Czy jeździł na nartach</th>
-                              <th scope="col">Ocena umiejętności jazdy</th>
-                              <th scope="col">Czy będzie potrzebował instruktora</th>
+                              <th scope="col">Czy jezdzil na nartach</th>
+                              <th scope="col">Ocena umiejetnosci jazdy</th>
+                              <th scope="col">Instruktor</th>
                             </tr>
                           </thead>
                           <tbody align="center">
@@ -156,11 +142,13 @@
                             </tr>
                            
                           </tbody>
-                          <thead class="thead-light" align="center">
+                        </table>
+        <table border="0.5">
+                          <thead align="center">
                             <tr>
                               <th scope="col">Rodzaj karnetu</th>
-                              <th scope="col">Czy będzie wypożyczał sprzęt narciarski</th>
-                              <th scope="col">Jaki sprzęt będzie wyporzyczał</th>
+                              <th scope="col">Czy wypozycza sprzet narciarski</th>
+                              <th scope="col">Jaki sprzet wyporzycza</th>
                             </tr>
                           </thead>
                           <tbody align="center">
@@ -175,9 +163,6 @@
     
 
 {% endfor %}
-</div>
-           </div><br>
+<br>
+<hr>
                {% endfor %}
-               <div class="col-md-12 text-right">
-<a href="#top"><button type="button" class="btn btn-dark">Wróć do początku strony</button></a>
-</div>

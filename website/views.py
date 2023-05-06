@@ -226,7 +226,7 @@ def event_view():
     if event:
         sn_lst = event.signup
         sn_lst = sorted(sn_lst, key=lambda signup: signup.id, reverse=True)
-        dic = get_sumup(event.id, sn_lst)
+        dic = get_sumup(event, sn_lst)
         if event.temp_id != 3:
             return render_template('event_view.html', event=event, sn_lst=sn_lst, user=current_user, dic=dic)
         else:
@@ -240,7 +240,7 @@ def event_view():
                         lst_old.append(signup)
             lst_young = sorted(lst_young, key=lambda signup: signup.id, reverse=True)
             lst_old = sorted(lst_old, key=lambda signup: signup.id, reverse=True)
-            return render_template('event_view.html', event=event, lst_young=lst_young, lst_old=lst_old, user=current_user)
+            return render_template('event_view.html', event=event, lst_young=lst_young, lst_old=lst_old, user=current_user, dic=dic)
 
     else:
         flash('Operacja nie jest dostepna', category='error')
