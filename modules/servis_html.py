@@ -85,8 +85,9 @@ def db_add_new_sigup(dic, event, lst):
 		person = Person(signup_id=signup.id, name=dic['name'], email=dic['email'], telNum=dic['telNum'])
 		db.session.add(person)
 		db.session.commit()
+		peopleNum = dic['peopleNum'] if dic['peopleNum'] else 0
 		turnament = Turnament(signup_id=signup.id, ageCat=dic['ageCat'], teamName=dic['teamName'],
-						teamFrom=dic['teamFrom'], teamNum=dic['teamNum'], peopleNum=dic['peopleNum'], say=dic['say'])
+						teamFrom=dic['teamFrom'], teamNum=dic['teamNum'], peopleNum=peopleNum, say=dic['say'])
 		db.session.add(turnament)
 		db.session.commit()
 		for player in lst:

@@ -29,14 +29,18 @@ def home():
         lst_events = sorted(lst_events, key=lambda event: event.date)
         if request.method == 'POST':
             event_n = request.form.get('selectEvent')
-            event_name = event_n[11:]
-            for item in lst_events:
-                if item.is_active:
-                    if item.name == event_name:
-                        event = item
-            session['event_id'] = event.id
-            return redirect(url_for('views.signup'))
-        return render_template('home.html', year=year, user=current_user, lst_events=lst_events)
+            if event_n:
+                event_name = event_n[11:]
+                for item in lst_events:
+                    if item.is_active:
+                        if item.name == event_name:
+                            event = item
+                session['event_id'] = event.id
+                return redirect(url_for('views.signup'))
+            else:
+                flash('Najpierw wybierz akcję.', category='error')
+                return render_template('home.html', user=current_user, lst_events=lst_events)
+        return render_template('home.html', user=current_user, lst_events=lst_events)
     return render_template('home.html', user=current_user)
 
 #-----------------> For client ---------> sign up 

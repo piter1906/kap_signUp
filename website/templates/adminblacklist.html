@@ -4,24 +4,44 @@
 {% block content %}
 <div class="card"> 
 	<div class="card-body">
-		<div class="card">
-			<h3 class="card-title" align="center">Edycja czarnej listy</h3>
-			<div class="form-group">
-		    		<div class="card-body">
-		    		<p>Czarna lista:</p>
-		    		<ul class="list-group list-group-flush" id="blacklistID">
-		    			{% for item in blacklist %}
-		    			<li class="list-group-item">
-		    				{{ item.id }}. <i>email:</i> <b>{{ item.email }}</b> <---> <i>numer telefonu:</i> <b>{{ item.number }}</b>
-		    				<a href="/delete-bl/{{ item.id }}"><button type="button" class="close" >usuń</button></a>
-		    			</li>
-		    			{% endfor %}
-		    		</ul>
+		<div class="card"> 
+		<div class="card-header">
+			<h3 align="center">Edycja czarnej listy</h3>
+		</div>
+			<div class="card-body">
+		    		
+		    		{% if blacklist %}
+		    		<h4>Czarna lista:</h4><br>
+		    			<table class="table table-bordered">
+                          <thead class="thead-dark" align="center">
+                            <tr>
+                              <th scope="col">L. P.</th>
+                              <th scope="col">Email</th>
+                              <th scope="col">Numer</th>
+                              <th scope="col">Operacje</th>
+                            </tr>
+                          </thead>
+                          <tbody align="center">
+                          {% for item in blacklist %}
+                            <tr>
+                              <td>{{ loop.index }}</td>
+                              <td>{{ item.email }}</td>
+                              <td>{{ item.number }}</td>
+                              <td>
+							  <a href="/delete-bl/{{ item.id }}"><button type="button" class="btn btn-danger btn-sm">Usuń</button></a>
+							  </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                        {% else %}
+                        <h4>Brak elemantów w czarnej liście:</h4>
+                        {% endif %}
 				</div>
-		  	</div>
 		  	<div class="card-body">
+		  		<div class="form-group">
 			    <form method="POST">
-		  		<p>Dodaj do czarnej listy: </p>
+		  		<h4>Dodaj do czarnej listy: </h4><br>
 				<div class="form-group">
 					<label for="email">Email: </label>
 					 	<input
@@ -46,6 +66,8 @@
 			</form>
 		</div>
 	</div>
+	</div>
+</div>
 	</div>
 </div>
 {% endblock %}

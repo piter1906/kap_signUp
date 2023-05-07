@@ -29,11 +29,14 @@ def check_member(telNum, email):
 	blacklist = Blacklist.query.all()
 	if blacklist:
 		for item in blacklist:
-			if item.email == email or item.number == int(telNum):
-				flash(f'Przepraszamy ale nie możesz zapisać się na to wydarzenie', category='error')
-				return False
-			else:
-				return True
+			if item.email:
+				if item.email == email:
+					flash(f'Przepraszamy ale nie możesz zapisać się na to wydarzenie', category='error')
+					return False
+			if item.number:
+				if item.number == int(telNum):
+					flash(f'Przepraszamy ale nie możesz zapisać się na to wydarzenie', category='error')
+					return False
 	return True
 
 
@@ -158,19 +161,24 @@ def check_event(name, date, template, mail_temp, num):
 
 
 def check_bl(email, number):
-    if len(email) == 0 or not email_is_valid(email):
-        flash('Najpierw wprowadź poprawny adres email', category='error')
-        return False
-    elif len(str(number)) != 9:
-        flash('Najpierw wprowadź poprawny numer telefonu', category='error')
-        return False
-    else:
-        items = Blacklist.query.all()
-        for item in items:
-            if str(item.number) == number:
-                flash(f'Podany numer telefonu już jest w bazie pod numerem {item.id}.', category='error')
-                return False
-            elif item.email == email:
-                flash(f'Podany email już jest w bazie pod numerem {item.id}.', category='error')
-                return False
-    return True
+	items = Blacklist.query.all()
+	if email:
+		if not email_is_valid(email):
+			flash('Najpierw wprowadź poprawny adres email', category='error')
+			return False
+		for item in items:
+			if item.email == email:
+				flash(f'Podany email już jest w bazie pod numerem {item.id}.', category='error')
+				return False
+	if number:
+		if len(str(number)) != 9:
+			flash('Najpierw wprowadź poprawny numer telefonu', category='error')
+			return False
+		for item in items:
+			if str(item.number) == number:
+				flash(f'Podany numer telefonu już jest w bazie pod numerem {item.id}.', category='error')
+				return False
+	if not email and not number:
+		flash('Wprowadź najpierw email i / lub numer.', category='error')
+		return False
+	return True

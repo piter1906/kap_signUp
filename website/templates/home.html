@@ -8,30 +8,32 @@
       <div class="card-body">
 		<div class="card">
 		    <div class="card-body">
-			    <form method="POST">
 			    <h3 class="card-title" align="center">Zapisz się na kapszlakową akcję!</h3>
 				  <p align="center">Wypełnij formularz.</p>
+		    				{% if lst_events %}
+		    	<form method="POST">
 				  <div class="form-group">
-		    		<label for="selectEvent">Wybierz akcję:</label>
+		    		<label for="selectEvent">Gdzie chciałbyś z nami pojechać?</label>
 		    		<select 
 		    			class="form-control" 
 		    			id="selectEvent"
 		    			name="selectEvent">
-		    				{% if year%}
+		    			<option disabled selected>Kliknij aby wybrać akcję.</option>
 		    					{% for event in lst_events %}
 		    						{% if event.is_active %}
 		    						<option>{{ event.date }} {{ event.name }}</option>
 		    						{% endif %}
 		    					{% endfor %}
-		    				{% endif %}
 		    		</select>
 		  		</div>
-		  		
 				  <div class="col-md-12 text-center">
 				  	<a href="#"><button type="submit" class="btn btn-secondary btn-lg">Przejdź dalej</button></a>
-				  
-				</div>
+				  </div>
+				
 				</form>
+				{% else %}
+				<h5>Brak akcji, na które mógłbyś się zapisać.</h5>
+				{% endif %}
 		    </div>
 
 		</div>

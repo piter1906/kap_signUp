@@ -74,17 +74,25 @@ def delete_event(itemID):
 @action.route('/delete-signup', methods=['GET','POST'])
 @login_required
 def delete_signup():
-    event_id = session['event_id']
-    signup_id = session['signup_id']
-    event = Events.query.get(event_id)
-    signup = Signup.query.get(signup_id)
-    if signup:
-        db.session.delete(signup)
-        db.session.commit()
-        session.pop('event_id')
-        session.pop('signup_id')
-        flash(f'Zapis został usunięty.')
-    return redirect(f'/dashboard/eventview?event_id={event.id}')
+    if 'event_id' in session.keys() and 'signup_id' in session.keys():
+        event_id = session['event_id']
+        signup_id = session['signup_id']
+        event = Events.query.get(event_id)
+        signup = Signup.query.get(signup_id)
+        if signup and event:
+            db.session.delete(signup)
+            db.session.commit()
+            session.pop('event_id')
+            session.pop('signup_id')
+            flash(f'Zapis został usunięty.')
+            return redirect(f'/dashboard/eventview?event_id={event.id}')
+        else:
+            flash('Sesja wygasła.', category='error')
+            return redirect(url_for('views.dashboard'))
+    else:
+        flash('Nie masz dostępu do tej strony.', category='error')
+        return redirect(url_for('views.dashboard'))
+
 
 @action.route('/delete', methods=['GET','POST'])
 @login_required
@@ -94,13 +102,21 @@ def delete_conf():
     if event_id and signup_id:
         event = Events.query.get(int(event_id))
         signup = Signup.query.get(int(signup_id))
-        session['event_id'] = event.id
-        session['signup_id'] = signup.id
-        return render_template('delete_confirm.html', event=event, signup=signup, user=current_user)
+        if event and signup:
+            session['event_id'] = event.id
+            session['signup_id'] = signup.id
+            return render_template('delete_confirm.html', event=event, signup=signup, user=current_user)
+        else:
+            flash('Nie masz dostępu do tej strony.', category='error')
+            return redirect(url_for('views.dashboard'))
     elif event_id:
         event = Events.query.get(int(event_id))
-        session['event_id'] = event_id
-        return render_template('delete_confirm.html', event=event, signup='', user=current_user)
+        if event:
+            session['event_id'] = event_id
+            return render_template('delete_confirm.html', event=event, signup='', user=current_user)
+        else:
+            flash('Nie masz dostępu do tej strony.', category='error')
+            return redirect(url_for('views.dashboard'))
     else:
         flash('Nie masz dostępu do tej strony.', category='error')
         return redirect(url_for('views.dashboard'))
