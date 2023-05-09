@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for, abort
 from .models import User
 from . import db
 import json
@@ -21,6 +21,8 @@ def login():
 			for item in users:
 				if item.login == login:
 					user = item
+				else:
+					user = None
 			if user:
 				if check_password_hash(user.password, password):
 					flash(f'Zalogowany jako {user.login}.', category='success')
@@ -28,6 +30,8 @@ def login():
 					return redirect(url_for('views.dashboard'))
 				else:
 					flash(f'Złe hasło dla {user.login}.', category='error')
+			else:
+				flash(f'Nie ma tekiego loginu.', category='error')
 	else:
 		flash(f'Nie ma jeszcze usera', category='error')
 		return redirect(url_for('views.home'))
@@ -45,7 +49,9 @@ def logout():
 def addadmin():
 	login = 'admin'
 	password = generate_password_hash('admin', method='sha256')
-	user = User(login=login, password=password)
+	mail_user = 'kapszlaksend@gmail.com'
+	mail_password = generate_password_hash('fimyklgnxqvdleti', method='sha256')
+	user = User(login=login, password=password, mail_user=mail_user, mail_password=mail_password)
 	db.session.add(user)
 	db.session.commit()
 	flash(f'dodano {login} z haslem {password} do bazy')

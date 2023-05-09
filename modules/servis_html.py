@@ -6,35 +6,23 @@ from website import db
 from modules.check_module import *
 from website.models import Year, Blacklist, Events, Signup, Person, Turnament, Winter, Older, Basic
 import datetime 
+from dotenv import load_dotenv
+import os
 
-'attrac', 'pray', 'freeTime'
 
-def change_polish_char(event, lst):
+def polish(temp):
 	chars = 'ąćęłńśźżĄĆĘŁŃŚŹŻ'
 	replace ='acelnszzACELNSZZ'
 	translator = str.maketrans(chars, replace)
-	for signup in lst:
-		if event.temp_id != 3:
-			for person in signup.person:
-				person.name = person.name.translate(translator)
-				person.adress = person.adress.translate(translator)
-			for basic in signup.basic:
-				basic.intro = basic.intro.translate(translator)
-		if event.temp_id == 3:
-			for person in signup.person:
-				person.name = person.name.translate(translator)
-				if not person.is_contact:
-					person.adress = person.adress.translate(translator)
-			for turn in signup.turnament:
-				turn.teamName = turn.teamName.translate(translator)
-				turn.teamFrom = turn.teamFrom.translate(translator)
-				turn.say = turn.say.translate(translator)
-		if event.temp_id == 4:
-			for old in signup.older:
-				old.attrac = old.attrac.translate(translator)
-				old.pray = old.pray.translate(translator)
-				old.freeTime = old.freeTime.translate(translator)
-	return lst
+	return temp.translate(translator)
+
+def generate_mails(event):
+	mail_lst = []
+	for signup in event.signup:
+		for person in signup.person:
+			if person.is_contact:
+				mail_lst.append(person.email)
+	return mail_lst
 
 
 def date_from_str(date, create_ev):
@@ -67,12 +55,13 @@ def get_form_val(lst):
 	return dic
 
 def send_mail(event, person):
-    msg = Message(f'Witaj {person.name}', sender = 'kapszlaksend@gmail.com', recipients = [person.email])
-    msg.body = f"Siemano ziomek. Udało Ci się zapisać na akcję {event.name}. \n Oto treść maila: {event.mail_temp}"
-    mail.send(msg)
-    msg1 = Message(f'Nowy zapis dla {event.name}', sender = 'kapszlaksend@gmail.com', recipients = ['brpiotrwojtowicz@gmail.com'])
-    msg1.body = f"Wlasnie zapisał sie {person.name} na akcję {event.name}"
-    mail.send(msg1)
+	load_dotenv()
+	msg = Message(f'Witaj {person.name}', sender = os.getenv('MAIL_USER'), recipients = [person.email])
+	msg.body = f"Siemano ziomek. Udało Ci się zapisać na akcję {event.name}. \n Oto treść maila: {event.mail_temp}"
+	mail.send(msg)
+	msg1 = Message(f'Nowy zapis dla {event.name}', sender = os.getenv('MAIL_USER'), recipients = ['brpiotrwojtowicz@gmail.com'])
+	msg1.body = f"Wlasnie zapisał sie {person.name} na akcję {event.name}"
+	mail.send(msg1)
 
 
 def db_add_new_sigup(dic, event, lst):
@@ -112,9 +101,7 @@ def db_add_new_sigup(dic, event, lst):
 			skiInst = True if dic['skiInst'] == 'true' else False
 			isLent = True if dic['isLent'] == 'true' else False
 			if isLent:
-				skiLent = ''
-				for item in dic['skiLent']:
-					skiLent += item + ', '
+				skiLent = ", ".join(dic['skiLent'])
 				winter = Winter(signup_id=signup.id, skiEver=skiEver, skiSkill=dic['skiSkill'],
 					skiInst=skiInst, passBuy=dic['passBuy'], isLent=isLent, skiLent=skiLent)
 			else:

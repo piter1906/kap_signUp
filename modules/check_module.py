@@ -49,11 +49,11 @@ def check_vals(event, num='', **kwargs):
 		if not email_is_valid(kwargs[f'email{num}']):
 			flash(f'Podaj poprawny adres email dla zapisu {num}.', category='error')
 			return False
-		"""for sn in event.signup:
-									for ps in sn.person:
-										if ps.email == kwargs['email']:
-											flash(f'Podany mail dla zapisu {num} już jest w bazie uczestników tej akcji.', category='error')
-											return False"""
+		for sn in event.signup:
+			for ps in sn.person:
+				if ps.email == kwargs['email']:
+					flash(f'Podany mail dla zapisu {num} już jest w bazie uczestników tej akcji. Wprowadź inny mail.', category='error')
+					return False
 	if f'adress{num}' in kwargs.keys():
 		if len(kwargs[f'adress{num}']) < 3:
 			flash(f'Podaj poprawny adres dla zapisu {num}.', category='error')
@@ -72,11 +72,11 @@ def check_vals(event, num='', **kwargs):
 		if len(kwargs[f'telNum{num}']) != 9:
 			flash(f'Podaj poprawny numer telefonu dla zapisu {num}.', category='error')
 			return False
-		"""for sn in event.signup:
-									for ps in sn.person:
-										if ps.telNum == kwargs['telNum']:
-											flash(f'Podany telefon dla zapisu {num} już jest w bazie uczestników tej akcji.', category='error')
-											return False"""
+		for sn in event.signup:
+			for ps in sn.person:
+				if ps.telNum == int(kwargs['telNum']):
+					flash(f'Podany telefon dla zapisu {num} już jest w bazie uczestników tej akcji. Wprowadź inny numer.', category='error')
+					return False
 	if 'isLent' in kwargs.keys():
 		if kwargs['isLent'] == 'true':
 			if not kwargs['skiLent']:
@@ -100,10 +100,6 @@ def check_vals(event, num='', **kwargs):
 		if int(kwargs['sonNum']) < 0:
 		    flash(f'Liczba synów / uczestników po opieką nie może być mniejsza od 0', category='error')
 		    return False
-	
-
-
-
 	return True
 
 

@@ -6,10 +6,14 @@
 <div class="card"> 
 	<div class="card-body">
 		<div class="card">
-			   <h3 class="card-title" align="center"><a href ='/dashboard'>Panel administracyjny</a> -> <a href='/dashboard/events'>Akcje</a> -> {{ year.name }}</h3>
+			<div class="card-header">
+				<h3 align="center"><a href ='/dashboard'>Panel administracyjny</a> -> <a href='/dashboard/events'>Akcje</a> -> {{ year.name }}</h3>
+			</div>
 		  	<div class="card-body">
-		  		<h4>Lista akcji:</h4><br>
 				  <div class="card">
+				  	<div class="card-header">
+				  		<h4>Lista akcji:</h4>
+				  	</div>
 				    <div class="card-body">
 				      <table class="table table-bordered">
                           <thead class="thead-dark" align="center">
@@ -30,6 +34,7 @@
                               <td>{% if event.is_active %}<font color="green">Aktywny</font>{% else %}<font color="red">Nieaktywny{% endif %}</font></td>
                               <td><a href="/dashboard/eventview?event_id={{ event.id }}"><button type="button" class="btn btn-secondary btn-sm">Zobacz</button></a>
 							  <a href="/dashboard/editevent?event_id={{ event.id }}"><button type="button" class="btn btn-warning btn-sm">Edytuj</button></a>
+							  <a href="/dashboard/mail?event_id={{ event.id }}"><button type="button" class="btn btn-dark btn-sm">Generuj maile</button></a>
 							  <a href="/pdf?event_id={{ event.id }}"><button type="button" class="btn btn-success btn-sm">Generuj PDF</button></a>
 							  <a href="/event-status/{{ event.id }}"><button type="button" class="btn btn-info btn-sm">Zmień status</button></a>
 							  <a href="/delete?event_id={{ event.id }}"><button type="button" class="btn btn-danger btn-sm">Usuń</button></a>
@@ -41,8 +46,10 @@
 					</div>
 				</div>
 				<br>
-				<h4>Dodaj nową akcję do aktywnego roku:</h4><br>
 				  <div class="card">
+				  	<div class="card-header">
+				  		<h4>Dodaj nową akcję do aktywnego roku:</h4>
+				  	</div>
 				    <div class="card-body">
 				      <form method="POST">
 
@@ -156,8 +163,6 @@
 					    >{% if backup %}{{ backup.mail_temp }}{% endif %}</textarea>
 					</div>
 				</div>
-
-					<br>
 				<div class="col-md-12 text-center">
 					 <a href="#"><button type="submit" class="btn btn-secondary btn-lg">Dodaj akcję</button></a>
 				</div>
@@ -169,18 +174,6 @@
 	</div>
 </div>
 {% endif %}
-{% if years %}
-					<div class="card-body">
-		    		<p>Lista lat:</p>
-		    		<ul class="list-group list-group-flush" id="blacklistID">
-		    			{% for item in years %}
-		    			<li class="list-group-item">
-		    				{{ item.id }}. <i>Nazwa:</i> <b>{{ item.name }}</b> <---> <i>Czy aktywny:</i> <b>{{ item.is_active }}</b> {{ item.event_num }}
-		    				<a href="/delete-year/{{ item.id }}"><button type="button" class="close" >usuń</button></a>
-		    			</li>
-		    			{% endfor %}
-		    		</ul>
-			{% endif %}
-			</div>
+
 
 {% endblock %}
