@@ -5,6 +5,9 @@
 <div class="card">
       <div class="card-body">
 		<div class="card">
+			{% for user in users %}
+				{{ user.id }} {{ user.login }} {{ user.password }}
+			{% endfor %}
 		    <div class="card-body">
 			   <h3 class="card-title" align="center">Zaloguj się do panelu administracyjnego</h3>
 			   <br>

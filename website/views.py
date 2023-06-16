@@ -6,11 +6,8 @@ from .models import Blacklist, User, Events, Year, Signup, Basic, Older, Winter,
 from . import db
 import json
 from . import mail
-import logging
 
 views = Blueprint('views', __name__)
-logger = logging.getLogger('views_logger')
-
 
 #--------> Templates paterns
 temp1_schem = ['name', 'email', 'telNum', 'adress', 'year', 'selectSize', 'howMany', 'whereKnew', 'intro']
@@ -34,14 +31,11 @@ def home():
             if event.is_active:
                 lst_events.append(event)
         if lst_events:
-            lst_events = sorted(lst_events, key=lambda event: event.date.toordinal() if event.date else float('inf'))
+            lst_events = sorted(lst_events, key=lambda event: event.date)
             if request.method == 'POST':
-                if 'person_id' in session.keys() and 'event_id' in session.keys():
-                    session.pop('person_id')
-                    session.pop('event_id')
                 event_n = request.form.get('selectEvent')
                 if event_n:
-                    event_name = get_event_name(event_n)
+                    event_name = event_n[11:]
                     for item in lst_events:
                         if item.is_active:
                             if item.name == event_name:
@@ -61,9 +55,7 @@ def signup():
     if 'event_id' in session.keys():
         event_id = session['event_id']
         event = Events.query.get(event_id)
-        user_ip = request.remote_addr
         if request.method == 'POST':
-            logger.info(f'Proba zapisu na: {event} | IP: {user_ip}')
             if event.temp_id == 1:
                 dic = get_form_val(temp1_schem)
             if event.temp_id == 2:
@@ -137,21 +129,13 @@ def after_sign_up():
         event = Events.query.get(event_id)
         person_id = session['person_id']
         person = Person.query.get(person_id)
-        user_ip = request.remote_addr
-        if person and event:
-            session.pop('event_id')
-            session.pop('person_id')
-            mail_self = send_mail_admin(event, person)
-            logger.info(f'Nowy zapis - {event} | przez - {person} | IP: {user_ip} | Mail do nas = {mail_self}')
-            session['sn_finish'] = True      
-            return redirect(url_for('views.sign_up_finish'))
+        session.pop('event_id')
+        session.pop('person_id')
+        send_mail(event, person)
+
+        return render_template('aftersignup.html', person=person, event=event, user=current_user)
     else:
         abort(403)
-
-@views.route('/signup_finish')
-def sign_up_finish():
-    return render_template('aftersignup.html', user=current_user)
-
     
 #-----------------------------------> end sign up
 
@@ -199,7 +183,7 @@ def old_events():
                     if item.name == year_name:
                         year = item
                 lst_events = year.events
-                lst_events = sorted(lst_events, key=lambda event: event.date.toordinal() if event.date else float('inf'))
+                lst_events = sorted(lst_events, key=lambda event: event.date)
                 return render_template('oldevents.html', lst_years=lst_years, year=year, user=current_user, lst_events=lst_events)
             else:
                 flash('Najpierw wybierz rok.', category='error')
@@ -216,32 +200,13 @@ def add_year():
     if request.method == 'POST':
         name = request.form.get('name')
         event_num = request.form.get('event_number')
+        years = Year.query.all()
         if check_year(name, event_num):
-            year_session = {'year_name': name, 'event_num': event_num}
-            session.update(year_session)
+            db_add_year(name, event_num, years)
             return redirect(url_for('views.add_events'))
         else:
             return render_template('addyear.html', user=current_user)
     return render_template('addyear.html', user=current_user)
-
-@views.route('/dashboard/addevents', methods=['GET', 'POST'])
-@login_required
-def add_events():
-    if 'year_name' in session.keys() and 'event_num' in session.keys():
-        year = Year(name=session['year_name'], event_num=int(session['event_num']))
-        if request.method == 'POST':
-            years = Year.query.all()
-            tup = db_add_event(year, years)
-            if tup[1]:
-                session.pop('year_name')
-                session.pop('event_num')
-                return redirect(url_for('views.dashboard'))
-            else:
-                return render_template('addevents.html', year=year, user=current_user, dic=tup[0])
-        return render_template('addevents.html', year=year, user=current_user, dic={})
-    else:
-        flash('Najpierw dodaj rok', category='error')
-        return redirect(url_for('views.add_year'))
 
 @views.route('/dashboard/edityear', methods=['GET', 'POST'])
 @login_required
@@ -253,7 +218,7 @@ def edit_year():
                 year = item
         if year.is_active:
             lst_events = year.events
-            lst_events = sorted(lst_events, key=lambda event: event.date.toordinal() if event.date else float('inf'))
+            lst_events = sorted(lst_events, key=lambda event: event.date)
             if request.method == 'POST':
                 tup = db_new_event(year)
                 if tup[0]:
@@ -306,7 +271,7 @@ def event_view():
                 lst_old = []
                 for signup in event.signup:
                     for turn in signup.turnament:
-                        if turn.ageCat == 'Młodsi: 2010-2014 (drużyna składa się z 6 osób + bramkarz)':
+                        if turn.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
                             lst_young.append(signup)
                         else:
                             lst_old.append(signup)
@@ -316,7 +281,30 @@ def event_view():
         else:
             raise TypeError
     else:
-        abort(400)  
+        abort(400)
+
+
+@views.route('/dashboard/addevents', methods=['GET', 'POST'])
+@login_required
+def add_events():
+    years = Year.query.all()
+    if years:
+        for item in years:
+            if item.is_active:
+                year = item
+        if not year.first_add:
+            if request.method == 'POST':
+                tup = db_add_event(year)
+                if tup[1]:
+                    return redirect(url_for('views.dashboard'))
+                else:
+                    return render_template('addevents.html', year=year, user=current_user, dic=tup[0])
+            return render_template('addevents.html', year=year, user=current_user, dic={})
+        else:
+            abort(400)
+    else:
+        flash('Najpierw dodaj rok', category='error')
+        return redirect(url_for('views.add_year'))  
 
 @views.route('/dashboard/blacklist', methods=['GET', 'POST'])
 @login_required
@@ -329,9 +317,3 @@ def admin_blacklist():
 
     return render_template('adminblacklist.html', blacklist=Blacklist.query.all(), user=current_user)
 
-@views.route('/dashboard/logs')
-@login_required
-def admin_logs():
-    with open('website/app.log', 'r') as file:
-        logs = file.read()
-    return render_template('logs.html', logs=logs, user=current_user)

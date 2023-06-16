@@ -21,7 +21,7 @@
 		    			<option disabled selected>Kliknij aby wybrać akcję.</option>
 		    					{% for event in lst_events %}
 		    						{% if event.is_active %}
-		    						<option>{% if event.date %}{{ event.date }} {{ event.name }}{% else %}{{ event.name }}{% endif %}</option>
+		    						<option>{{ event.date }} {{ event.name }}</option>
 		    						{% endif %}
 		    					{% endfor %}
 		    		</select>

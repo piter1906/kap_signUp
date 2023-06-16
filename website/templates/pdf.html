@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Uczestnicy {{ event.name }}</title>
+</head>
+<body>
+		    <div>
+			    <h3 align="center">Uczestnicy {{ event.name }}</h3>
+			    </div>
+			    <div>
+		    		<label for="selectEvent">Uczestnicy {{ event.name }}</label>
+		 {% if event.temp_id == 1 %}
+	<table>
+	{% for signup in event.template1 %}
+	
+		<tr>
+			<td>{{ signup.id }}</td>
+			<td>{{ signup.name }}</td>
+			<td>{{ signup.email }}</td>
+		</tr>
+
+	
+	{% endfor %}
+	</table>
+	{% endif %}
+</div>
+
+</body>
+</html>

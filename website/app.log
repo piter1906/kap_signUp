@@ -1,0 +1,3 @@
+2023-06-16 16:12:35,365 INFO auth_logger : Zalogowany admin | IP: 127.0.0.1
+2023-06-16 16:14:02,817 INFO check_logger : EVENT_ADD: error: za krotki mail: test mail
+2023-06-16 16:14:39,151 INFO serwis_logger : EVENT: Dodano akcje do wybranego roku: Testowe akcje

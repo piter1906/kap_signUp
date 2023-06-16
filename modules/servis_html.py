@@ -8,11 +8,6 @@ from website.models import Year, Blacklist, Events, Signup, Person, Turnament, W
 import datetime 
 from dotenv import load_dotenv
 import os
-import re
-import docx2txt
-import logging
-
-logger = logging.getLogger('serwis_logger')
 
 
 def polish(temp):
@@ -28,6 +23,7 @@ def generate_mails(event):
 			if person.is_contact:
 				mail_lst.append(person.email)
 	return mail_lst
+
 
 def date_from_str(date, create_ev):
 	if date:
@@ -55,45 +51,17 @@ def get_form_val(lst):
 				dic[val] = request.form.getlist(val)
 			else:
 				dic[val] = request.form.get(val)
+	#flash(f'dict: {dic}')
 	return dic
 
-def get_event_name(name):
-	pattern = r'^\d{4}-\d{2}-\d{2}\s+'
-	match = re.match(pattern, name)
-	if match:
-		date = match.group()
-		return name[len(date):]
-	else:
-		return name
-
-def send_mail_user(event, person):
-    load_dotenv()
-    with open('website/static/files/kapszlak_karta_uczestnika.docx', 'rb') as file:
-        msg = Message(f'Witaj {person.name}', sender=os.getenv('MAIL_USER'), recipients=[person.email])
-        msg.body = f"Pokój i dobro!. \n Potwierdziliśmy Twoje zgłoszenie na akcję: {event.name}. \n {event.mail_temp}"
-        msg.attach(
-            filename='kapszlak_karta_uczestnika.docx',
-            content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            data=file.read()
-        )
-        try:
-            mail.send(msg)
-            mail_user = 'TAK'
-        except Exception as e:
-            mail_user = f'NIE - error: {e}'
-    return mail_user
-
-def send_mail_admin(event, person):
-    load_dotenv()
-    msg1 = Message(f'{event.name} - nowy zapis.', sender=os.getenv('MAIL_USER'), recipients=['brpiotrwojtowicz@gmail.com'])
-    msg1.body = f"""Własnie zapisał się: {person}; na akcję: {event.name}.\nPrzejdź na stronę zapisów aby potwierdzić: {url_for('views.dashboard', _external=True)}"""
-    try:
-        mail.send(msg1)
-        mail_self = 'TAK'
-    except Exception as e:
-        mail_self = f'NIE - error: {e}'
-    return mail_self
-
+def send_mail(event, person):
+	load_dotenv()
+	msg = Message(f'Witaj {person.name}', sender = os.getenv('MAIL_USER'), recipients = [person.email])
+	msg.body = f"Siemano ziomek. Udało Ci się zapisać na akcję {event.name}. \n Oto treść maila: {event.mail_temp}"
+	mail.send(msg)
+	msg1 = Message(f'Nowy zapis dla {event.name}', sender = os.getenv('MAIL_USER'), recipients = ['brpiotrwojtowicz@gmail.com'])
+	msg1.body = f"Wlasnie zapisał sie {person.name} na akcję {event.name}"
+	mail.send(msg1)
 
 
 def db_add_new_sigup(dic, event, lst):
@@ -158,6 +126,7 @@ def db_add_new_sigup(dic, event, lst):
 		flash('Udało się zapisać!', category='success')
 	return person
 
+
 def get_member(dic, event, num):
 	if event.temp_id == 3:
 		member = Person(name=dic[f'name{num}'], email=dic[f'email{num}'], adress=dic[f'adress{num}'],
@@ -168,25 +137,28 @@ def get_member(dic, event, num):
 					 year=dic[f'year{num}'], telNum=dic[f'telNum{num}'], selectSize=dic[f'selectSize{num}'], is_contact=False)
 		return member 
 
-def db_add_new_blacklist(email, number):
-	if email and number:
-		new_item = Blacklist(email=email, number=number)
-	elif email:
-		new_item = Blacklist(email=email)
-	elif number:
-		new_item = Blacklist(number=number)
-	db.session.add(new_item)
-	db.session.commit()
-	flash('Dodano do czarnej listy', category='success')
-	logger.info(f'BL: Dodano do czarnej listy {new_item}')
 
-def db_add_year(year, years):
-	if years:
-		years[-1].is_active = False
-	db.session.add(year)
-	db.session.commit()
+def db_add_new_blacklist(email, number):
+    new_item = Blacklist(email=email, number=number)
+    db.session.add(new_item)
+    db.session.commit()
+    flash('Dodano do czarnej listy', category='success')
+
+def db_add_year(name, event_num, years):
+	if not years:
+		new_year = Year(name=name, event_num=event_num)
+		db.session.add(new_year)
+		db.session.commit()
+	else:
+		for item in years:
+			item.is_active = False
+		db.session.commit()
+		new_year = Year(name=name, event_num=event_num)
+		db.session.add(new_year)
+		db.session.commit()
 
 def db_update_event(event):
+	dic = {}
 	name = request.form.get('name')
 	date = date_from_str(request.form.get('date'), True)
 	mail_temp = request.form.get('mail_temp')
@@ -197,7 +169,6 @@ def db_update_event(event):
 		event.mail_temp = mail_temp
 		db.session.commit()
 		flash(f'Zaktualizowano {event.name}', category='success')
-		logger.info(f'EVENT: Zaktualizowano {event.name}')
 		return True
 	else:
 		return False
@@ -210,19 +181,29 @@ def db_new_event(year):
 	mail_temp = request.form.get('mail_temp')
 	tup = check_event(name=name, date=date, template=template, mail_temp=mail_temp, num='nowa')
 	if tup[0]:
-		temp_id = int(template[8])
+		if template == 'Szablon 1':
+			temp_id = 1
+		if template == 'Szablon 2':
+			temp_id = 2
+		if template == 'Szablon 3':
+			temp_id = 3
+		if template == 'Szablon 4':
+			temp_id = 4
+		if template == 'Szablon 5':
+			temp_id = 5
+		if template == 'Szablon 6':
+			temp_id = 6
 		event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
 		db.session.add(event)
 		db.session.commit()
 		flash(f'Dodano {event.name} do wydarzeń', category='success')
-		logger.info(f'EVENT: Dodano {event.name} do wydarzeń')
 		backup = False
 	else:
 		backup = tup[1]
 		check = False
 	return (check, backup)
 
-def db_add_event(year, years):
+def db_add_event(year):
 	dic = {}
 	lst_event = []
 	check = True
@@ -233,85 +214,115 @@ def db_add_event(year, years):
 		mail_temp = request.form.get(f'mail_temp{i+1}')
 		tup = check_event(name, date, template, mail_temp, i+1)
 		if tup[0]:
-			temp_id = int(template[8])
-			new_event = Events(name=name, temp_id=temp_id, date=date, mail_temp=mail_temp)
+			if template == 'Szablon 1':
+				temp_id = 1
+			if template == 'Szablon 2':
+				temp_id = 2
+			if template == 'Szablon 3':
+				temp_id = 3
+			if template == 'Szablon 4':
+				temp_id = 4
+			if template == 'Szablon 5':
+				temp_id = 5
+			if template == 'Szablon 6':
+				temp_id = 6
+			new_event = Events(name=name, year_id=year.id, temp_id=temp_id, date=date, mail_temp=mail_temp)
 			lst_event.append(new_event)
 			dic[i+1] = new_event
 		else:
 			dic[i+1] = tup[1]
 			check = False 
 	if check:
-		db_add_year(year, years)
 		for event in lst_event:
-			event.year_id = year.id
 			db.session.add(event)
 			db.session.commit()
-		flash(f'Dodano akcje do wybranego roku', category='success')
-		logger.info(f'EVENT: Dodano akcje do wybranego roku: {year.name}')
+		year.first_add = True
+		db.session.commit()
+		flash('Dodano akcje do wybranego roku', category='success')
 	return (dic, check)
 
 def get_sumup(event, lst):
-	summary = {'num_signup':len(lst), 'num_active':0}
-	sizes = ['xs', 's', 'm', 'l', 'xl', 'xxl']
-	if event.temp_id in (1, 4):
-		for size in sizes:
-			summary.update({size:0})
-	if event.temp_id == 2:
-		winters = ['n_skiEver', 'n_skiInst', 'n_isLent', 'discount', 'normal', 'narty', 
+	dic = {}
+	dic_1 = {}
+	dic_2 = {}
+	dic_3 = {}
+	dic['num_signup'] = len(lst)
+	dic['num_active'] = 0
+	temp1 = ['xs', 's', 'm', 'l', 'xl', 'xxl']
+	temp2 = ['n_skiEver', 'n_skiInst', 'n_isLent', 'discount', 'normal', 'narty', 
 				'buty', 'deska', 'kask', 'kijki', 'gogle']
-		for winter in winters:
-			summary.update({winter:0})
-	if event.temp_id == 3:
-		turnaments = ['players', 'sleep', 'young', 'old']
-		for turnament in turnaments:
-			summary.update({turnament:0})
+	temp3 = ['players', 'sleep', 'young', 'old']
+	if event.temp_id in (1, 4):
+		for item in temp1:
+			dic_1[item] = 0
+		dic.update(dic_1)
+	if event.temp_id == 2:	
+		for item in temp2:
+			dic_2[item] = 0
+		dic.update(dic_2)
+	if event.temp_id == 3:	
+		for item in temp3:
+			dic_3[item] = 0
+		dic.update(dic_3)
 	if event.temp_id == 6:
-		summary.update({'members':0})
-		for size in sizes:
-			summary.update({size:0})
+		for item in temp1:
+			dic_1[item] = 0
+		dic.update(dic_1)
+		dic['members'] = 0
 
 	for signup in lst:
 		for member in signup.person:
 			if member.is_verified:
-				summary['num_active'] += 1
+				dic['num_active'] += 1
 			if event.temp_id in (1, 4, 6):
-				summary[member.selectSize.lower()] += 1
+				if member.selectSize == 'XS':
+					dic['xs'] += 1
+				elif member.selectSize == 'S':
+					dic['s'] += 1
+				elif member.selectSize == 'M':
+					dic['m'] += 1
+				elif member.selectSize == 'L':
+					dic['l'] += 1
+				elif member.selectSize == 'XL':
+					dic['xl'] += 1
+				elif member.selectSize == 'XXL':
+					dic['xxl'] += 1
 			if event.temp_id == 6:
-				summary['members'] += 1
+				dic['members'] += 1
 		if event.temp_id == 2:
-			win = signup.winter[0]
-			if win.skiEver:
-				summary['n_skiEver'] += 1
-			if win.skiInst:
-				summary['n_skiInst'] += 1
-			if win.isLent:
-				summary['n_isLent'] += 1
-			if win.passBuy == 'Ulgowy':
-				summary['discount'] += 1
-			else:
-				summary['normal'] += 1
-			if win.isLent:
-				if 'Narty' in win.skiLent:
-					summary['narty'] += 1
-				if 'Buty' in win.skiLent:
-					summary['buty'] += 1
-				if 'Deska' in win.skiLent:
-					summary['deska'] += 1
-				if 'Kask' in win.skiLent:
-					summary['kask'] += 1
-				if 'Kijki' in win.skiLent:
-					summary['kijki'] += 1
-				if 'Gogle' in win.skiLent:
-					summary['gogle'] += 1
+			for win in signup.winter:
+				if win.skiEver:
+					dic['n_skiEver'] += 1
+				if win.skiInst:
+					dic['n_skiInst'] += 1
+				if win.isLent:
+					dic['n_isLent'] += 1
+				if win.passBuy == 'Ulgowy':
+					dic['discount'] += 1
+				else:
+					dic['normal'] += 1
+				if win.isLent:
+					if 'Narty' in win.skiLent:
+						 dic['narty'] += 1
+					if 'Buty' in win.skiLent:
+						 dic['buty'] += 1
+					if 'Deska' in win.skiLent:
+						 dic['deska'] += 1
+					if 'Kask' in win.skiLent:
+						 dic['kask'] += 1
+					if 'Kijki' in win.skiLent:
+						 dic['kijki'] += 1
+					if 'Gogle' in win.skiLent:
+						 dic['gogle'] += 1
 		if event.temp_id == 3:
-			tur = signup.turnament[0]
-			summary['players'] += tur.teamNum 
-			summary['sleep'] += tur.peopleNum
-			if tur.ageCat == 'Młodsi: 2010-2014 (drużyna składa się z 6 osób + bramkarz)':
-				summary['young'] += 1
-			else:
-				summary['old'] += 1
-	return summary
+			for tur in signup.turnament:
+				dic['players'] += tur.teamNum 
+				dic['sleep'] += tur.peopleNum
+				if tur.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
+					dic['young'] += 1
+				else:
+					dic['old'] += 1
+	return dic
 
 def test_signup(event, number):
 	for i in range(number):
@@ -323,7 +334,7 @@ def test_signup(event, number):
 		person = Person(signup_id=signup.id, name=f'{i} Opiekun', email='email@email.com', telNum='345456567')
 		db.session.add(person)
 		db.session.commit()
-		turnament = Turnament(signup_id=signup.id, ageCat='Starsi: 2004-2009 (drużyna składa się z 5 osób + bramkarz)', teamName=f'{i} teamName',
+		turnament = Turnament(signup_id=signup.id, ageCat='Od 14 do 19 roku życia (drużyna składa się z 5 osób + bramkarz)', teamName=f'{i} teamName',
 						teamFrom='teamFrom', teamNum=10, peopleNum=5, say='elo ziombelo')
 		db.session.add(turnament)
 		db.session.commit()

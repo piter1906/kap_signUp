@@ -1,0 +1,12 @@
+<html>
+<head>
+	<title>Dropdown Form Example</title>
+</head>
+<body onload="document.forms[0].submit()">
+	<form method="POST" action="/forma">
+		{{ form.csrf_token }}
+		{{ form.dropdown.label }}
+		{{ form.dropdown }}
+	</form>
+</body>
+</html>

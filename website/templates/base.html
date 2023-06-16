@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta charset="UTF-8">
 
@@ -17,15 +16,12 @@
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       crossorigin="anonymous"
     />
-
-
-    <link rel="shortcut icon" href="../static/img/favicon.ico">
+    <link rel="shortcut icon" href="#">
 
     <link rel="stylesheet" href="../static/css/style.css"/>
 
 
     <title>{% block title %}Pojedź z nami!{% endblock %}</title>
-
   </head>
   
   <body>
@@ -77,44 +73,12 @@
           
           {% endblock %}
     
-  <div id="cookieBanner" class="cookie-banner" style="display: none;">
-    Ta strona używa plików cookie. Kliknij przycisk, aby zaakceptować pliki cookie.
-    <button id="acceptCookies">Akceptuj</button>
-  </div>
 
 
     <div class="b-example-divider"></div>
 
     <div class="container">
       <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-        <div class="card-deck">
-          <div class="card">
-            <div class="card-header">
-              <h7 style="font-size: 0.875em">Polityka prywatności</h7>
-            </div>
-            <div class="card-body">
-              <p style="font-size: 0.675em">Strona korzysta z plików cookies w celu realizacji usług i zgodnie z <a href='https://kapszlak.kapucyni.pl/polityka-prywatnosci-2/'>Polityką Prywatności</a>. Możesz określić warunki przechowywania lub dostępu do plików cookies w Twojej przeglądarce.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <h7 style="font-size: 0.875em">Ochrona danych</h7>
-            </div>
-            <div class="card-body">
-              <p style="font-size: 0.675em">Dane osobowe zawarte w serwisie przetwarzane są za zgodą lub na mocy prawa. Administratorami danych są: Kapucyni Prowincja Krakowska </p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <h7 style="font-size: 0.875em">Kontakt z administratorem</h7>
-            </div>
-            <div class="card-body">
-              <p style="font-size: 0.675em">Coś na stronie działa nie tak jak powinno? Masz jakieś sugestie, lub po prostu chcesz podzielić się opinią na temat naszej strony internetowej. Napisz wiadomość do administratora witryny: kapszlak@gmail.com</p>
-            </div>
-          </div>
-        </div>
-      </footer>
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
         <div class="col-md-4 d-flex align-items-center">
           <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
             <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
@@ -126,9 +90,17 @@
           <li class="ms-3"><a class="text-muted" href="https://www.youtube.com/user/kapszlak"><svg class="bi bi-youtube" width="24" height="24"><use xlink:href="#youtube"/></svg></a></li>
           <li class="ms-3"><a class="text-muted" href="https://www.facebook.com/Kapucy%C5%84skim-Szlakiem-334106473661"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"/></svg></a></li>
         </ul>
-        
       </footer>
     </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LcvpuglAAAAAOGKgmAFjQ2asSs7JWOPG3mnxddl"></script>
+<script>
+grecaptcha.enterprise.ready(function() {
+    grecaptcha.enterprise.execute('6LcvpuglAAAAAOGKgmAFjQ2asSs7JWOPG3mnxddl', {action: 'login'}).then(function(token) {
+       ...
+    });
+});
+</script>
+
   </body>
 </html>

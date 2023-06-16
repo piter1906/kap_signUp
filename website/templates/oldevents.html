@@ -60,10 +60,9 @@
                           {% for event in lst_events%}
                             <tr>
                               <th scope="row">{{ event.name }}</th>
-                              <td>{% if event.date %}{{ event.date }}{% else %} - {% endif %}</td>
+                              <td>{{ event.date }}</td>
                               <td>{{ event.signup|length }}</td>
                               <td><a href="/dashboard/eventview?event_id={{ event.id }}"><button type="button" class="btn btn-secondary btn-sm">Zobacz</button></a>
-                   <a href="/dashboard/mail?event_id={{ event.id }}"><button type="button" class="btn btn-dark btn-sm">Generuj maile</button></a>
 							  <a href="/pdf?event_id={{ event.id }}"><button type="button" class="btn btn-success btn-sm">Generuj PDF</button></a>
 							  </td>
                             </tr>

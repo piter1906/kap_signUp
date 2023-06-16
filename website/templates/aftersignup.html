@@ -9,14 +9,12 @@
 		    <div class="card-body">
 			   <h3 class="card-title" align="center">Twoje zgłoszenie zostało przyjęte!</h3>
 		    </div>
-		    <div class="card">
-		    	<div class="card-body">
-		    		<div class="col-md-12 text-center">
-		    		<p>Pokój i dobro! Twoje zgłoszenie zostało przesłane do nas. Poczekaj na maila z dalszymi informacjami. Pozdrawiamy!</p>
-		    	</div>
-		    </div>
-		</div>
+		    Witaj {{ person.name }}<br>
+		    Jesteś oficjalnie zapisany na {{ event.name }}.
+		    Sprawdź swoją skrzynkę mailową, ponieważ powinienieś dostać maila z instrukcją.
+		    Treść maila:
 		    <br>
+		    {{ event.mail_temp }}
 		</div>
 	</div>
 </div>

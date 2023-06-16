@@ -6,7 +6,6 @@ from flask_mail import Mail, Message
 import datetime
 from dotenv import load_dotenv
 import os
-import logging
 
 
 db = SQLAlchemy()
@@ -19,14 +18,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     db.init_app(app)
-
-    logging.basicConfig(filename='website/app.log', level=logging.INFO,
-                    format='%(asctime)s %(levelname)s %(name)s : %(message)s')
-
-    werkzeug_logger = logging.getLogger('werkzeug')
-    werkzeug_logger.setLevel(logging.ERROR)
     
     from .views import views
     from .auth import auth

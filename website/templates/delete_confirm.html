@@ -8,7 +8,7 @@
 			   <h3 class="card-title" align="center">Potwierdzenie usunięcia</h3>
 			</div>
 		  	<div class="card-body">
-		  		<h4>Czy na pewno chcesz usunąć {% if signup and event %} z akcji {{ event.name }} zapis z datą {{ signup.date }}{% else %} {% if event %}Czy na pewno chcesz usunąć {{ event.name }} {% if event.date %}{{ event.date }}{% endif %} {% endif%} {% endif %}
+		  		<h4>Czy na pewno chcesz usunąć {% if signup and event %} z akcji {{ event.name }} zapis z datą {{ signup.date }}{% else %} {% if event %}Czy na pewno chcesz usunąć {{ event.name }} {{ event.date }} {% endif%} {% endif %}
 		  		?</h4><br>
 				  <div class="card">
 				    <div class="card-body">
