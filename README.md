@@ -1,5 +1,5 @@
 # kap_signUp
-Welcome to the kap_signUp Application! This application allows users to sign up for various events. It provides a simple and intuitive interface for managing event registrations. This application is designed to help Capuchin friars organize events for young people.
+Welcome to the kap_signUp application! This application allows users to sign up for various events. It provides a simple and intuitive interface for managing event registrations. This application is designed to help Capuchin friars organize events for young people.
 
 ## Features
 
