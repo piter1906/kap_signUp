@@ -29,7 +29,7 @@
                           {% for event in lst_events%}
                             <tr>
                               <th scope="row">{{ event.name }}</th>
-                              <td>{{ event.date }}</td>
+                              <td>{% if event.date %}{{ event.date }}{% else %} - {% endif %}</td>
                               <td>{{ event.signup|length }}</td>
                               <td>{% if event.is_active %}<font color="green">Aktywny</font>{% else %}<font color="red">Nieaktywny{% endif %}</font></td>
                               <td><a href="/dashboard/eventview?event_id={{ event.id }}"><button type="button" class="btn btn-secondary btn-sm">Zobacz</button></a>
@@ -72,12 +72,36 @@
 					      class="form-control"
 					      id="date"
 					      name="date"
-					      required="required"
 					      value = "{% if backup %}{{ backup.date }}{% endif %}"
 					    />
 					</div>
 					<div class="form-group">
-					<label for="template">Szablon zapisów <i>(1. Podstawowy, 2. Ferie, 3. Turniej, 4. Dla starszych, 5. Dni skupienia, 6. Kajaki)</i>: </label>
+					<label for="template"><div class="basic">Szablon zapisów:&nbsp;</div> <i>
+						<div class="basic">
+							1. Podstawowy,&nbsp; 
+							<span class="tooltiptext">Szablon zawiera: rozmiar koszulki, załącznik z kartą uczestnika</span>
+						</div>
+						<div class="basic">
+							 2. Ferie,&nbsp;
+							<span class="tooltiptext">Szablon zawiera: załącznik z kartą uczestnika, dodatkowe informacje o sprzęcie narciarskim</span>
+						</div>
+						<div class="basic">
+							 3. Turniej,&nbsp;
+							<span class="tooltiptext">Szablon zawiera: zapisy opiekuna i zawodników drużyny na turniej</span>
+						</div>
+						<div class="basic">
+							 4. Dla starszych,&nbsp;
+							<span class="tooltiptext">Szablon zawiera: rozmiar koszulki, dodatkowe informację dla starszych, załącznik z kartą uczestnika</span>
+						</div>
+						<div class="basic">
+							 5. Dni skupienia,&nbsp;
+							<span class="tooltiptext">Szablon zawiera: tylko podstawowe informację, bez załącznika</span>
+						</div> 
+						<div class="basic">
+							 6. Kajaki&nbsp;
+							<span class="tooltiptext">Szablon zawiera: zapisy ojca i synów</span>
+						</div>     
+					    </i> </label>
 					 	<select 
 		    			class="form-control" 
 		    			id="template"

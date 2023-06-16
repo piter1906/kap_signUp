@@ -7,6 +7,9 @@ class Blacklist(db.Model):
     email = db.Column(db.String(100))
     number = db.Column(db.Integer)
 
+    def __str__(self):
+        return f'ID item bl: {self.id}, email: {self.email}, number: {self.number}'
+
 
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,6 +20,9 @@ class Events(db.Model):
     temp_id = db.Column(db.Integer)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     mail_temp = db.Column(db.String(1000))
+
+    def __str__(self):
+        return f'ID wydarzenia: {self.id}, nazwa: {self.name}, data: {self.date}'
     
 
 class Person(db.Model):
@@ -32,6 +38,9 @@ class Person(db.Model):
     selectSize = db.Column(db.String(10))
     weight = db.Column(db.Integer)
     height = db.Column(db.Integer)
+
+    def __str__(self):
+        return f'Imie i nazwisko: {self.name}, email: {self.email}, telefon: {self.telNum}'
    
 
 class Signup(db.Model):
@@ -43,6 +52,9 @@ class Signup(db.Model):
     winter = db.relationship('Winter', backref='signup')
     turnament = db.relationship('Turnament', backref='signup')
     older = db.relationship('Older', backref='signup')
+
+    def __str__(self):
+        return f'ID zapisu: {self.id}, data: {self.date}'
 
 
 class Basic(db.Model):
@@ -89,7 +101,6 @@ class Year(db.Model):
     name = db.Column(db.String(300))
     event_num = db.Column(db.Integer)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
-    first_add = db.Column(db.Boolean, default=False, nullable=False)
     events = db.relationship('Events', backref='year')
 
 

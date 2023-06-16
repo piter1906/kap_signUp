@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for, make_response, send_file, abort
+from flask import Blueprint, render_template, flash, request, jsonify, redirect, url_for, make_response, send_file, abort, current_app, send_from_directory
 from flask_login import login_required, current_user
 from modules.check_module import *
 from modules.servis_html import *
@@ -15,9 +15,14 @@ from xhtml2pdf.default import DEFAULT_FONT
 import io
 import sys
 import datetime 
+import logging
 
 action = Blueprint('action', __name__)
+logger = logging.getLogger('action_logger')
 
+@action.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(current_app.root_path, 'static/img'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @action.route('/test-signup/<int:itemID>')
 @login_required
@@ -34,6 +39,7 @@ def delete_bl(itemID):
         db.session.delete(item)
         db.session.commit()
         flash(f'Element {item.email} {item.number} usunięty z czarnej listy')
+        logger.info(f'BL: Element {item.email} {item.number} usuniety z czarnej listy')
         return redirect(url_for('views.admin_blacklist'))
     else:
         raise TypeError
@@ -58,6 +64,7 @@ def delete_event(itemID):
         db.session.delete(item)
         db.session.commit()
         flash(f'Wydarzenie {item.name} usunięte listy')
+        logger.info(f'EVENT: Wydarzenie {item.name} usuniete listy')
         return redirect(url_for('views.edit_year'))
     else:
         raise TypeError
@@ -76,6 +83,7 @@ def delete_signup():
             session.pop('event_id')
             session.pop('signup_id')
             flash(f'Zapis został usunięty.')
+            logger.info(f'EVENT: Zapis {signup} zostal usuniety.')
             return redirect(f'/dashboard/eventview?event_id={event.id}')
         else:
             raise TypeError
@@ -113,12 +121,14 @@ def delete_conf():
 def event_status(itemID):
     item = Events.query.get(itemID)
     if item:
-        if item.date >= datetime.date.today():
+        if not item.date or item.date >= datetime.date.today():
             item.is_active = True if not item.is_active else False
             db.session.commit()
             flash(f'Status {item.name} zmieniony.')
+            logger.info(f'EVENT: Status {item.name} zmieniony na {item.is_active}')
         else:
             flash(f'Status {item.name} nie został zmieniony, ponieważ data akcji jest już przestarzała', category='error')
+            logger.info(f'EVENT: Status {item.name} nie zostal zmieniony, poniewaz data akcji jest juz przestarzala')
         return redirect(url_for('views.edit_year'))
     else:
         raise TypeError
@@ -134,7 +144,9 @@ def signup_verified():
         if not person.is_verified:
             person.is_verified = True
             db.session.commit()
-            flash('Zapis został zweryfikowany.', category='success')
+            mail_user = send_mail_user(event, person)
+            flash(f'Zapis został zweryfikowany. Czy wysłano maila do użytkownika: {mail_user}', category='success')
+            logger.info(f'Zapis {person} został zweryfikowany | Mail do zapisanego = {mail_user}')
             return redirect(f'/dashboard/eventview?event_id={event.id}')
         else:
             flash('Operacja nie jest dostępna', category='error')
@@ -163,7 +175,7 @@ def pdf():
                     lst_old = []
                     for signup in event.signup:
                         for turn in signup.turnament:
-                            if turn.ageCat == 'Do 14 roku życia (drużyna składa się z 6 osób + bramkarz)':
+                            if turn.ageCat == 'Młodsi: 2010-2014 (drużyna składa się z 6 osób + bramkarz)':
                              lst_young.append(signup)
                             else:
                                 lst_old.append(signup)
@@ -180,6 +192,7 @@ def pdf():
                 response = make_response(pdf_file.getvalue())
                 response.headers['Content-Type'] = 'application/pdf'
                 response.headers['Content-Disposition'] = f'attachment; filename={pdf_name}.pdf'
+                logger.info(f'Wygenerowano pdf dla {event}')
 
                 return response
             else:
